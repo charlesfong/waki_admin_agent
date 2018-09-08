@@ -54,16 +54,6 @@ class BranchController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -106,28 +96,6 @@ class BranchController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function find(Request $request)
-    {
-        $branches = Branch::
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -167,21 +135,10 @@ class BranchController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function delete(Branch $branch)
     {
-        //
-    }
-
-    public function delete(Cso $cso)
-    {
-        $cso->active = false;
-        $cso->save();
-        return redirect()->route('list_csos');
+        $branch->active = false;
+        $branch->save();
+        return redirect()->route('list_branches');
     }
 }
