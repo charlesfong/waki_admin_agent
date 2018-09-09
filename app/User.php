@@ -70,10 +70,10 @@ class User extends Authenticatable
     /**
      * Checks if the user belongs to role.
      */
-    // public function inRole(string $roleSlug)
-    // {
-    //     return $this->roles()->where('slug', $roleSlug)->count() == 1;
-    // }
+    public function inRole(string $roleSlug)
+    {
+        return $this->roles()->where('slug', $roleSlug)->count() == 1;
+    }
 
     public function branch()
     {
