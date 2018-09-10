@@ -27,8 +27,8 @@ class BranchController extends Controller
                     ->where('active', true)
                     ->orWhere('name', 'like', "%{$request->keyword}%")
                     ->where('active', true)
-                    ->orWhere('country', 'like', "%{$request->keyword}%");
-                    ->where('active', true)
+                    ->orWhere('country', 'like', "%{$request->keyword}%")
+                    ->where('active', true);
             })->where('active', true)->paginate(10);
 
             $branches->appends($request->only('keyword'));
@@ -40,8 +40,8 @@ class BranchController extends Controller
                     ->where('active', true)
                     ->orWhere('name', 'like', "%{$request->keyword}%")
                     ->where('active', true)
-                    ->orWhere('country', 'like', "%{$request->keyword}%");
-                    ->where('active', true)
+                    ->orWhere('country', 'like', "%{$request->keyword}%")
+                    ->where('active', true);
             })->where([
                 ['branches.active', true],
                 ['country', $user->branch['country']]
