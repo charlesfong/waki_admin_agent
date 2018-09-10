@@ -192,5 +192,10 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('all-country-user', function ($user) {
             return $user->hasAccess(['all-country-user']);
         });
+
+        //-- DASHBOARD --//
+        Gate::define('dashboard', function ($user) {
+            return $user->inRole('admin');
+        });
     }
 }
