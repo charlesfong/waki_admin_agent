@@ -151,7 +151,7 @@ class CsoController extends Controller
             ])
             ->paginate(10);
         }
-        $branches = Branch::where('country', $user->branch['country'])->get();
+        $branches = Branch::where([['country', $user->branch['country']],['active', true]])->get();
         return view('csos.index', compact('csos', 'branches'));
     }
 
