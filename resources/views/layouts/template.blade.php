@@ -102,9 +102,6 @@
 
                 <!-- For Saved/Changed Data -->
                 @if (session()->has('message'))
-                    <!-- <div class="alert alert-success">
-                        {{ session()->get('message') }}
-                    </div> -->
                     <script type="text/javascript">
                         $(document).ready(function() {
                             $("#modal-Notification").modal("show");

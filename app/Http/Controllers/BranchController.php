@@ -50,7 +50,7 @@ class BranchController extends Controller
 
             $branches->appends($request->only('keyword'));
         }
-        return view('branches.index', compact('branches'));
+        return view('branch', compact('branches'));
     }
 
     /**
@@ -85,11 +85,7 @@ class BranchController extends Controller
             $data['code'] = strtoupper($request->get('code'));
             $data['country'] = strtoupper($request->get('country'));
 
-            $id = DB::table('branches')->insertGetId([
-                'code' => $data['code'], 
-                'name' => $data['name'],
-                'country' => $data['country']
-            ]);
+            Branch::create($data); //INSERT INTO DATABASE (with created_at)
 
             return response()->json(['success'=>'Berhasil !!']);
         }
@@ -139,6 +135,6 @@ class BranchController extends Controller
     {
         $branch->active = false;
         $branch->save();
-        return redirect()->route('list_branches');
+        return redirect()->route('branch');
     }
 }
