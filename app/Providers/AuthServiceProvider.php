@@ -30,6 +30,16 @@ class AuthServiceProvider extends ServiceProvider
 
     public function registerPostPolicies()
     {
+        //-- DASHBOARD --//
+        Gate::define('dashboard', function ($user) {
+            return $user->inRole('admin');
+        });
+
+        //-- MASTER DATA --// Gabungan
+        Gate::define('master-data', function ($user) {
+            return $user->hasAccess(['add-mpc', 'add-data-undangan', 'add-data-outsite', 'add-data-therapy', 'browse-mpc', 'browse-data-undangan', 'browse-data-outsite', 'browse-data-therapy', 'find-mpc', 'find-data-undangan', 'find-data-outsite', 'find-data-therapy']);
+        });
+
         //-- MPC --//
         Gate::define('add-mpc', function ($user) {
             return $user->hasAccess(['add-mpc']);
@@ -122,6 +132,11 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasAccess(['all-country-data-therapy']);
         });
 
+        //-- MASTER DATA TYPE --//
+        Gate::define('master-data-type', function ($user) {
+            return $user->hasAccess(['add-type-cust', 'browse-type-cust']);
+        });
+
         //-- TYPE CUST --//
         Gate::define('add-type-cust', function ($user) {
             return $user->hasAccess(['add-type-cust']);
@@ -134,6 +149,11 @@ class AuthServiceProvider extends ServiceProvider
         });
         Gate::define('delete-type-cust', function ($user) {
             return $user->hasAccess(['delete-type-cust']);
+        });
+
+        //-- MASTER CSO --//
+        Gate::define('master-cso', function ($user) {
+            return $user->hasAccess(['add-cso', 'browse-cso']);
         });
 
         //-- CSO --//
@@ -156,6 +176,11 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasAccess(['all-country-cso']);
         });
 
+        //-- MASTER BRANCH --//
+        Gate::define('master-branch', function ($user) {
+            return $user->hasAccess(['add-branch', 'browse-branch']);
+        });
+
         //-- BRANCH --//
         Gate::define('add-branch', function ($user) {
             return $user->hasAccess(['add-branch']);
@@ -171,6 +196,11 @@ class AuthServiceProvider extends ServiceProvider
         });
         Gate::define('all-country-branch', function ($user) {
             return $user->hasAccess(['all-country-branch']);
+        });
+
+        //-- MASTER USER --//
+        Gate::define('master-user', function ($user) {
+            return $user->hasAccess(['add-user', 'browse-user']);
         });
 
         //-- USER --//
@@ -193,8 +223,8 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasAccess(['all-country-user']);
         });
 
-        //-- DASHBOARD --//
-        Gate::define('dashboard', function ($user) {
+        //-- REPORT --//
+        Gate::define('report', function ($user) {
             return $user->inRole('admin');
         });
     }
