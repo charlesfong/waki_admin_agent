@@ -13,7 +13,7 @@
     @endif
 
     @if(Gate::check('master-branch'))
-    <li> <a href="">Master Branch</a></li>
+    <li> <a href="{{route('branch')}}">Master Branch</a></li>
     @endif
 
     @if(Gate::check('master-cso'))

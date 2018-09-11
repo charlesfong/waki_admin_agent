@@ -22,26 +22,49 @@ Route::get('/', function () {
     {
     	if(Auth::user()->roles->first()->slug == 'admin')
     	{
-    		return redirect('/dashboard'); // return redirect()->route('dashboard');
+    		return redirect()->route('dashboard');
     	}
     	else
     	{
-    		return redirect('/data');
+    		return redirect()->route('data');
     	}
     }
     else
     {
-    	return redirect('/login');
+    	return redirect()->route('login');
     }
 });
 
+//-- DASHBOARD --//
 Route::get('/dashboard', 'DashboardController@index')
 	->name('dashboard')
 	->middleware('can:dashboard');
 
+//-- MASTER DATA --//
 Route::get('/data', 'DataController@index')
 	->name('data')
 	->middleware('auth');
+
+//-- MASTER BRANCH --//
+Route::group(['prefix' => 'branch'], function () {
+	//Browse
+	Route::get('/', 'BranchController@index')
+		->name('branch')
+		->middleware('can:browse-branch,add-branch');
+	//Add
+	Route::post('/', 'BranchController@store')
+		->name('store_branch')
+		->middleware('can:add-branch');
+	//Edit
+	Route::post('/edit/', 'BranchController@update')
+        ->name('update_branch')
+        ->middleware('can:edit-branch');
+    //Delete
+	Route::post('/{branch}', 'BranchController@delete')
+		->name('delete_branch')
+		->middleware('can:delete-branch,branch');
+});
+
 
 //-- PASSWORD --//
 Route::post('/changePassword','AjaxController@changePassword')->name('changePassword');
@@ -57,8 +80,6 @@ Route::post('/checkChangePassword', 'AjaxController@checkChangePassword')
     ->name('check-change-password');
 
 // Route::get('/home', 'HomeController@index')->name('home');
-
-// Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 
 // Route::get('/', 'MemberController@index')->middleware('auth');
 
