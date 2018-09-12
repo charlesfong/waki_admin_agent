@@ -14,6 +14,8 @@ class AddforeignMpcsTable extends Migration
     public function up()
     {
         Schema::table('mpcs', function (Blueprint $table) {
+            $table->integer('branch_id')->unsigned();
+            $table->foreign('branch_id')->references('id')->on('branches');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
             $table->integer('cso_id')->unsigned();
@@ -29,6 +31,8 @@ class AddforeignMpcsTable extends Migration
     public function down()
     {
         Schema::table('mpcs', function (Blueprint $table) {
+            $table->dropForeign(['branch_id']);
+            $table->dropColumn('branch_id');
             $table->dropForeign(['user_id']);
             $table->dropColumn('user_id');
             $table->dropForeign(['cso_id']);
