@@ -134,3 +134,21 @@ btn-delete {
 .child-dropdown.toggled {
   display:block !important;
 }
+
+.nav-tabs .nav-link {
+  background-color: #ececec;
+  color :#5c5c5c;
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+  font-style: oblique;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.nav-tabs{
+  max-width: 660px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 0px 20px;
+}
