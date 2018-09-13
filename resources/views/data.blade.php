@@ -342,15 +342,6 @@
     $(document).ready(function () {
         $('#btnFind-data-undangan').click(function(e){
             e.preventDefault();
-
-            if($("#txt-keywordDataUndangan").val() == "081544468999"){
-                $("#txt-keywordDataUndangan").removeClass("is-invalid");
-                $('#modal-DataUndangan').modal('show')
-                $("#txt-keywordDataUndangan").val("");
-            }
-            else{
-                $("#txt-keywordDataUndangan").addClass("is-invalid");
-            }
         });
         $("#type_cust").change(function (e) {
             $("#input-DataUndangan").removeClass("d-none");
