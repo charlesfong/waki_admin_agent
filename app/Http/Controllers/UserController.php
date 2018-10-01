@@ -9,6 +9,7 @@ use App\User;
 use App\Branch;
 use App\Role;
 use Auth;
+use DB;
 
 class UserController extends Controller
 {
@@ -33,7 +34,7 @@ class UserController extends Controller
                         ->orWhere('users.username', 'like', "%{$request->keyword}%")
                         ->where('users.active', true)
                         ->orWhere('branches.name', 'like', "%{$request->keyword}%")
-                        ->where('users.active', true);
+                        ->where('users.active', true)
                         ->orWhere('branches.country', 'like', "%{$request->keyword}%")
                         ->where('users.active', true);
                 })->where('users.active', true)
@@ -106,7 +107,7 @@ class UserController extends Controller
 
         $roles = Role::orderBy('name')->pluck('name', 'id');
         $branches = Branch::orderBy('name')->pluck('name', 'id');
-        return view('users.index', compact('branches', 'roles', 'users'));
+        return view('user', compact('branches', 'roles', 'users'));
     }
 
     /**
@@ -122,6 +123,7 @@ class UserController extends Controller
             'username' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:6|',
             'role' => 'required|exists:roles,id',
+            'country' => 'required',
             'branch' => 'required|exists:branches,id',
         ]);
 
@@ -155,14 +157,17 @@ class UserController extends Controller
             $data['branch_id'] = $request->get('branch');
             $data['permissions'] = $role->permissions;
 
-            $id = DB::table('users')->insertGetId([
-                'code' => $data['code'], 
-                'name' => $data['name'],
-                'username' => $data['username'],
-                'password' => $data['password'],
-                'permissions' => $data['permissions'],
-                'branch_id' => $data['branch_id']
-            ]);
+            $user = User::create($data); //INSERT INTO DATABASE (with created_at)
+            $user->roles()->attach($request['role']);
+
+            // $id = DB::table('users')->insertGetId([
+            //     'code' => $data['code'], 
+            //     'name' => $data['name'],
+            //     'username' => $data['username'],
+            //     'password' => $data['password'],
+            //     'permissions' => $data['permissions'],
+            //     'branch_id' => $data['branch_id']
+            // ]);
 
             return response()->json(['success'=>'Berhasil !!']);
         }
@@ -199,14 +204,18 @@ class UserController extends Controller
         else 
         {
             $data = $request->only('name', 'username');
+            $data['name'] = strtoupper($data['name']);
+            $data['username'] = strtoupper($data['username']);
+            $data['country'] = strtoupper($request->get('country'));
             $data['branch_id'] = $request->get('branch');
+            
+            $user = User::find($request->get('id'));
 
-            $userParam = User::where([['active', true],['id', $request->get('id')]])->get();
-
-            $userpermiss = json_decode($userParam['permissions'], true);
+            $userpermiss = json_decode($user->permissions, true);
             foreach ($userpermiss as $key => $value)
             {
-                if(array_key_exists($key, $request->permissions))
+                $userpermiss[$key] = true;
+                if(array_key_exists($key, $request->get('permissions')))
                 {
                     $userpermiss[$key] = true;
                 }
@@ -216,15 +225,9 @@ class UserController extends Controller
                 }
             }
             $data['permissions'] = json_encode($userpermiss);
+            $user->fill($data)->save();
 
-            DB::table('users')
-                ->where('id', $request->get('id'))
-                ->update(['name' => $data['name'],
-                        'username' => $data['username'],
-                        'permissions' => $data['permissions'],
-                        'branch_id' => $data['branch_id']]);
-
-            return response()->json(['success'=>'Berhasil !!']);
+            return response()->json(['success'=>'Berhasil']);
         }
     }
 
@@ -232,6 +235,6 @@ class UserController extends Controller
     {
         $user->active = false;
         $user->save();
-        return redirect()->route('list_users');
+        return redirect()->route('user');
     }
 }

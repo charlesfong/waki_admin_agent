@@ -13,7 +13,7 @@
     @endif
 
     @if(Gate::check('master-branch'))
-    <li class="list-selected">Master Branch</a></li>
+    <li class="list-selected">Master Branch</li>
     @endif
 
     @if(Gate::check('master-cso'))
@@ -21,7 +21,7 @@
     @endif
 
     @if(Gate::check('master-user'))
-    <li> <a href="">Master User</a></li>
+    <li> <a href="{{route('user')}}">Master User</a></li>
     @endif
 
     @if(Gate::check('report'))
@@ -45,7 +45,7 @@
         <div class="form-group {{ $errors->has('name') ? ' has-error' : '' }}">
             <span>NAME</span>
             <input type="text" name="name" class="text-uppercase form-control {{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="Branch Name" required>
-            <span class="help-block">
+            <span class="invalid-feedback">
                 <strong>{{ $errors->first('name') }}</strong>
             </span>
         </div>
@@ -61,7 +61,7 @@
                     @endcan
                 </optgroup>
             </select>
-            <span class="help-block">
+            <span class="invalid-feedback">
                 <strong>{{ $errors->first('country') }}</strong>
             </span>
         </div>

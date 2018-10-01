@@ -21,7 +21,7 @@
     @endif
 
     @if(Gate::check('master-user'))
-    <li> <a href="">Master User</a></li>
+    <li> <a href="{{route('user')}}">Master User</a></li>
     @endif
 
     @if(Gate::check('report'))

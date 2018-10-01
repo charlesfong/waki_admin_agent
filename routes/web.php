@@ -65,6 +65,25 @@ Route::group(['prefix' => 'branch'], function () {
 		->middleware('can:delete-branch,branch');
 });
 
+//-- MASTER USER --//
+Route::group(['prefix' => 'user'], function () {
+	//Browse
+	Route::get('/', 'UserController@index')
+		->name('user')
+		->middleware('can:browse-user,add-user');
+	//Add
+	Route::post('/', 'UserController@store')
+		->name('store_user')
+		->middleware('can:add-user');
+	//Edit
+	Route::post('/edit/', 'UserController@update')
+        ->name('update_user')
+        ->middleware('can:edit-user');
+    //Delete
+	Route::post('/{user}', 'UserController@delete')
+		->name('delete_user')
+		->middleware('can:delete-user,user');
+});
 
 //-- PASSWORD --//
 Route::post('/changePassword','AjaxController@changePassword')->name('changePassword');
