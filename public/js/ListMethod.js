@@ -109,7 +109,9 @@ $(".btn-deleteUser").click(function(e) {
 
 //untuk menampilkan modal edit data USER dan menampilkan data mana yg mau di edit
 $(".btn-editUser").click(function(e) {
+    //ResetBranch();
     ResetPermission();
+    ResetError();
 
     var dataUser = GetListUserData(this.name);
     document.getElementById("txtkode-user").value = dataUser.kode;
@@ -117,8 +119,7 @@ $(".btn-editUser").click(function(e) {
     document.getElementById("txtusername-user").value = dataUser.username;
     document.getElementById("txtcountry-user").value = dataUser.country;
     document.getElementById("txtbranch-user").value = dataUser.branch;
-    document.getElementById("btn-confirmUpdateUser").value = 
-    this.value;
+    document.getElementById("btn-confirmUpdateUser").value = this.value;
     $("#actionEdit").prop('action', actionEdit+'/'+this.value);
 
     var permissions = JSON.parse(dataUser.permissions, true);
@@ -127,23 +128,81 @@ $(".btn-editUser").click(function(e) {
         $("#"+item).prop('name', "permissions["+item+"]");
         $("#"+item).prop('checked', permissions[item]);
 
-        if(item == "browse-member" && permissions[item] == true)
+        //MPC
+        if(item == "browse-mpc" && permissions[item] == true)
         {
-            $("#check-DeleteMember").addClass("d-inline-block");
-            $("#check-EditMember").addClass("d-inline-block");
+            $("#check-DeleteMPC").addClass("d-inline-block");
+            $("#check-EditMPC").addClass("d-inline-block");
         }
 
-        else if(item == "all-branch-member" && permissions[item] == true)
+        else if(item == "all-branch-mpc" && permissions[item] == true)
         {
-            $("#check-AllCountryMember").addClass("d-inline-block");
+            $("#check-AllCountryMPC").addClass("d-inline-block");
         }
 
+        //DATA UNDANGAN
+        else if(item == "browse-data-undangan" && permissions[item] == true)
+        {
+            $("#check-DeleteDataUndangan").addClass("d-inline-block");
+            $("#check-EditDataUndangan").addClass("d-inline-block");
+        }
+
+        else if(item == "all-branch-data-undangan" && permissions[item] == true)
+        {
+            $("#check-AllCountryDataUndangan").addClass("d-inline-block");
+        }
+
+        //DATA OUTSITE
+        else if(item == "browse-data-outsite" && permissions[item] == true)
+        {
+            $("#check-DeleteDataOutsite").addClass("d-inline-block");
+            $("#check-EditDataOutsite").addClass("d-inline-block");
+        }
+
+        else if(item == "all-branch-data-outsite" && permissions[item] == true)
+        {
+            $("#check-AllCountryDataOutsite").addClass("d-inline-block");
+        }
+
+        //DATA THERAPY
+        else if(item == "browse-data-therapy" && permissions[item] == true)
+        {
+            $("#check-DeleteDataTherapy").addClass("d-inline-block");
+            $("#check-EditDataTherapy").addClass("d-inline-block");
+        }
+
+        else if(item == "all-branch-data-therapy" && permissions[item] == true)
+        {
+            $("#check-AllCountryDataTherapy").addClass("d-inline-block");
+        }
+
+        //TYPE CUST
+        else if(item == "browse-type-cust" && permissions[item] == true)
+        {
+            $("#check-DeleteTypeCust").addClass("d-inline-block");
+            $("#check-EditTypeCust").addClass("d-inline-block");
+        }
+
+        //CSO
+        else if(item == "browse-cso" && permissions[item] == true)
+        {
+            $("#check-DeleteCSO").addClass("d-inline-block");
+            $("#check-EditCSO").addClass("d-inline-block");
+        }
+
+        else if(item == "all-branch-cso" && permissions[item] == true)
+        {
+            $("#check-AllCountryCSO").addClass("d-inline-block");
+        }
+
+        //BRANCH
         else if(item == "browse-branch" && permissions[item] == true)
         {
             $("#check-DeleteBranch").addClass("d-inline-block");
             $("#check-EditBranch").addClass("d-inline-block");
         }
 
+        //USER
         else if(item == "browse-user" && permissions[item] == true)
         {
             $("#check-DeleteUser").addClass("d-inline-block");
@@ -159,17 +218,57 @@ $(".btn-editUser").click(function(e) {
     $("#modal-UpdateForm").modal("show");
 });
 
+//Untuk reset Error ketika close modal
+function ResetError()
+{
+    $("#txtnama-user").removeClass("is-invalid");
+    $("#txtusername-user").removeClass("is-invalid");
+    $("#txtcountry-user").removeClass("is-invalid");
+    $("#txtbranch-user").removeClass("is-invalid");
+}
+
 //Untuk reset permissions ketika close modal
 function ResetPermission()
 {
-    $("#check-DeleteMember").removeClass("d-inline-block");
-    $("#check-EditMember").removeClass("d-inline-block");
+    //MPC
+    $("#check-EditMPC").removeClass("d-inline-block");
+    $("#check-DeleteMPC").removeClass("d-inline-block");
 
-    $("#check-AllCountryMember").removeClass("d-inline-block");
+    $("#check-AllCountryMPC").removeClass("d-inline-block");
 
-    $("#check-DeleteBranch").removeClass("d-inline-block");
+    //DATA UNDANGAN
+    $("#check-EditDataUndangan").removeClass("d-inline-block");
+    $("#check-DeleteDataUndangan").removeClass("d-inline-block");
+
+    $("#check-AllCountryDataUndangan").removeClass("d-inline-block");
+
+    //DATA OUTSITE
+    $("#check-EditDataOutsite").removeClass("d-inline-block");
+    $("#check-DeleteDataOutsite").removeClass("d-inline-block");
+
+    $("#check-AllCountryDataOutsite").removeClass("d-inline-block");
+
+    //DATA THERAPY
+    $("#check-EditDataTherapy").removeClass("d-inline-block");
+    $("#check-DeleteDataTherapy").removeClass("d-inline-block");
+
+    $("#check-AllCountryDataTherapy").removeClass("d-inline-block");
+
+    //TYPE CUST
+    $("#check-EditTypeCust").removeClass("d-inline-block");
+    $("#check-DeleteTypeCust").removeClass("d-inline-block");
+
+    //CSO
+    $("#check-EditCSO").removeClass("d-inline-block");
+    $("#check-DeleteCSO").removeClass("d-inline-block");
+
+    $("#check-AllCountryCSO").removeClass("d-inline-block");
+
+    //BRANCH
     $("#check-EditBranch").removeClass("d-inline-block");
+    $("#check-DeleteBranch").removeClass("d-inline-block");
 
+    //USER
     $("#check-DeleteUser").removeClass("d-inline-block");
     $("#check-EditUser").removeClass("d-inline-block");
 
@@ -177,23 +276,86 @@ function ResetPermission()
 }
 
 //method berbeda jangan di rubah
-//function" di bawah ini berguna untuk khusus user role 
-$("#group-member .div-CheckboxGroup #browse-member").click(function(e) {
-        $("#check-DeleteMember").toggleClass("d-inline-block");
-        $("#check-EditMember").toggleClass("d-inline-block");
-        $("#edit-member").prop('checked', false);
-        $("#delete-member").prop('checked', false);
+//function" di bawah ini berguna untuk khusus user role
+//Jika Browse di-check, maka Edit dan Delete akan muncul, berlaku sebaliknya
+//Jika AllBranch di-check, maka AllCountry akan muncul, berlaku sebaliknya
+//MPC
+$("#group-mpc .div-CheckboxGroup #browse-mpc").click(function(e) {
+        $("#check-DeleteMPC").toggleClass("d-inline-block");
+        $("#check-EditMPC").toggleClass("d-inline-block");
+        $("#edit-mpc").prop('checked', false);
+        $("#delete-mpc").prop('checked', false);
 });
-$("#group-member .div-CheckboxGroup #all-branch-member").click(function(e) {
-        $("#check-AllCountryMember").toggleClass("d-inline-block");
-        $("#all-country-member").prop('checked', false);
+$("#group-mpc .div-CheckboxGroup #all-branch-mpc").click(function(e) {
+        $("#check-AllCountryMPC").toggleClass("d-inline-block");
+        $("#all-country-mpc").prop('checked', false);
 });
+
+//DATA UNDANGAN
+$("#group-data-undangan .div-CheckboxGroup #browse-data-undangan").click(function(e) {
+        $("#check-DeleteDataUndangan").toggleClass("d-inline-block");
+        $("#check-EditDataUndangan").toggleClass("d-inline-block");
+        $("#edit-data-undangan").prop('checked', false);
+        $("#delete-data-undangan").prop('checked', false);
+});
+$("#group-data-undangan .div-CheckboxGroup #all-branch-data-undangan").click(function(e) {
+        $("#check-AllCountryDataUndangan").toggleClass("d-inline-block");
+        $("#all-country-data-undangan").prop('checked', false);
+});
+
+//DATA OUTSITE
+$("#group-data-outsite .div-CheckboxGroup #browse-data-outsite").click(function(e) {
+        $("#check-DeleteDataOutsite").toggleClass("d-inline-block");
+        $("#check-EditDataOutsite").toggleClass("d-inline-block");
+        $("#edit-data-outsite").prop('checked', false);
+        $("#delete-data-outsite").prop('checked', false);
+});
+$("#group-data-outsite .div-CheckboxGroup #all-branch-data-outsite").click(function(e) {
+        $("#check-AllCountryDataOutsite").toggleClass("d-inline-block");
+        $("#all-country-data-outsite").prop('checked', false);
+});
+
+//DATA THERAPY
+$("#group-data-therapy .div-CheckboxGroup #browse-data-therapy").click(function(e) {
+        $("#check-DeleteDataTherapy").toggleClass("d-inline-block");
+        $("#check-EditDataTherapy").toggleClass("d-inline-block");
+        $("#edit-data-therapy").prop('checked', false);
+        $("#delete-data-therapy").prop('checked', false);
+});
+$("#group-data-therapy .div-CheckboxGroup #all-branch-data-therapy").click(function(e) {
+        $("#check-AllCountryDataTherapy").toggleClass("d-inline-block");
+        $("#all-country-data-therapy").prop('checked', false);
+});
+
+//TYPE CUST
+$("#group-type-cust .div-CheckboxGroup #browse-type-cust").click(function(e) {
+        $("#check-DeleteTypeCust").toggleClass("d-inline-block");
+        $("#check-EditTypeCust").toggleClass("d-inline-block");
+        $("#edit-type-cust").prop('checked', false);
+        $("#delete-type-cust").prop('checked', false);
+});
+
+//CSO
+$("#group-cso .div-CheckboxGroup #browse-cso").click(function(e) {
+        $("#check-DeleteCSO").toggleClass("d-inline-block");
+        $("#check-EditCSO").toggleClass("d-inline-block");
+        $("#edit-cso").prop('checked', false);
+        $("#delete-cso").prop('checked', false);
+});
+$("#group-cso .div-CheckboxGroup #all-branch-cso").click(function(e) {
+        $("#check-AllCountryCSO").toggleClass("d-inline-block");
+        $("#all-country-cso").prop('checked', false);
+});
+
+//BRANCH
 $("#group-branch .div-CheckboxGroup #browse-branch").click(function(e) {
         $("#check-DeleteBranch").toggleClass("d-inline-block");
         $("#check-EditBranch").toggleClass("d-inline-block");
         $("#edit-branch").prop('checked', false);
         $("#delete-branch").prop('checked', false);
 });
+
+//USER
 $("#group-user .div-CheckboxGroup #browse-user").click(function(e) {
         $("#check-DeleteUser").toggleClass("d-inline-block");
         $("#check-EditUser").toggleClass("d-inline-block");
