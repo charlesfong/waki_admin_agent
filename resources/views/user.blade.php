@@ -17,7 +17,7 @@
     @endif
 
     @if(Gate::check('master-cso'))
-    <li> <a href="">Master CSO</a></li>
+    <li> <a href="{{route('cso')}}">Master CSO</a></li>
     @endif
 
     @if(Gate::check('master-user'))
@@ -540,6 +540,10 @@
 
 @section('script')
 <script type="text/javascript">
+    function _(el){
+        return document.getElementById(el);
+    }
+
     $(document).ready(function () {
         //untuk refresh halaman ketika modal [SUCCESS Update] ditutup 
         $('#modal-NotificationUpdate').on('hidden.bs.modal', function() { 
@@ -553,9 +557,7 @@
 
         //-- Add User --//
             var formAdd;
-            function _(el){
-                return document.getElementById(el);
-            }
+
             $('#btn-confirmAddUser').click(function(e){
                 e.preventDefault();
 
@@ -618,9 +620,6 @@
 
         //-- Edit User --//
             var formEdit;
-            function _(el){
-                return document.getElementById(el);
-            }
 
             $('#btn-confirmUpdateUser').click(function(e){
                 e.preventDefault();
@@ -686,6 +685,23 @@
             }
             function abortHandlerEdit(event){
             }
+
+        //-- Reset Form Update --//
+        $("#modal-UpdateForm").on("hidden.bs.modal", function() {
+            var formUpdate = _("actionEdit");
+            formUpdate = new FormData(formUpdate);
+            formUpdate.append("id", this.value);
+
+            for (var key of formUpdate.keys()) {
+                $("#actionEdit").find("input[name="+key+"]").removeClass("is-invalid");
+                $("#actionEdit").find("select[name="+key+"]").removeClass("is-invalid");
+                $("#actionEdit").find("textarea[name="+key+"]").removeClass("is-invalid");
+
+                $("#actionEdit").find("input[name="+key+"]").next().find("strong").text("");
+                $("#actionEdit").find("select[name="+key+"]").next().find("strong").text("");
+                $("#actionEdit").find("textarea[name="+key+"]").next().find("strong").text("");
+            }
+        })
     });
 
     //The Branch changed when Country is selected

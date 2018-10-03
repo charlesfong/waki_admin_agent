@@ -111,7 +111,6 @@ $(".btn-deleteUser").click(function(e) {
 $(".btn-editUser").click(function(e) {
     //ResetBranch();
     ResetPermission();
-    ResetError();
 
     var dataUser = GetListUserData(this.name);
     document.getElementById("txtkode-user").value = dataUser.kode;
@@ -217,15 +216,6 @@ $(".btn-editUser").click(function(e) {
 
     $("#modal-UpdateForm").modal("show");
 });
-
-//Untuk reset Error ketika close modal
-function ResetError()
-{
-    $("#txtnama-user").removeClass("is-invalid");
-    $("#txtusername-user").removeClass("is-invalid");
-    $("#txtcountry-user").removeClass("is-invalid");
-    $("#txtbranch-user").removeClass("is-invalid");
-}
 
 //Untuk reset permissions ketika close modal
 function ResetPermission()
@@ -386,7 +376,7 @@ function GetListBranchData(idx){
 //untuk menampilkan modal hapus data BRANCH dan menampilkan data mana yang mau di hapus
 $(".btn-deleteBranch").click(function(e) {
     var dataBranch = GetListBranchData(this.name);
-    document.getElementById("delete-branch").innerHTML = "Do you want to delete "+ dataBranch.kode +" - "+ dataBranch.nama +"?";
+    document.getElementById("txt-delete-branch").innerHTML = "Do you want to delete "+ dataBranch.kode +" - "+ dataBranch.nama +"?";
     document.getElementById("btn-confirmDeleteBranch").value = this.value;
     $("#actionDelete").prop('action', actionDelete+'/'+this.value);
     $("#modal-DeleteConfirm").modal("show");
@@ -414,6 +404,13 @@ if(window.matchMedia("(min-width: 768px)").matches){
     $(".pagination-wrapper").removeClass("pagination-sm");
 }
 
+function isNumberKey(evt){
+    var charCode = (evt.which) ? evt.which : event.keyCode
+    if (charCode > 31 && (charCode != 46 &&(charCode < 48 || charCode > 57)))
+        return false;
+    return true;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //      METHOD KHUSUS COMBOBOX OFFLINE KOTA
@@ -426,7 +423,7 @@ $("#province").change( function (){
     var $el = $("#district");
     $el.empty();
     $.get( "etc/select-"+unescape(pilihanProvinsi)+".php", function( data ) {
-      $el.append(data);
+      $el.append(data); //Folder "etc" terdapat di dalam "public"
     });
 });
 
@@ -439,6 +436,72 @@ $("#txtprovince-member").change( function (){
     $.get( "etc/select-"+unescape(pilihanProvinsi)+".php", function( data ) {
       $el.append(data);
     });
+});
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//      METHOD - METHOD KHUSUS CSO
+//
+//function untuk mengambil data dari table CSO
+function GetListCsoData(idx){
+    var element_table = document.getElementsByName('collection');
+    var element_tableRows = element_table[0].rows;
+    var cso_reg_date = element_tableRows[idx].cells[0].innerHTML;
+    var cso_kode = element_tableRows[idx].cells[1].innerHTML;
+    var cso_nama = element_tableRows[idx].cells[2].innerHTML;
+    var cso_address = element_tableRows[idx].cells[3].innerHTML;
+    var cso_province = element_tableRows[idx].cells[4].innerHTML;
+    var cso_district = element_tableRows[idx].cells[5].innerHTML;
+    var cso_country = element_tableRows[idx].cells[6].innerHTML;
+    var cso_branch = element_tableRows[idx].cells[7].innerHTML;
+    var cso_phone = element_tableRows[idx].cells[8].innerHTML;
+    var cso_komisi = element_tableRows[idx].cells[9].innerHTML;
+    var cso_no_rekening = element_tableRows[idx].cells[10].innerHTML;
+    var cso_unreg_date = element_tableRows[idx].cells[11].innerHTML;
+    
+    return {kode : cso_kode, nama : cso_nama, address : cso_address, country : cso_country, branch : cso_branch, 
+        phone : cso_phone, komisi : cso_komisi, reg_date : cso_reg_date, province : cso_province, district : cso_district, no_rekening : cso_no_rekening,
+        unreg_date : cso_unreg_date};
+}
+
+//untuk menampilkan modal hapus data CSO dan menampilkan data mana yang mau di hapus
+$(".btn-deleteCso").click(function(e) {
+    var dataCso = GetListCsoData(this.name);
+    document.getElementById("txt-delete-cso").innerHTML = "Do you want to delete "+ dataCso.kode +" - "+ dataCso.nama +"?";
+    document.getElementById("btn-confirmDeleteCso").value = this.value;
+    $("#actionDelete").prop('action', actionDelete+'/'+this.value);
+    $("#modal-DeleteConfirm").modal("show");
+});
+
+
+//untuk menampilkan modal edit data CSO dan menampilkan data mana yg mau di edit
+$(".btn-editCso").click(function(e) {
+    var dataCso = GetListCsoData(this.name);
+    document.getElementById("txtregdate-cso").value = dataCso.reg_date;
+    document.getElementById("txtkode-cso").value = dataCso.kode;
+    document.getElementById("txtnama-cso").value = dataCso.nama;
+    document.getElementById("txtaddress-cso").value = dataCso.address;
+    document.getElementById("txtcountry-cso").value = dataCso.country;
+    document.getElementById("txtprovince-cso").value = dataCso.province;
+    document.getElementById("txtphone-cso").value = dataCso.phone;
+    document.getElementById("txtkomisi-cso").value = dataCso.komisi;
+    document.getElementById("txtnorekening-cso").value = dataCso.no_rekening;
+    document.getElementById("txtunregdate-cso").value = dataCso.unreg_date;
+    document.getElementById("btn-confirmUpdateCso").value = this.value;
+    $("#actionEdit").prop('action', actionEdit+'/'+this.value);
+
+    var pilihanProvinsi = dataCso.province;
+    var isiOption = "";
+
+    var $el = $("#txtdistrict-cso");
+    $el.empty();
+    $.get( "etc/select-"+unescape(pilihanProvinsi)+".php", function( data ) {
+      $el.append(data);
+    });
+    setTimeout(function(){
+        document.getElementById("txtdistrict-cso").value = dataCso.district;
+    }, 300);
+    $("#modal-UpdateForm").modal("show");
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

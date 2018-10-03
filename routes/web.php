@@ -45,6 +45,26 @@ Route::get('/data', 'DataController@index')
 	->name('data')
 	->middleware('auth');
 
+//-- MASTER CSO --//
+Route::group(['prefix' => 'cso'], function () {
+	//Browse
+	Route::get('/', 'CsoController@index')
+		->name('cso')
+		->middleware('can:browse-cso,add-cso');
+	//Add
+	Route::post('/', 'CsoController@store')
+		->name('store_cso')
+		->middleware('can:add-cso');
+	//Edit
+	Route::post('/edit/', 'CsoController@update')
+        ->name('update_cso')
+        ->middleware('can:edit-cso');
+    //Delete
+	Route::post('/{cso}', 'CsoController@delete')
+		->name('delete_cso')
+		->middleware('can:delete-cso,cso');
+});
+
 //-- MASTER BRANCH --//
 Route::group(['prefix' => 'branch'], function () {
 	//Browse

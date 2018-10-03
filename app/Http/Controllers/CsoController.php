@@ -151,8 +151,9 @@ class CsoController extends Controller
             ])
             ->paginate(10);
         }
-        $branches = Branch::where([['country', $user->branch['country']],['active', true]])->get();
-        return view('csos.index', compact('csos', 'branches'));
+        $branches = Branch::orderBy('name')->pluck('name', 'id');
+        // $branches = Branch::where([['country', $user->branch['country']],['active', true]])->get();
+        return view('cso', compact('csos', 'branches'));
     }
 
     /**
@@ -307,6 +308,6 @@ class CsoController extends Controller
     {
         $cso->active = false;
         $cso->save();
-        return redirect()->route('list_csos');
+        return redirect()->route('cso');
     }
 }
