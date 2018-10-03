@@ -17,7 +17,7 @@
     @endif
 
     @if(Gate::check('master-cso'))
-    <li> <a href="">Master CSO</a></li>
+    <li> <a href="{{route('cso')}}">Master CSO</a></li>
     @endif
 
     @if(Gate::check('master-user'))

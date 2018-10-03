@@ -17,7 +17,7 @@
     @endif
 
     @if(Gate::check('master-cso'))
-    <li> <a href="">Master CSO</a></li>
+    <li> <a href="{{route('cso')}}">Master CSO</a></li>
     @endif
 
     @if(Gate::check('master-user'))
@@ -184,7 +184,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p id="delete-branch"></p>
+                <p id="txt-delete-branch"></p>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-light" type="button" data-dismiss="modal">Close</button>
