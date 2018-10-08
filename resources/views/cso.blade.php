@@ -9,7 +9,7 @@
     @endif
 
     @if(Gate::check('master-data-type'))
-    <li> <a href="">Master Data Type</a></li>
+    <li> <a href="{{route('type_cust')}}">Master Data Type</a></li>
     @endif
 
     @if(Gate::check('master-branch'))
