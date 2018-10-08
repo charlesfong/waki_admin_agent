@@ -13,58 +13,83 @@ class TypeCustTableSeeder extends Seeder
     public function run()
     {
         DB::table('type_custs')->insert([
-            'name' => 'Facebook',
-            'type_input' => 'Out-Site',
+            'name' => 'FACEBOOK',
+            'type_input' => 'OUT-SITE',
         ]);
 
         DB::table('type_custs')->insert([
-            'name' => 'Ms Rumah',
-            'type_input' => 'Out-Site',
+            'name' => 'MS RUMAH',
+            'type_input' => 'OUT-SITE',
         ]);
 
         DB::table('type_custs')->insert([
-            'name' => 'Demo',
-            'type_input' => 'Out-Site',
+            'name' => 'DEMO',
+            'type_input' => 'OUT-SITE',
         ]);
 
         DB::table('type_custs')->insert([
             'name' => 'CFD',
-            'type_input' => 'Out-Site',
+            'type_input' => 'OUT-SITE',
         ]);
 
         DB::table('type_custs')->insert([
             'name' => 'MGM',
-            'type_input' => 'Out-Site',
+            'type_input' => 'OUT-SITE',
         ]);
 
         DB::table('type_custs')->insert([
-            'name' => 'Facebook',
-            'type_input' => 'Undangan',
+            'name' => 'FACEBOOK',
+            'type_input' => 'THERAPY',
         ]);
 
         DB::table('type_custs')->insert([
-            'name' => 'Undangan HUT',
-            'type_input' => 'Undangan',
+            'name' => 'MS RUMAH',
+            'type_input' => 'THERAPY',
         ]);
 
         DB::table('type_custs')->insert([
-            'name' => 'Undangan Bank',
-            'type_input' => 'Undangan',
+            'name' => 'DEMO',
+            'type_input' => 'THERAPY',
         ]);
 
         DB::table('type_custs')->insert([
-            'name' => 'Telkomsel',
-            'type_input' => 'Undangan',
+            'name' => 'CFD',
+            'type_input' => 'THERAPY',
         ]);
 
         DB::table('type_custs')->insert([
             'name' => 'MGM',
-            'type_input' => 'Undangan',
+            'type_input' => 'THERAPY',
         ]);
 
         DB::table('type_custs')->insert([
-            'name' => 'Whatsapp',
-            'type_input' => 'Undangan',
+            'name' => 'FACEBOOK',
+            'type_input' => 'UNDANGAN',
+        ]);
+
+        DB::table('type_custs')->insert([
+            'name' => 'UNDANGAN HUT',
+            'type_input' => 'UNDANGAN',
+        ]);
+
+        DB::table('type_custs')->insert([
+            'name' => 'UNDANGAN Bank',
+            'type_input' => 'UNDANGAN',
+        ]);
+
+        DB::table('type_custs')->insert([
+            'name' => 'TELKOMSEL',
+            'type_input' => 'UNDANGAN',
+        ]);
+
+        DB::table('type_custs')->insert([
+            'name' => 'MGM',
+            'type_input' => 'UNDANGAN',
+        ]);
+
+        DB::table('type_custs')->insert([
+            'name' => 'WHATSAPP',
+            'type_input' => 'UNDANGAN',
         ]);
     }
 }

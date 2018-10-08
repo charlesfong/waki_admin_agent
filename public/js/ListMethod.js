@@ -395,6 +395,40 @@ $(".btn-editBranch").click(function(e) {
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//      METHOD - METHOD KHUSUS TYPE CUST (MASTER DATA TYPE)
+//
+//function untuk mengambil data dari table TYPE CUST
+function GetListTypeCustData(idx){
+    var element_table = document.getElementsByName('collection');
+    var element_tableRows = element_table[0].rows;
+    var type_cust_nama = element_tableRows[idx].cells[0].innerHTML;
+    var type_cust_type_input = element_tableRows[idx].cells[1].innerHTML;
+    
+    return {nama : type_cust_nama, type_input : type_cust_type_input};
+}
+
+//untuk menampilkan modal hapus data TYPE CUST dan menampilkan data mana yang mau di hapus
+$(".btn-deleteTypeCust").click(function(e) {
+    var dataTypeCust = GetListTypeCustData(this.name);
+    document.getElementById("txt-delete-type-cust").innerHTML = "Do you want to delete "+ dataTypeCust.nama +" - "+ dataTypeCust.type_input +"?";
+    document.getElementById("btn-confirmDeleteTypeCust").value = this.value;
+    $("#actionDelete").prop('action', actionDelete+'/'+this.value);
+    $("#modal-DeleteConfirm").modal("show");
+});
+
+//untuk menampilkan modal edit data TYPE CUST dan menampilkan data mana yg mau di edit
+$(".btn-editTypeCust").click(function(e) {
+    var dataTypeCust = GetListTypeCustData(this.name);
+    document.getElementById("txtnama-type-cust").value = dataTypeCust.nama;
+    document.getElementById("txttypeinput-type-cust").value = dataTypeCust.type_input;
+    document.getElementById("btn-confirmUpdateTypeCust").value = 
+    this.value;
+    $("#actionEdit").prop('action', actionEdit+'/'+this.value);
+    $("#modal-UpdateForm").modal("show");
+});
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if(window.matchMedia("(max-width: 768px)").matches){
     $(".pagination-wrapper").addClass("pagination-sm");

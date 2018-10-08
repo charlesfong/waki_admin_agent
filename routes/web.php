@@ -45,24 +45,24 @@ Route::get('/data', 'DataController@index')
 	->name('data')
 	->middleware('auth');
 
-//-- MASTER CSO --//
-Route::group(['prefix' => 'cso'], function () {
+//-- MASTER DATA TYPE --//
+Route::group(['prefix' => 'datatype'], function () {
 	//Browse
-	Route::get('/', 'CsoController@index')
-		->name('cso')
-		->middleware('can:browse-cso,add-cso');
+	Route::get('/', 'TypeCustController@index')
+		->name('type_cust')
+		->middleware('can:browse-type-cust,add-type-cust');
 	//Add
-	Route::post('/', 'CsoController@store')
-		->name('store_cso')
-		->middleware('can:add-cso');
+	Route::post('/', 'TypeCustController@store')
+		->name('store_type_cust')
+		->middleware('can:add-type-cust');
 	//Edit
-	Route::post('/edit/', 'CsoController@update')
-        ->name('update_cso')
-        ->middleware('can:edit-cso');
+	Route::post('/edit/', 'TypeCustController@update')
+        ->name('update_type_cust')
+        ->middleware('can:edit-branch');
     //Delete
-	Route::post('/{cso}', 'CsoController@delete')
-		->name('delete_cso')
-		->middleware('can:delete-cso,cso');
+	Route::post('/{typecust}', 'TypeCustController@delete')
+		->name('delete_type_cust')
+		->middleware('can:delete-type-cust,typecust');
 });
 
 //-- MASTER BRANCH --//
@@ -83,6 +83,26 @@ Route::group(['prefix' => 'branch'], function () {
 	Route::post('/{branch}', 'BranchController@delete')
 		->name('delete_branch')
 		->middleware('can:delete-branch,branch');
+});
+
+//-- MASTER CSO --//
+Route::group(['prefix' => 'cso'], function () {
+	//Browse
+	Route::get('/', 'CsoController@index')
+		->name('cso')
+		->middleware('can:browse-cso,add-cso');
+	//Add
+	Route::post('/', 'CsoController@store')
+		->name('store_cso')
+		->middleware('can:add-cso');
+	//Edit
+	Route::post('/edit/', 'CsoController@update')
+        ->name('update_cso')
+        ->middleware('can:edit-cso');
+    //Delete
+	Route::post('/{cso}', 'CsoController@delete')
+		->name('delete_cso')
+		->middleware('can:delete-cso,cso');
 });
 
 //-- MASTER USER --//
