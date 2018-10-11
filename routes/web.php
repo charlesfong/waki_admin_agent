@@ -41,9 +41,28 @@ Route::get('/dashboard', 'DashboardController@index')
 	->middleware('can:dashboard');
 
 //-- MASTER DATA --//
-Route::get('/data', 'DataController@index')
-	->name('data')
-	->middleware('auth');
+Route::group(['prefix' => 'data'], function () {
+    //Browser
+    Route::get('/', 'DataController@index')
+    	->name('data')
+    	->middleware('auth');
+    //Add Data Undangan
+    Route::post('/adddataundangan', 'DataController@storeDataUndangan')
+        ->name('store_dataundangan')
+        ->middleware('can:add-data-undangan');
+    //Add Data Outsite
+    Route::post('/adddataoutsite', 'DataController@storeDataOutsite')
+        ->name('store_dataoutsite')
+        ->middleware('can:add-data-outsite');
+        //Add Data Therapy
+    Route::post('/adddatatherapy', 'DataController@storeDataTherapy')
+        ->name('store_datatherapy')
+        ->middleware('can:add-data-therapy');
+        //Add Data MPC
+    Route::post('/addmpc', 'DataController@storeMpc')
+        ->name('store_mpc')
+        ->middleware('can:add-mpc');
+});
 
 //-- MASTER BRANCH --//
 Route::group(['prefix' => 'branch'], function () {
@@ -72,6 +91,9 @@ Route::post('/changePassword','AjaxController@changePassword')->name('changePass
 //-- AJAX --//
 Route::post('/selectCountry', 'AjaxController@selectCountry')
     ->name('select-country');
+
+Route::post('/selectBranch', 'AjaxController@selectBranch')
+    ->name('select-branch');
 
 Route::post('/checkBranchCode', 'AjaxController@checkBranchCode')
     ->name('check-branch-code');

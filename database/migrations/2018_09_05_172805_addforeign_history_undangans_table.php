@@ -16,6 +16,8 @@ class AddforeignHistoryUndangansTable extends Migration
         Schema::table('history_undangans', function (Blueprint $table) {
             $table->integer('data_undangan_id')->unsigned();
             $table->foreign('data_undangan_id')->references('id')->on('data_undangans');
+            $table->integer('bank_id')->unsigned()->nullable();
+            $table->foreign('bank_id')->references('id')->on('banks');
             $table->integer('branch_id')->unsigned();
             $table->foreign('branch_id')->references('id')->on('branches');
             $table->integer('cso_id')->unsigned();
@@ -35,6 +37,8 @@ class AddforeignHistoryUndangansTable extends Migration
         Schema::table('history_undangans', function (Blueprint $table) {
             $table->dropForeign(['data_undangan_id']);
             $table->dropColumn('data_undangan_id');
+            $table->dropForeign(['bank_id']);
+            $table->dropColumn('bank_id');
             $table->dropForeign(['branch_id']);
             $table->dropColumn('branch_id');
             $table->dropForeign(['cso_id']);

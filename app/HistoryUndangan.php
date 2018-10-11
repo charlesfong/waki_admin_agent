@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class HistoryUndangan extends Model
 {
     protected $fillable = [
-        'date', 'bank_name', 'province', 'district', 'branch_id', 'cso_id', 'type_cust_id', 'data_undangan_id', 'active', 
+        'date', 'province', 'district', 'bank_id', 'branch_id', 'cso_id', 'type_cust_id', 'data_undangan_id', 'active', 
     ];
 
     public function branch()
@@ -28,5 +28,10 @@ class HistoryUndangan extends Model
     public function dataUndangan()
     {
         return $this->belongsTo('App\DataUndangan');
+    }
+
+    public function bank()
+    {
+        return $this->belongsTo('App\Bank');
     }
 }
