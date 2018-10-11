@@ -411,7 +411,7 @@ a.label:hover, a.label:focus {
   border-top: 1px solid #e9ecf2; }
 
 .panel-widget {
-  padding: 10px 0;
+  padding: 30px 0;
   position: relative;
   box-shadow: none;
   border-radius: 0;
@@ -438,14 +438,13 @@ a.label:hover, a.label:focus {
   text-decoration: none; }
 
 .panel-widget .text-muted {
-  margin-top: -6px;
+  margin-top: 0px;
   text-transform: uppercase;
   font-weight: bold;
   font-size: 0.8em; }
 
 .panel-widget .large {
-  color: #373b45;
-  font-size: 3em; }
+  color: #373b45; }
 
 .panel-settings {
   list-style: none;
@@ -536,7 +535,7 @@ a.label:hover, a.label:focus {
   border-left: 1px solid #dadbda; }
 
 .panel .border-top, .panel .border-right, .panel .border-bottom, .panel .border-left {
-  border-color: #e9ecf2; }
+  /*border-color: #e9ecf2; */ }
 
 .article {
   padding: 10px 0; }
