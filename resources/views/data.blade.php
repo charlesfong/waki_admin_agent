@@ -88,7 +88,7 @@
                         <optgroup label="TIPE UNDANGAN"> 
                             <option value="" disabled selected>SELECT TIPE UNDANGAN</option>
                             @foreach ($type_custs as $type_cust)
-                                @if($type_cust->type_input == "Undangan")
+                                @if($type_cust->type_input == "UNDANGAN")
                                     <option value="{{$type_cust->id}}">{{$type_cust->name}}</option>
                                 @endif
                             @endforeach
@@ -259,7 +259,7 @@
                         <optgroup label="TIPE OUT-SITE"> 
                             <option value="" disabled selected>SELECT TIPE OUT-SITE</option>
                             @foreach ($type_custs as $type_cust)
-                                @if($type_cust->type_input == "Out-Site")
+                                @if($type_cust->type_input == "OUT-SITE")
                                     <option value="{{$type_cust->id}}">{{$type_cust->name}}</option>
                                 @endif
                             @endforeach
@@ -415,7 +415,7 @@
                         <optgroup label="TIPE THERAPY"> 
                             <option value="" disabled selected>SELECT TIPE THERAPY</option>
                             @foreach ($type_custs as $type_cust)
-                                @if($type_cust->type_input == "Out-Site")
+                                @if($type_cust->type_input == "THERAPY")
                                     <option value="{{$type_cust->id}}">{{$type_cust->name}}</option>
                                 @endif
                             @endforeach
