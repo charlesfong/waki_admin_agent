@@ -13,6 +13,7 @@
     <!-- Styles, Font, Bootstrap, Icon -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('fonts/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('fonts/material-icons.min.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
@@ -22,6 +23,9 @@
     <link rel="stylesheet" href="{{ asset('css/Sidebar-Menu1.css') }}">
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/Pretty-Search-Form.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/datepicker3.css') }}">
+
+    @yield('css')
 
     <!-- JavaScript -->
     <script src="{{ asset('js/jquery.min.js') }}"></script>
@@ -208,6 +212,12 @@
     <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
     <script src="{{ asset('js/ListMethod.js') }}"></script>
     <script src="{{ asset('js/Sidebar-Menu.js') }}"></script>
+    <script src="{{ asset('js/chart.min.js') }}"></script>
+    <script src="{{ asset('js/chart-data.js') }}"></script>
+    <script src="{{ asset('js/easypiechart.js') }}"></script>
+    <script src="{{ asset('js/easypiechart-data.js') }}"></script>
+    <script src="{{ asset('js/bootstrap-datepicker.js') }}"></script>
+    <script src="{{ asset('js/custom.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             $("#current-password").on("keyup", function(){
