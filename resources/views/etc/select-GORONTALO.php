@@ -1,1 +1,0 @@
-<option value="KAB. BOALEMO">Kab. Boalemo</option><option value="KAB. BONE BOLANGO">Kab. Bone Bolango</option><option value="KAB. GORONTALO">Kab. Gorontalo</option><option value="KAB. GORONTALO UTARA">Kab. Gorontalo Utara</option><option value="KAB. PAHUWATO">Kab. Pahuwato</option><option value="KOTA GORONTALO">Kota Gorontalo</option>

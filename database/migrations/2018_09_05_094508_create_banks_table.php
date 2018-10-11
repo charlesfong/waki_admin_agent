@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateHistoryUndangansTable extends Migration
+class CreateBanksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateHistoryUndangansTable extends Migration
      */
     public function up()
     {
-        Schema::create('history_undangans', function (Blueprint $table) {
+        Schema::create('banks', function (Blueprint $table) {
             $table->increments('id');
-            $table->date('date');
-            $table->string('province');
-            $table->string('district');
+            $table->string('name');
             $table->boolean('active')->default(true);
             $table->timestamps();
         });
@@ -30,6 +28,6 @@ class CreateHistoryUndangansTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('history_undangans');
+        Schema::dropIfExists('banks');
     }
 }
