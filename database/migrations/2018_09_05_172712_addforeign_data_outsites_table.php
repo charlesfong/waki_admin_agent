@@ -18,7 +18,7 @@ class AddforeignDataOutsitesTable extends Migration
             $table->foreign('branch_id')->references('id')->on('branches');
             $table->integer('cso_id')->unsigned();
             $table->foreign('cso_id')->references('id')->on('csos');
-            $table->integer('location_id')->unsigned();
+            $table->integer('location_id')->unsigned()->nullable();
             $table->foreign('location_id')->references('id')->on('locations');
             $table->integer('type_cust_id')->unsigned();
             $table->foreign('type_cust_id')->references('id')->on('type_custs');

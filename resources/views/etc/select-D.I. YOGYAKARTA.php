@@ -1,1 +1,0 @@
-<option value="" disabled="disabled" selected="selected">Select your Town/District</option><option value="KAB. BANTUL">Kab. Bantul</option><option value="KAB. GUNUNGKIDUL">Kab. Gunungkidul</option><option value="KAB. KULON PROGO">Kab. Kulon Progo</option><option value="KAB. SLEMAN">Kab. Sleman</option><option value="KOTA YOGYAKARTA">Kota Yogyakarta</option>

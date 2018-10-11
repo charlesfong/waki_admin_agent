@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Branch;
+use App\Cso;
 // use App\Http\Requests\StoreBranch as StoreBranchRequest;
 use Validator;
 use Illuminate\Support\Facades\Hash;
@@ -15,7 +16,11 @@ class AjaxController extends Controller
     {
     	$branches = Branch::where('country', $request->country)->get();
     	return response()->json($branches);
-    	// return 'asdasd';
+    }
+    public function selectBranch(Request $request)
+    {
+        $csos = Cso::where('branch_id', $request->branch_id)->get();
+        return response()->json($csos);
     }
 
     public function checkBranchCode(Request $request)

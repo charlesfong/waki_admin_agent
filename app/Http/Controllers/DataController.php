@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\DataUndangan;
@@ -13,6 +14,7 @@ use App\TypeCust;
 use App\Mpc;
 use App\Branch;
 use App\Cso;
+use App\Bank;
 use App\User;
 use Auth;
 use DB;
@@ -46,14 +48,16 @@ class DataController extends Controller
 		}
 		if($user->can('all-branch-data-therapy') || $user->can('all-country-data-therapy'))
 		{
-			$DataTherapies = $this->IndexTherapy($request, $user);
+			$dataTherapies = $this->IndexTherapy($request, $user);
 		}
-		$branches = Branch::where('country', $user->branch['country'])->get();
 
         $branches = Branch::where([['country', $user->branch['country']],['active', true]])->get();
-        $csos = Cso::where([['active', true],['branch_id', 1]])->get();
+        $csos = Cso::where('active', true)->get();
+        $type_custs = TypeCust::where('active', true)->get();
+        $banks = Bank::where('active', true)->get();
+        $locations = Location::where('active', true)->get();
 
-        return view('data', compact('dataMpcs', 'dataOutsites', 'DataTherapies', 'csos', 'branches'));
+        return view('data', compact('dataMpcs', 'dataOutsites', 'dataTherapies', 'csos', 'branches', 'type_custs', 'banks', 'locations'));
 	}
 
 	/*Function untuk menampilkan data index MPC
@@ -266,201 +270,201 @@ class DataController extends Controller
 	}
 
 	//blom selesai masih ada masalah dengan history nya...
-	function IndexUndangan(Request $request, User $user)
-	{
-        if($user->can('all-branch-data-undangan'))
-        {
-            if($user->can('all-country-data-undangan'))
-            {
-                $mpcs = Mpc::when($request->keywordDataUndangan, function ($query) use ($request) {
-                    $query->where('data_undangans.code', 'like', "%{$request->keywordDataUndangan}%")
-                        ->where('data_undangans.active', true)
-                        ->orWhere('data_undangans.name', 'like', "%{$request->keywordDataUndangan}%")
-                        ->where('data_undangans.active', true)
-                        ->orWhere('data_undangans.address', 'like', "%{$request->keywordDataUndangan}%")
-                        ->where('data_undangans.active', true)
-                        ->orWhere('data_undangans.phone', 'like', "%{$request->keywordDataUndangan}%")
-                        ->where('data_undangans.active', true)
-                        ->orWhere('data_undangans.registration_date', 'like', "%{$request->keywordDataUndangan}%")
-                        ->where('data_undangans.active', true)
-                        ->orWhere('data_undangans.birth_date', 'like', "%{$request->keywordDataUndangan}%")
-                        ->where('data_undangans.active', true)
-                        //----------------------------------------------------
-                        ->orWhere('branches.name', 'like', "%{$request->keywordMpc}%")
-                        ->where('mpcs.active', true)
-                        ->orWhere('branches.country', 'like', "%{$request->keywordMpc}%")
-                        ->where('mpcs.active', true)
-                        ->orWhere('csos.name', 'like', "%{$request->keywordMpc}%")
-                        ->where('mpcs.active', true)
-                        ->orWhere('users.name', 'like', "%{$request->keywordMpc}%")
-                        ->where('mpcs.active', true);
-                })->where('data_undangans.active', true)
-                ->join('branches', 'mpcs.branch_id', '=', 'branches.id')
-                ->join('csos', 'mpcs.cso_id', '=', 'csos.id')
-                ->join('users', 'mpcs.user_id', '=', 'users.id')
-                ->select('mpcs.*')
-                ->paginate(10);
+	// function IndexUndangan(Request $request, User $user)
+	// {
+ //        if($user->can('all-branch-data-undangan'))
+ //        {
+ //            if($user->can('all-country-data-undangan'))
+ //            {
+ //                $mpcs = Mpc::when($request->keywordDataUndangan, function ($query) use ($request) {
+ //                    $query->where('data_undangans.code', 'like', "%{$request->keywordDataUndangan}%")
+ //                        ->where('data_undangans.active', true)
+ //                        ->orWhere('data_undangans.name', 'like', "%{$request->keywordDataUndangan}%")
+ //                        ->where('data_undangans.active', true)
+ //                        ->orWhere('data_undangans.address', 'like', "%{$request->keywordDataUndangan}%")
+ //                        ->where('data_undangans.active', true)
+ //                        ->orWhere('data_undangans.phone', 'like', "%{$request->keywordDataUndangan}%")
+ //                        ->where('data_undangans.active', true)
+ //                        ->orWhere('data_undangans.registration_date', 'like', "%{$request->keywordDataUndangan}%")
+ //                        ->where('data_undangans.active', true)
+ //                        ->orWhere('data_undangans.birth_date', 'like', "%{$request->keywordDataUndangan}%")
+ //                        ->where('data_undangans.active', true)
+ //                        //----------------------------------------------------
+ //                        ->orWhere('branches.name', 'like', "%{$request->keywordMpc}%")
+ //                        ->where('mpcs.active', true)
+ //                        ->orWhere('branches.country', 'like', "%{$request->keywordMpc}%")
+ //                        ->where('mpcs.active', true)
+ //                        ->orWhere('csos.name', 'like', "%{$request->keywordMpc}%")
+ //                        ->where('mpcs.active', true)
+ //                        ->orWhere('users.name', 'like', "%{$request->keywordMpc}%")
+ //                        ->where('mpcs.active', true);
+ //                })->where('data_undangans.active', true)
+ //                ->join('branches', 'mpcs.branch_id', '=', 'branches.id')
+ //                ->join('csos', 'mpcs.cso_id', '=', 'csos.id')
+ //                ->join('users', 'mpcs.user_id', '=', 'users.id')
+ //                ->select('mpcs.*')
+ //                ->paginate(10);
 
-                $mpcs->appends($request->only('keywordMpc'));
-            }
-            else
-            {
-            	$mpcs = Mpc::when($request->keywordMpc, function ($query) use ($request) {
-                    $query->where('mpcs.code', 'like', "%{$request->keywordMpc}%")
-                        ->where([
-                            ['mpcs.active', true],
-                            ['branches.country', $user->branch['country']]
-                        ])
-                        ->orWhere('mpcs.name', 'like', "%{$request->keywordMpc}%")
-                        ->where([
-                            ['mpcs.active', true],
-                            ['branches.country', $user->branch['country']]
-                        ])
-                        ->orWhere('mpcs.address', 'like', "%{$request->keywordMpc}%")
-                        ->where([
-                            ['mpcs.active', true],
-                            ['branches.country', $user->branch['country']]
-                        ])
-                        ->orWhere('mpcs.phone', 'like', "%{$request->keywordMpc}%")
-                        ->where([
-                            ['mpcs.active', true],
-                            ['branches.country', $user->branch['country']]
-                        ])
-                        ->orWhere('mpcs.province', 'like', "%{$request->keywordMpc}%")
-                        ->where([
-                            ['mpcs.active', true],
-                            ['branches.country', $user->branch['country']]
-                        ])
-                        ->orWhere('mpcs.district', 'like', "%{$request->keywordMpc}%")
-                        ->where([
-                            ['mpcs.active', true],
-                            ['branches.country', $user->branch['country']]
-                        ])
-                        ->orWhere('mpcs.registration_date', 'like', "%{$request->keywordMpc}%")
-                        ->where([
-                            ['mpcs.active', true],
-                            ['branches.country', $user->branch['country']]
-                        ])
-                        ->orWhere('mpcs.ktp', 'like', "%{$request->keywordMpc}%")
-                        ->where([
-                            ['mpcs.active', true],
-                            ['branches.country', $user->branch['country']]
-                        ])
-                        ->orWhere('mpcs.birth_date', 'like', "%{$request->keywordMpc}%")
-                        ->where([
-                            ['mpcs.active', true],
-                            ['branches.country', $user->branch['country']]
-                        ])
-                        ->orWhere('mpcs.gender', 'like', "%{$request->keywordMpc}%")
-                        ->where([
-                            ['mpcs.active', true],
-                            ['branches.country', $user->branch['country']]
-                        ])
-                        ->orWhere('branches.name', 'like', "%{$request->keywordMpc}%")
-                        ->where([
-                            ['mpcs.active', true],
-                            ['branches.country', $user->branch['country']]
-                        ])
-                        ->orWhere('csos.name', 'like', "%{$request->keywordMpc}%")
-                        ->where([
-                            ['mpcs.active', true],
-                            ['branches.country', $user->branch['country']]
-                        ])
-                        ->orWhere('users.name', 'like', "%{$request->keywordMpc}%")
-                        ->where([
-                            ['mpcs.active', true],
-                            ['branches.country', $user->branch['country']]
-                        ]);
-                })
-                ->where([['mpcs.active', true],
-	                    ['branches.country', $user->branch['country']]])
-                ->join('branches', 'mpcs.branch_id', '=', 'branches.id')
-                ->join('csos', 'mpcs.cso_id', '=', 'csos.id')
-                ->join('users', 'mpcs.user_id', '=', 'users.id')
-                ->select('mpcs.*')
-                ->paginate(10);
+ //                $mpcs->appends($request->only('keywordMpc'));
+ //            }
+ //            else
+ //            {
+ //            	$mpcs = Mpc::when($request->keywordMpc, function ($query) use ($request) {
+ //                    $query->where('mpcs.code', 'like', "%{$request->keywordMpc}%")
+ //                        ->where([
+ //                            ['mpcs.active', true],
+ //                            ['branches.country', $user->branch['country']]
+ //                        ])
+ //                        ->orWhere('mpcs.name', 'like', "%{$request->keywordMpc}%")
+ //                        ->where([
+ //                            ['mpcs.active', true],
+ //                            ['branches.country', $user->branch['country']]
+ //                        ])
+ //                        ->orWhere('mpcs.address', 'like', "%{$request->keywordMpc}%")
+ //                        ->where([
+ //                            ['mpcs.active', true],
+ //                            ['branches.country', $user->branch['country']]
+ //                        ])
+ //                        ->orWhere('mpcs.phone', 'like', "%{$request->keywordMpc}%")
+ //                        ->where([
+ //                            ['mpcs.active', true],
+ //                            ['branches.country', $user->branch['country']]
+ //                        ])
+ //                        ->orWhere('mpcs.province', 'like', "%{$request->keywordMpc}%")
+ //                        ->where([
+ //                            ['mpcs.active', true],
+ //                            ['branches.country', $user->branch['country']]
+ //                        ])
+ //                        ->orWhere('mpcs.district', 'like', "%{$request->keywordMpc}%")
+ //                        ->where([
+ //                            ['mpcs.active', true],
+ //                            ['branches.country', $user->branch['country']]
+ //                        ])
+ //                        ->orWhere('mpcs.registration_date', 'like', "%{$request->keywordMpc}%")
+ //                        ->where([
+ //                            ['mpcs.active', true],
+ //                            ['branches.country', $user->branch['country']]
+ //                        ])
+ //                        ->orWhere('mpcs.ktp', 'like', "%{$request->keywordMpc}%")
+ //                        ->where([
+ //                            ['mpcs.active', true],
+ //                            ['branches.country', $user->branch['country']]
+ //                        ])
+ //                        ->orWhere('mpcs.birth_date', 'like', "%{$request->keywordMpc}%")
+ //                        ->where([
+ //                            ['mpcs.active', true],
+ //                            ['branches.country', $user->branch['country']]
+ //                        ])
+ //                        ->orWhere('mpcs.gender', 'like', "%{$request->keywordMpc}%")
+ //                        ->where([
+ //                            ['mpcs.active', true],
+ //                            ['branches.country', $user->branch['country']]
+ //                        ])
+ //                        ->orWhere('branches.name', 'like', "%{$request->keywordMpc}%")
+ //                        ->where([
+ //                            ['mpcs.active', true],
+ //                            ['branches.country', $user->branch['country']]
+ //                        ])
+ //                        ->orWhere('csos.name', 'like', "%{$request->keywordMpc}%")
+ //                        ->where([
+ //                            ['mpcs.active', true],
+ //                            ['branches.country', $user->branch['country']]
+ //                        ])
+ //                        ->orWhere('users.name', 'like', "%{$request->keywordMpc}%")
+ //                        ->where([
+ //                            ['mpcs.active', true],
+ //                            ['branches.country', $user->branch['country']]
+ //                        ]);
+ //                })
+ //                ->where([['mpcs.active', true],
+	//                     ['branches.country', $user->branch['country']]])
+ //                ->join('branches', 'mpcs.branch_id', '=', 'branches.id')
+ //                ->join('csos', 'mpcs.cso_id', '=', 'csos.id')
+ //                ->join('users', 'mpcs.user_id', '=', 'users.id')
+ //                ->select('mpcs.*')
+ //                ->paginate(10);
 
-                $mpcs->appends($request->only('keywordMpc'));
-            }
-        }
-        else
-        {
-            $mpcs = Mpc::when($request->keywordMpc, function ($query) use ($request) {
-                $query->where('mpcs.code', 'like', "%{$request->keywordMpc}%")
-	                ->where([
-		                ['mpcs.active', true],
-		                ['mpcs.branch_id', $user->branch_id]
-		            ])
-                    ->orWhere('mpcs.name', 'like', "%{$request->keywordMpc}%")
-                    ->where([
-		                ['mpcs.active', true],
-		                ['mpcs.branch_id', $user->branch_id]
-		            ])
-                    ->orWhere('mpcs.address', 'like', "%{$request->keywordMpc}%")
-                    ->where([
-		                ['mpcs.active', true],
-		                ['mpcs.branch_id', $user->branch_id]
-		            ])
-                    ->orWhere('mpcs.phone', 'like', "%{$request->keywordMpc}%")
-                    ->where([
-		                ['mpcs.active', true],
-		                ['mpcs.branch_id', $user->branch_id]
-		            ])
-                    ->orWhere('mpcs.province', 'like', "%{$request->keywordMpc}%")
-                    ->where([
-		                ['mpcs.active', true],
-		                ['mpcs.branch_id', $user->branch_id]
-		            ])
-                    ->orWhere('mpcs.district', 'like', "%{$request->keywordMpc}%")
-                    ->where([
-		                ['mpcs.active', true],
-		                ['mpcs.branch_id', $user->branch_id]
-		            ])
-                    ->orWhere('mpcs.registration_date', 'like', "%{$request->keywordMpc}%")
-                    ->where([
-		                ['mpcs.active', true],
-		                ['mpcs.branch_id', $user->branch_id]
-		            ])
-                    ->orWhere('mpcs.ktp', 'like', "%{$request->keywordMpc}%")
-                    ->where([
-		                ['mpcs.active', true],
-		                ['mpcs.branch_id', $user->branch_id]
-		            ])
-                    ->orWhere('mpcs.birth_date', 'like', "%{$request->keywordMpc}%")
-                    ->where([
-		                ['mpcs.active', true],
-		                ['mpcs.branch_id', $user->branch_id]
-		            ])
-                    ->orWhere('mpcs.gender', 'like', "%{$request->keywordMpc}%")
-                    ->where([
-		                ['mpcs.active', true],
-		                ['mpcs.branch_id', $user->branch_id]
-		            ])
-                    ->orWhere('csos.name', 'like', "%{$request->keywordMpc}%")
-                    ->where([
-		                ['mpcs.active', true],
-		                ['mpcs.branch_id', $user->branch_id]
-		            ])
-                    ->orWhere('users.name', 'like', "%{$request->keywordMpc}%")
-                    ->where([
-		                ['mpcs.active', true],
-		                ['mpcs.branch_id', $user->branch_id]
-		            ]);
-            })
-            ->where([
-                ['mpcs.active', true],
-                ['mpcs.branch_id', $user->branch_id]
-            ])
-            ->join('csos', 'mpcs.cso_id', '=', 'csos.id')
-            ->join('users', 'mpcs.user_id', '=', 'users.id')
-            ->select('mpcs.*')
-            ->paginate(10);
+ //                $mpcs->appends($request->only('keywordMpc'));
+ //            }
+ //        }
+ //        else
+ //        {
+ //            $mpcs = Mpc::when($request->keywordMpc, function ($query) use ($request) {
+ //                $query->where('mpcs.code', 'like', "%{$request->keywordMpc}%")
+	//                 ->where([
+	// 	                ['mpcs.active', true],
+	// 	                ['mpcs.branch_id', $user->branch_id]
+	// 	            ])
+ //                    ->orWhere('mpcs.name', 'like', "%{$request->keywordMpc}%")
+ //                    ->where([
+	// 	                ['mpcs.active', true],
+	// 	                ['mpcs.branch_id', $user->branch_id]
+	// 	            ])
+ //                    ->orWhere('mpcs.address', 'like', "%{$request->keywordMpc}%")
+ //                    ->where([
+	// 	                ['mpcs.active', true],
+	// 	                ['mpcs.branch_id', $user->branch_id]
+	// 	            ])
+ //                    ->orWhere('mpcs.phone', 'like', "%{$request->keywordMpc}%")
+ //                    ->where([
+	// 	                ['mpcs.active', true],
+	// 	                ['mpcs.branch_id', $user->branch_id]
+	// 	            ])
+ //                    ->orWhere('mpcs.province', 'like', "%{$request->keywordMpc}%")
+ //                    ->where([
+	// 	                ['mpcs.active', true],
+	// 	                ['mpcs.branch_id', $user->branch_id]
+	// 	            ])
+ //                    ->orWhere('mpcs.district', 'like', "%{$request->keywordMpc}%")
+ //                    ->where([
+	// 	                ['mpcs.active', true],
+	// 	                ['mpcs.branch_id', $user->branch_id]
+	// 	            ])
+ //                    ->orWhere('mpcs.registration_date', 'like', "%{$request->keywordMpc}%")
+ //                    ->where([
+	// 	                ['mpcs.active', true],
+	// 	                ['mpcs.branch_id', $user->branch_id]
+	// 	            ])
+ //                    ->orWhere('mpcs.ktp', 'like', "%{$request->keywordMpc}%")
+ //                    ->where([
+	// 	                ['mpcs.active', true],
+	// 	                ['mpcs.branch_id', $user->branch_id]
+	// 	            ])
+ //                    ->orWhere('mpcs.birth_date', 'like', "%{$request->keywordMpc}%")
+ //                    ->where([
+	// 	                ['mpcs.active', true],
+	// 	                ['mpcs.branch_id', $user->branch_id]
+	// 	            ])
+ //                    ->orWhere('mpcs.gender', 'like', "%{$request->keywordMpc}%")
+ //                    ->where([
+	// 	                ['mpcs.active', true],
+	// 	                ['mpcs.branch_id', $user->branch_id]
+	// 	            ])
+ //                    ->orWhere('csos.name', 'like', "%{$request->keywordMpc}%")
+ //                    ->where([
+	// 	                ['mpcs.active', true],
+	// 	                ['mpcs.branch_id', $user->branch_id]
+	// 	            ])
+ //                    ->orWhere('users.name', 'like', "%{$request->keywordMpc}%")
+ //                    ->where([
+	// 	                ['mpcs.active', true],
+	// 	                ['mpcs.branch_id', $user->branch_id]
+	// 	            ]);
+ //            })
+ //            ->where([
+ //                ['mpcs.active', true],
+ //                ['mpcs.branch_id', $user->branch_id]
+ //            ])
+ //            ->join('csos', 'mpcs.cso_id', '=', 'csos.id')
+ //            ->join('users', 'mpcs.user_id', '=', 'users.id')
+ //            ->select('mpcs.*')
+ //            ->paginate(10);
 
-            $mpcs->appends($request->only('keywordMpc'));
-        }
+ //            $mpcs->appends($request->only('keywordMpc'));
+ //        }
 
-        return $mpcs;
-	}
+ //        return $mpcs;
+	// }
 
 	function IndexOutsite(Request $request, User $user)
 	{
@@ -833,82 +837,7 @@ class DataController extends Controller
 	/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++    BUAT STORE DATA BARU    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 	/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
-	/*Function store untuk menambah data pada table Data MPC
-	* menggunakan parameter request langsung
-	* jadi gk pake request dia jenis nya apa tapi langsung di panggil di route nya
-	* user_id bisa di dapet dari Auth->usernya yg lagi online sekarang atau login
-	*/
-	public function storeMpc(Request $request)
-	{
-		if ($request->has('phone') && $request->phone != null)
-            $request->merge(['phone'=> ($request->phone * 23)]);
-
-        $validator = \Validator::make($request->all(), [
-            'code' =>  [
-                'required',
-                Rule::unique('mpcs')->where('active', 1),
-            ],
-            'name' => 'required',
-            'address' => 'required',
-            'registration_date' => 'required',
-            'phone' => [
-                'required',
-                Rule::unique('mpcs')->where('active', 1),
-            ],
-            'province' => 'required',
-            'district' => 'required',
-            'branch' => 'required',
-            'country' => 'required',
-            'birth_date' => 'required',
-            'ktp' => [
-                'required',
-                Rule::unique('mpcs')->where('active', 1),
-            ],
-            'gender' => 'required',
-            'cso' => 'required',
-        ]);
-
-        if ($validator->fails())
-        {
-            $arr_Errors = $validator->errors()->all();
-            $arr_Keys = $validator->errors()->keys();
-            $arr_Hasil = [];
-            for ($i=0; $i < count($arr_Keys); $i++) { 
-                $arr_Hasil[$arr_Keys[$i]] = $arr_Errors[$i];
-            }
-            return response()->json(['errors'=>$arr_Hasil]);
-        }
-        else {
-        	$user = Auth::user();
-
-            $data = $request->only('code', 'registration_date', 'ktp', 'name', 'birth_date', 'gender', 'address', 'phone', 'province', 'district', 'branch', 'cso');
-            $data['name'] = strtoupper($data['name']);
-            $data['address'] = strtoupper($data['address']);
-
-            $data['branch_id'] = $request->get('branch');
-            $data['cso_id'] = $request->get('cso');
-            $data['user_id'] = $user->get('id');
-
-             $id = DB::table('csos')->insertGetId([
-                'code' => $data['code'],
-	            'name' => $data['name'],
-	            'address' => $data['address'],
-	            'registration_date' => $data['registration_date'],
-	            'phone' => $data['phone'],
-	            'province' => $data['province'],
-	            'district' => $data['district'],
-	            'birth_date' => $data['birth_date'],
-	            'ktp' => $data['ktp'],
-	            'gender' => $data['gender'],
-	            'branch_id' => $data['branch_id'],
-	            'user_id' => $data['user_id'],
-	            'cso_id' => $data['cso_id']]);
-
-            return response()->json(['success'=>'Berhasil !!']);
-        }
-	}
-
-	/*Function store untuk menambah data pada table Data Undangan
+	/*Function store untuk menambah data pada table DATA UNDANGAN
 	* menggunakan parameter request langsung
 	* jadi gk pake request dia jenis nya apa tapi langsung di panggil di route nya
 	* user_id bisa di dapet dari Auth->usernya yg lagi online sekarang atau login
@@ -927,12 +856,218 @@ class DataController extends Controller
                 'required',
                 Rule::unique('data_undangans')->where('active', 1),
             ],
-            'bank_name' => 'required',
             'province' => 'required',
             'district' => 'required',
             'branch' => 'required',
             'country' => 'required',
             'birth_date' => 'required',
+            'cso' => 'required',
+            'type_cust' => 'required',
+        ]);
+
+        if($request->type_cust == 8){
+            $validator = \Validator::make($request->all(), [
+                'name' => 'required',
+                'address' => 'required',
+                'registration_date' => 'required',
+                'phone' => [
+                    'required',
+                    Rule::unique('data_undangans')->where('active', 1),
+                ],
+                'bank_name' => 'required',
+                'province' => 'required',
+                'district' => 'required',
+                'branch' => 'required',
+                'country' => 'required',
+                'birth_date' => 'required',
+                'cso' => 'required',
+                'type_cust' => 'required',
+            ]);
+        }
+
+        if ($validator->fails())
+        {
+            $arr_Errors = $validator->errors()->all();
+            $arr_Keys = $validator->errors()->keys();
+            $arr_Hasil = [];
+            for ($i=0; $i < count($arr_Keys); $i++) { 
+                $arr_Hasil[$arr_Keys[$i]] = $arr_Errors[$i];
+            }
+            return response()->json(['errors'=>$arr_Hasil]);
+        }
+        else {
+
+
+        	$user = Auth::user();
+        	$count = DataUndangan::all()->count();
+            $count++;
+
+            $data = $request->only('code', 'registration_date', 'name', 'birth_date', 'address', 'phone', 'province', 'district');
+            $data['name'] = strtoupper($data['name']);
+            $data['address'] = strtoupper($data['address']);
+
+            //Khusus untuk Bank Input
+            if($request->bank_name != null || $request->bank_name != ""){
+                if(Bank::where([['name', $request->bank_name],['active', true]])->count() == 0){
+                    $tempBank['name'] = strtoupper($request->bank_name);
+                    $bankObj = Bank::create($tempBank);
+                    $data['bank_id'] = $bankObj->id;
+                }
+                else {
+                    $bankObj = Bank::where([['name', $request->bank_name],['active', true]])->get();
+                    $bankObj = $bankObj[0];
+                    $data['bank_id'] = $bankObj->id;
+                }
+            }
+
+            //pembentukan kode data undangan
+            $name = strtoupper(substr(str_slug($request->get('name'), ""), 0, 3));
+            for($i=strlen($count); $i<4; $i++)
+            {
+                $count = "0".$count;
+            }
+            $codeDepan = "INV";
+            $code = $codeDepan . $name . $count;
+            $data['code'] = $code;
+
+            //masukin data ke data_undangan duluan
+            $idDataUndangan = DataUndangan::create($data);
+
+            //ngemasukin data ke array $data
+            $data['branch_id'] = $request->get('branch');
+            $data['cso_id'] = $request->get('cso');
+            $data['type_cust_id'] = $request->get('type_cust');
+            $data['data_undangan_id'] = $idDataUndangan->id;
+            $data['date'] = $data['registration_date'];
+
+            HistoryUndangan::create($data);
+
+            return response()->json(['success'=>'Berhasil !!']);
+        }
+	}
+
+    /*Function store untuk menambah data pada table DATA OUTSITE
+    * menggunakan parameter request langsung
+    * jadi gk pake request dia jenis nya apa tapi langsung di panggil di route nya
+    * user_id bisa di dapet dari Auth->usernya yg lagi online sekarang atau login
+    */
+    public function storeDataOutsite(Request $request)
+    {
+        if ($request->has('phone') && $request->phone != null)
+            $request->merge(['phone'=> ($request->phone * 23)]);
+
+        $validator = \Validator::make($request->all(), [
+            'name' => 'required',
+            'registration_date' => 'required',
+            'phone' => [
+                'required',
+                Rule::unique('data_outsites')->where('active', 1),
+            ],
+            'province' => 'required',
+            'district' => 'required',
+            'branch' => 'required',
+            'country' => 'required',
+            'cso' => 'required',
+            'type_cust' => 'required',
+        ]);
+
+        if($request->type_cust == 2 || $request->type_cust == 4 ){
+            $validator = \Validator::make($request->all(), [
+                'name' => 'required',
+                'location_name' => 'required',
+                'registration_date' => 'required',
+                'phone' => [
+                    'required',
+                    Rule::unique('data_outsites')->where('active', 1),
+                ],
+                'province' => 'required',
+                'district' => 'required',
+                'branch' => 'required',
+                'country' => 'required',
+                'cso' => 'required',
+                'type_cust' => 'required',
+            ]);
+        }
+
+        if ($validator->fails())
+        {
+            $arr_Errors = $validator->errors()->all();
+            $arr_Keys = $validator->errors()->keys();
+            $arr_Hasil = [];
+            for ($i=0; $i < count($arr_Keys); $i++) { 
+                $arr_Hasil[$arr_Keys[$i]] = $arr_Errors[$i];
+            }
+            return response()->json(['errors'=>$arr_Hasil]);
+        }
+        else {
+            $user = Auth::user();
+            $count = DataOutsite::all()->count();
+            $count++;
+
+            $data = $request->only('code', 'registration_date', 'name', 'location_name', 'phone', 'province', 'district');
+            $data['name'] = strtoupper($data['name']);
+
+            //Khusus untuk Location Input
+            if($request->location_name != null || $request->location_name != ""){
+                if(Location::where([['name', $request->location_name],['active', true]])->count() == 0){
+                    $tempLocation['name'] = strtoupper($request->location_name);
+                    $countryTemp = Branch::where([['id', $request->branch], ['active', true]])->get();
+                    $tempLocation['country'] = $countryTemp[0]['country'];
+                    $locationObj = Location::create($tempLocation);
+                    $data['location_id'] = $locationObj->id;
+                }
+                else {
+                    $countryTemp = Branch::where([['id', $request->branch], ['active', true]])->get();
+                    $locationObj = location::where([['name', $request->location_name], ['country', $countryTemp[0]['country']], ['active', true]])->get();
+                    $locationObj = $locationObj[0];
+                    $data['location_id'] = $locationObj->id;
+                }
+            }
+
+            //pembentukan kode data outsite
+            $name = strtoupper(substr(str_slug($request->get('name'), ""), 0, 3));
+            for($i=strlen($count); $i<4; $i++)
+            {
+                $count = "0".$count;
+            }
+            $codeDepan = "OUT";
+            $code = $codeDepan . $name . $count;
+            $data['code'] = $code;
+
+            //ngemasukin data ke array $data
+            $data['branch_id'] = $request->get('branch');
+            $data['cso_id'] = $request->get('cso');
+            $data['type_cust_id'] = $request->get('type_cust');
+
+            //masukin data ke data_outsite
+            DataOutsite::create($data);
+
+            return response()->json(['success'=>'Berhasil !!']);
+        }
+    }
+
+    /*Function store untuk menambah data pada table DATA THERAPY
+    * menggunakan parameter request langsung
+    * jadi gk pake request dia jenis nya apa tapi langsung di panggil di route nya
+    * user_id bisa di dapet dari Auth->usernya yg lagi online sekarang atau login
+    */
+    public function storeDataTherapy(Request $request)
+    {
+        if ($request->has('phone') && $request->phone != null)
+            $request->merge(['phone'=> ($request->phone * 23)]);
+
+        $validator = \Validator::make($request->all(), [
+            'name' => 'required',
+            'address' => 'required',
+            'registration_date' => 'required',
+            'phone' => [
+                'required',
+                Rule::unique('data_therapies')->where('active', 1),
+            ],
+            'province' => 'required',
+            'district' => 'required',
+            'branch' => 'required',
+            'country' => 'required',
             'cso' => 'required',
             'type_cust' => 'required',
         ]);
@@ -948,50 +1083,93 @@ class DataController extends Controller
             return response()->json(['errors'=>$arr_Hasil]);
         }
         else {
-        	$user = Auth::user();
-        	$count = DataUndangan::all()->count();
+            $user = Auth::user();
+            $count = DataTherapy::all()->count();
             $count++;
 
-            $data = $request->only('code', 'registration_date', 'name', 'birth_date', 'address', 'phone', 'bank_name', 'province', 'district');
+            $data = $request->only('code', 'registration_date', 'name', 'address', 'phone', 'province', 'district');
             $data['name'] = strtoupper($data['name']);
-            $data['address'] = strtoupper($data['address']);
-            $data['bank_name'] = strtoupper($data['bank_name']);
 
-            //pembentukan kode data undangan
+            //pembentukan kode data outsite
             $name = strtoupper(substr(str_slug($request->get('name'), ""), 0, 3));
             for($i=strlen($count); $i<4; $i++)
             {
                 $count = "0".$count;
             }
-            $codeDepan = "INV";
+            $codeDepan = "THP";
             $code = $codeDepan . $name . $count;
             $data['code'] = $code;
-
-            //masukin data ke data_undangan duluan
-            $idDataUndangan = DB::table('data_undangans')->insertGetId([	
-                'code' => $data['code'],
-	            'name' => $data['name'],
-	            'address' => $data['address'],
-	            'registration_date' => $data['registration_date'],
-                'birth_date' => $data['birth_date'],
-	            'phone' => $data['phone']]);
 
             //ngemasukin data ke array $data
             $data['branch_id'] = $request->get('branch');
             $data['cso_id'] = $request->get('cso');
-            $data['type_cust_id'] = $request->get('type_cust')
+            $data['type_cust_id'] = $request->get('type_cust');
 
-            $idHistory = DB::table('history_undangans')->insertGetId([
-                'date' => $data['registration_date'],
-                'bank_name' => $data['bank_name'],
-                'data_undangan_id' => $idDataUndangan,
-                'branch_id' => $data['branch_id'],
-                'cso_id' => $data['cso_id'],
-                'type_cust_id' => $data['type_cust_id'],
-                'province' => $data['province'],
-                'district' => $data['district']]);
+            //masukin data ke data_outsite
+            DataTherapy::create($data);
 
             return response()->json(['success'=>'Berhasil !!']);
         }
-	}
+    }
+
+    /*Function store untuk menambah data pada table MPC
+    * menggunakan parameter request langsung
+    * jadi gk pake request dia jenis nya apa tapi langsung di panggil di route nya
+    * user_id bisa di dapet dari Auth->usernya yg lagi online sekarang atau login
+    */
+    public function storeMpc(Request $request)
+    {
+        if ($request->has('phone') && $request->phone != null)
+            $request->merge(['phone'=> ($request->phone * 23)]);
+
+        $validator = \Validator::make($request->all(), [
+            'name' => 'required',
+            'ktp' => 'required',
+            'code' => [
+                'required',
+                Rule::unique('mpcs')->where('active', 1),
+            ],
+            'address' => 'required',
+            'gender' => 'required',
+            'registration_date' => 'required',
+            'birth_date' => 'required',
+            'phone' => [
+                'required',
+                Rule::unique('mpcs')->where('active', 1),
+            ],
+            'province' => 'required',
+            'district' => 'required',
+            'branch' => 'required',
+            'country' => 'required',
+            'cso' => 'required',
+        ]);
+
+        if ($validator->fails())
+        {
+            $arr_Errors = $validator->errors()->all();
+            $arr_Keys = $validator->errors()->keys();
+            $arr_Hasil = [];
+            for ($i=0; $i < count($arr_Keys); $i++) { 
+                $arr_Hasil[$arr_Keys[$i]] = $arr_Errors[$i];
+            }
+            return response()->json(['errors'=>$arr_Hasil]);
+        }
+        else {
+            $user = Auth::user();
+
+            $data = $request->only('code', 'ktp', 'birth_date', 'registration_date', 'name', 'gender', 'address', 'phone', 'province', 'district');
+            $data['name'] = strtoupper($data['name']);
+            $data['code'] = strtoupper($data['code']);
+
+            //ngemasukin data ke array $data
+            $data['branch_id'] = $request->get('branch');
+            $data['cso_id'] = $request->get('cso');
+            $data['user_id'] = $user->id;
+
+            //masukin data ke data_outsite
+            Mpc::create($data);
+
+            return response()->json(['success'=>'Berhasil !!']);
+        }
+    }
 }
