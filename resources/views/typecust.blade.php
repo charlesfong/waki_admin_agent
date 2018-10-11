@@ -9,11 +9,11 @@
     @endif
 
     @if(Gate::check('master-data-type'))
-    <li> <a href="{{route('type_cust')}}">Master Data Type</a></li>
+    <li class="list-selected">Master Data Type</li>
     @endif
 
     @if(Gate::check('master-branch'))
-    <li class="list-selected">Master Branch</li>
+    <li> <a href="{{route('branch')}}">Master Branch</a></li>
     @endif
 
     @if(Gate::check('master-cso'))
@@ -31,49 +31,46 @@
 @section('content')
 <div class="container contact-clean" id="form-addMember">
     <!-- FORM UNTUK DATA BARU -->
-    <form id="actionAdd" method="POST" action="{{ route('store_branch') }}">
+    <form id="actionAdd" method="POST" action="{{ route('store_type_cust') }}">
         {{ csrf_field() }}
 
-        <h1 class="text-center">Add Branch</h1>
-        <div class="form-group {{ $errors->has('code') ? ' has-error' : '' }}">
-            <span>CODE</span>
-            <input id="code" type="text" name="code" class="text-uppercase form-control {{ $errors->has('code') ? ' is-invalid' : '' }}" placeholder="CODE" required>
-            <span class="invalid-feedback">
-                <strong>The code has already been taken.</strong>
-            </span>
-        </div>
+        <h1 class="text-center">Add Data Type</h1>
         <div class="form-group {{ $errors->has('name') ? ' has-error' : '' }}">
             <span>NAME</span>
-            <input type="text" name="name" class="text-uppercase form-control {{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="Branch Name" required>
+            <input type="text" name="name" class="text-uppercase form-control {{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="Data Type Name" required>
             <span class="invalid-feedback">
                 <strong>{{ $errors->first('name') }}</strong>
             </span>
         </div>
-        <div class="form-group frm-group-select {{ $errors->has('country') ? ' has-error' : '' }}">
-            <span>COUNTRY</span>
-            <select id="country" class="text-uppercase form-control{{ $errors->has('country') ? ' is-invalid' : '' }}" name="country" value="{{ old('country') }}" required>
-                <optgroup label="Country">
-                    @can('all-country-branch')
-                        @include('etc.select-country')
-                    @endcan
-                    @cannot('all-country-branch')
-                        <option value="{{Auth::user()->country}}">{{Auth::user()->country}}</option>
-                    @endcan
-                </optgroup>
-            </select>
+        <div class="form-group {{ $errors->has('type_input') ? ' has-error' : '' }}">
+            <span>TYPE INPUT</span>
+            <div class="div-CheckboxGroup">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="undangan" name="type_input[undangan]" required>
+                    <label class="form-check-label" for="undangan">UNDANGAN</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="out-site" name="type_input[out-site]" required>
+                    <label class="form-check-label" for="out-site">OUT-SITE</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="therapy" name="type_input[therapy]" required>
+                    <label class="form-check-label" for="therapy">THERAPY</label>
+                </div>
+            </div>
             <span class="invalid-feedback">
-                <strong>{{ $errors->first('country') }}</strong>
+                <strong>{{ $errors->first('type_input') }}</strong>
             </span>
         </div>
         <div class="form-group">
-            <button class="btn btn-primary" type="submit" id="btn-confirmAddBranch">SAVE</button>
+            <button class="btn btn-primary" type="submit" id="btn-confirmAddTypeCust">SAVE</button>
         </div>
     </form>
 </div>
 
-@can('browse-branch')
+@can('browse-type-cust')
 <div class="container" id="list-member" style="overflow-x:auto;">
-    <h1 style="text-align:center;color:#505e6c;">List Branch</h1>
+    <h1 style="text-align:center;color:#505e6c;">List Data Type</h1>
 
     <!-- KHUSUS BWAT UI SEARCH -->
     <form class="search-form" action="{{ url()->current() }}">
@@ -96,33 +93,28 @@
         <table class="table table-sm table-bordered">
             <thead>
                 <tr>
-                    <th>KODE</th>
                     <th>NAME</th>
-                    <th>COUNTRY</th>
-                    @if(Gate::check('edit-branch') || Gate::check('delete-branch'))
-                    <th colspan="2">EDIT/DELETE</th>
-                    @endif
+                    <th>TYPE INPUT</th>
                 </tr>
             </thead>
             <tbody name="collection">
                 @php
                 $i = 0
                 @endphp
-                @foreach($branches as $branch)
+                @foreach($typecusts as $typecust)
                 <tr>
-                    <td>{{$branch->code}}</td>
-                    <td>{{$branch->name}}</td>
-                    <td>{{$branch->country}}</td>
-                    @if(Gate::check('edit-branch'))
+                    <td>{{$typecust->name}}</td>
+                    <td>{{$typecust->type_input}}</td>
+                    @if(Gate::check('edit-type-cust'))
                     <td>
-                        <button class="btn btn-primary btn-editBranch" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$branch->id}}">
+                        <button class="btn btn-primary btn-editTypeCust" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$typecust->id}}">
                             <i class="material-icons">mode_edit</i>
                         </button>
                     </td>
                     @endif
-                    @if(Gate::check('delete-branch'))
+                    @if(Gate::check('delete-type-cust'))
                     <td>
-                        <button class="btn btn-primary btn-deleteBranch" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$branch->id}}">
+                        <button class="btn btn-primary btn-deleteTypeCust" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$typecust->id}}">
                             <i class="material-icons">delete</i>
                         </button>
                     </td>
@@ -140,19 +132,18 @@
     @php
     $i = 0
     @endphp
-    @foreach($branches as $branch)
+    @foreach($typecusts as $typecust)
     <div class="card-inmobile">
         <div class="card" style="margin-bottom:10px;">
             <div class="card-body">
-                <h6 class="card-title" style="border-bottom:solid 0.2px black;text-align:center;">{{$branch->code}} - {{$branch->name}}<br></h6>
-                <h6 class="text-muted card-subtitle mb-2" style="font-size:12px;">{{$branch->country}}
-                @if(Gate::check('edit-branch'))
-                <button class="btn btn-primary btn-edithapus-card btn-editBranch" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$branch->id}}">
+                <h6 class="card-title" style="border-bottom:solid 0.2px black;text-align:center;">{{$typecust->name}} - {{$typecust->type_input}}<br></h6>
+                @if(Gate::check('edit-type-cust'))
+                <button class="btn btn-primary btn-edithapus-card btn-editTypeCust" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$typecust->id}}">
                     <i class="material-icons">mode_edit</i>
                 </button>
                 @endif
-                @if(Gate::check('delete-branch'))
-                <button class="btn btn-primary btn-edithapus-card btn-deleteBranch" type="button" style="padding:0px 5px;margin-right:10px;" name="{{$i}}" value="{{$branch->id}}">
+                @if(Gate::check('delete-type-cust'))
+                <button class="btn btn-primary btn-edithapus-card btn-deleteTypeCust" type="button" style="padding:0px 5px;margin-right:10px;" name="{{$i}}" value="{{$typecust->id}}">
                     <i class="material-icons">delete</i>
                 </button>
                 @endif
@@ -166,7 +157,7 @@
 
     <!-- untuk pagination -->
     <div class="pagination-wrapper" style="float:right;">
-        {{ $branches->links() }}
+        {{ $typecusts->links() }}
     </div>
 </div>
 @endcan
@@ -184,13 +175,13 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p id="txt-delete-branch"></p>
+                <p id="txt-delete-type-cust"></p>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-light" type="button" data-dismiss="modal">Close</button>
-                <form id="actionDelete" action="{{route('delete_branch', ['id' => ''])}}" method="post">
+                <form id="actionDelete" action="{{route('delete_type_cust', ['id' => ''])}}" method="post">
                     {{csrf_field()}}
-                    <button class="btn btn-danger" type="submit" id="btn-confirmDeleteBranch" value="-">Delete</button>
+                    <button class="btn btn-danger" type="submit" id="btn-confirmDeleteTypeCust" value="-">Delete</button>
                 </form>
             </div>
         </div>
@@ -202,36 +193,28 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="text-center">Edit Branch</h2>
+                <h2 class="text-center">Edit Data Type</h2>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
 
             <!-- FORM UNTUK UPDATE DATA -->
-            <form id="actionEdit" method="post" action="{{ route('update_branch') }}">
+            <form id="actionEdit" method="post" action="{{ route('update_type_cust') }}">
                 {{ csrf_field() }}
                 <div class="modal-body">
                         <div class="form-group">
-                            <span>CODE</span>
-                            <input class="form-control text-uppercase" type="text" name="code" readonly="" required="" placeholder="Code" id="txtkode-branch">
+                            <span>NAME</span>
+                            <input class="form-control text-uppercase" type="text" name="name" required="" placeholder="Name" autofocus="" id="txtnama-type-cust">
                         </div>
                         <div class="form-group">
-                            <span>NAME</span>
-                            <input class="form-control text-uppercase" type="text" name="name" required="" placeholder="Name" autofocus="" id="txtnama-branch">
-                        </div>
-                        <div class="form-group frm-group-select">
-                            <span>COUNTRY</span>
-                            <select name="country" class="text-uppercase form-control" id="txtcountry-branch">
-                                <optgroup label="Country">
-                                    @include('etc.select-country')
-                                </optgroup>
-                            </select>
+                            <span>TYPE INPUT</span>
+                            <input class="form-control text-uppercase" type="text" readonly="" id="txttypeinput-type-cust">
                         </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-light" type="button" data-dismiss="modal">Close</button>
-                    <button class="btn btn-primary" type="submit" id="btn-confirmUpdateBranch" value="-">SAVE</button>
+                    <button class="btn btn-primary" type="submit" id="btn-confirmUpdateTypeCust" value="-">SAVE</button>
                 </div>
             </form>
         </div>
@@ -241,6 +224,21 @@
 
 @section('script')
 <script type="text/javascript">
+    //Validasi required pada group checkbox
+    //prop required akan hilang jika checkbox sudah di centang setidaknya satu
+    $('#btn-confirmAddTypeCust').on('click', function() {
+        $cbx_group = $("input:checkbox[name^='type_input']");
+
+        $cbx_group.prop('required', true);
+        if($cbx_group.is(":checked")){
+          $cbx_group.prop('required', false);
+        }
+    });
+
+    function _(el){
+        return document.getElementById(el);
+    }
+
     $(document).ready(function () {
         //untuk refresh halaman ketika modal [SUCCESS Update] ditutup 
         $('#modal-NotificationUpdate').on('hidden.bs.modal', function() { 
@@ -252,12 +250,10 @@
             location.reload(); 
         });
 
-        //-- Add Branch --//
+        //-- Add Type Cust --//
             var formAdd;
-            function _(el){
-                return document.getElementById(el);
-            }
-            $('#btn-confirmAddBranch').click(function(e){
+            
+            $('#btn-confirmAddTypeCust').click(function(e){
                 e.preventDefault();
 
                 formAdd = _("actionAdd");
@@ -268,23 +264,23 @@
                 ajax.addEventListener("load", completeHandlerAdd, false);
                 ajax.addEventListener("error", errorHandlerAdd, false);
                 ajax.addEventListener("abort", abortHandlerAdd, false);
-                ajax.open("POST", "{{ route('store_branch') }}");
+                ajax.open("POST", "{{ route('store_type_cust') }}");
                 ajax.setRequestHeader("X-CSRF-TOKEN",$('meta[name="csrf-token"]').attr('content'));
                 ajax.send(formAdd);
             });
             function progressHandlerAdd(event){
-                document.getElementById("btn-confirmAddBranch").innerHTML = "Uploading...";
+                document.getElementById("btn-confirmAddTypeCust").innerHTML = "Uploading...";
             }
             function completeHandlerAdd(event){
                 var hasil = JSON.parse(event.target.responseText);
                 var formDOM = _("actionAdd");
 
                 for (var key of formAdd.keys()) {
-                    $("#actionAdd").find("input[name="+key+"]").removeClass("is-invalid");
-                    $("#actionAdd").find("select[name="+key+"]").removeClass("is-invalid");
+                    $("#actionAdd").find("input[name^='"+key+"']").removeClass("is-invalid");
+                    $("#actionAdd").find("select[name^='"+key+"']").removeClass("is-invalid");
 
-                    $("#actionAdd").find("input[name="+key+"]").next().find("strong").text("");
-                    $("#actionAdd").find("select[name="+key+"]").next().find("strong").text("");
+                    $("#actionAdd").find("input[name^='"+key+"']").next().find("strong").text("");
+                    $("#actionAdd").find("select[name^='"+key+"']").next().find("strong").text("");
                 }
 
                 if(hasil['errors'] != null){
@@ -294,11 +290,11 @@
                         }
                         else
                         {
-                            $("#actionAdd").find("input[name="+key+"]").addClass("is-invalid");
-                            $("#actionAdd").find("select[name="+key+"]").addClass("is-invalid");
+                            $("#actionAdd").find("input[name^='"+key+"']").addClass("is-invalid");
+                            $("#actionAdd").find("select[name^='"+key+"']").addClass("is-invalid");
 
-                            $("#actionAdd").find("input[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
-                            $("#actionAdd").find("select[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
+                            $("#actionAdd").find("input[name^='"+key+"']").next().find("strong").text(hasil['errors'][key]);
+                            $("#actionAdd").find("select[name^='"+key+"']").next().find("strong").text(hasil['errors'][key]);
                         }
                     }
                 }
@@ -307,23 +303,23 @@
                     $("#modal-Notification").modal("show");
                 }
 
-                document.getElementById("btn-confirmAddBranch").innerHTML = "SAVE";
+                document.getElementById("btn-confirmAddTypeCust").innerHTML = "SAVE";
             }
             function errorHandlerAdd(event){
-                document.getElementById("btn-confirmAddBranch").innerHTML = "SAVE";
+                document.getElementById("btn-confirmAddTypeCust").innerHTML = "SAVE";
                 $("#modal-Notification").find("p#txt-notification").html(event.target.responseText);
                 $("#modal-Notification").modal("show");
             }
             function abortHandlerAdd(event){
             }
 
-        //-- Edit Branch --//
+        //-- Edit Type Cust --//
             var formEdit;
             function _(el){
                 return document.getElementById(el);
             }
 
-            $('#btn-confirmUpdateBranch').click(function(e){
+            $('#btn-confirmUpdateTypeCust').click(function(e){
                 e.preventDefault();
 
                 formEdit = _("actionEdit");
@@ -335,12 +331,12 @@
                 ajax.addEventListener("load", completeHandlerEdit, false);
                 ajax.addEventListener("error", errorHandlerEdit, false);
                 ajax.addEventListener("abort", abortHandlerEdit, false);
-                ajax.open("POST", "{{ route('update_branch') }}");
+                ajax.open("POST", "{{ route('update_type_cust') }}");
                 ajax.setRequestHeader("X-CSRF-TOKEN",$('meta[name="csrf-token"]').attr('content'));
                 ajax.send(formEdit);
             });
             function progressHandlerEdit(event){
-                document.getElementById("btn-confirmUpdateBranch").innerHTML = "Uploading...";
+                document.getElementById("btn-confirmUpdateTypeCust").innerHTML = "Uploading...";
             }
             function completeHandlerEdit(event){
                 var hasil = JSON.parse(event.target.responseText);
@@ -375,43 +371,15 @@
                     $("#modal-Notification").modal("show");
                 }
 
-                document.getElementById("btn-confirmUpdateBranch").innerHTML = "SAVE";
+                document.getElementById("btn-confirmUpdateTypeCust").innerHTML = "SAVE";
             }
             function errorHandlerEdit(event){
-                document.getElementById("btn-confirmUpdateBranch").innerHTML = "SAVE";
+                document.getElementById("btn-confirmUpdateTypeCust").innerHTML = "SAVE";
                 $("#modal-Notification").find("p#txt-notification").html(event.target.responseText);
                 $("#modal-Notification").modal("show");
             }
             function abortHandlerEdit(event){
             }
-    });
-
-    //Pengecekan KODE branch pada FORM NEW BRANCH
-    //Ketika focusout dari input field 'code'
-    //Maka akan diperiksa apakah terdapat kode yang sama
-    $('#code').focusout(function(){
-        var code = $('#code').val();
-
-        $.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            type: 'post',
-            url: "{{route('check-branch-code')}}",
-            data: {
-                'code': code,
-            },
-            success: function(data){
-                if(data == "success")
-                {
-                    $("#code").removeClass("is-invalid");
-                }
-                else
-                {
-                    $("#code").addClass("is-invalid");
-                }
-            },
-        });
     });
 
     // Scrollbar fix 

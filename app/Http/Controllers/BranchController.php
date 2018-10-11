@@ -122,10 +122,13 @@ class BranchController extends Controller
             $data['name'] = strtoupper($data['name']);
             $data['country'] = strtoupper($request->get('country'));
 
-            DB::table('branches')
-                ->where('id', $request->get('id'))
-                ->update(['name' => $data['name'],
-                        'country' => $data['country']]);
+            $branch = Branch::find($request->get('id'));
+            $branch->fill($data)->save();
+
+            // DB::table('branches')
+            //     ->where('id', $request->get('id'))
+            //     ->update(['name' => $data['name'],
+            //             'country' => $data['country']]);
 
             return response()->json(['success'=>'Berhasil !!']);
         }

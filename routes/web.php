@@ -64,6 +64,26 @@ Route::group(['prefix' => 'data'], function () {
         ->middleware('can:add-mpc');
 });
 
+//-- MASTER DATA TYPE --//
+Route::group(['prefix' => 'datatype'], function () {
+	//Browse
+	Route::get('/', 'TypeCustController@index')
+		->name('type_cust')
+		->middleware('can:browse-type-cust,add-type-cust');
+	//Add
+	Route::post('/', 'TypeCustController@store')
+		->name('store_type_cust')
+		->middleware('can:add-type-cust');
+	//Edit
+	Route::post('/edit/', 'TypeCustController@update')
+        ->name('update_type_cust')
+        ->middleware('can:edit-branch');
+    //Delete
+	Route::post('/{typecust}', 'TypeCustController@delete')
+		->name('delete_type_cust')
+		->middleware('can:delete-type-cust,typecust');
+});
+
 //-- MASTER BRANCH --//
 Route::group(['prefix' => 'branch'], function () {
 	//Browse
@@ -84,6 +104,45 @@ Route::group(['prefix' => 'branch'], function () {
 		->middleware('can:delete-branch,branch');
 });
 
+//-- MASTER CSO --//
+Route::group(['prefix' => 'cso'], function () {
+	//Browse
+	Route::get('/', 'CsoController@index')
+		->name('cso')
+		->middleware('can:browse-cso,add-cso');
+	//Add
+	Route::post('/', 'CsoController@store')
+		->name('store_cso')
+		->middleware('can:add-cso');
+	//Edit
+	Route::post('/edit/', 'CsoController@update')
+        ->name('update_cso')
+        ->middleware('can:edit-cso');
+    //Delete
+	Route::post('/{cso}', 'CsoController@delete')
+		->name('delete_cso')
+		->middleware('can:delete-cso,cso');
+});
+
+//-- MASTER USER --//
+Route::group(['prefix' => 'user'], function () {
+	//Browse
+	Route::get('/', 'UserController@index')
+		->name('user')
+		->middleware('can:browse-user,add-user');
+	//Add
+	Route::post('/', 'UserController@store')
+		->name('store_user')
+		->middleware('can:add-user');
+	//Edit
+	Route::post('/edit/', 'UserController@update')
+        ->name('update_user')
+        ->middleware('can:edit-user');
+    //Delete
+	Route::post('/{user}', 'UserController@delete')
+		->name('delete_user')
+		->middleware('can:delete-user,user');
+});
 
 //-- PASSWORD --//
 Route::post('/changePassword','AjaxController@changePassword')->name('changePassword');
