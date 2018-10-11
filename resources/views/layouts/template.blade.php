@@ -12,8 +12,6 @@
 
     <!-- Styles, Font, Bootstrap, Icon -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('fonts/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('fonts/material-icons.min.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
