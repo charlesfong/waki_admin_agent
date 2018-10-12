@@ -27,6 +27,7 @@
 
     <!-- JavaScript -->
     <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/chart-data.js') }}"></script>
     
 </head>
 <body style="background-image:url(&quot;{{ asset('img/BG-01.png') }}&quot;);">
@@ -211,7 +212,6 @@
     <script src="{{ asset('js/ListMethod.js') }}"></script>
     <script src="{{ asset('js/Sidebar-Menu.js') }}"></script>
     <script src="{{ asset('js/chart.min.js') }}"></script>
-    <script src="{{ asset('js/chart-data.js') }}"></script>
     <script src="{{ asset('js/easypiechart.js') }}"></script>
     <script src="{{ asset('js/easypiechart-data.js') }}"></script>
     <script src="{{ asset('js/bootstrap-datepicker.js') }}"></script>
