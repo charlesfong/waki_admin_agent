@@ -73,7 +73,7 @@ class TypeCustTableSeeder extends Seeder
         ]);
 
         DB::table('type_custs')->insert([
-            'name' => 'UNDANGAN Bank',
+            'name' => 'UNDANGAN BANK',
             'type_input' => 'UNDANGAN',
         ]);
 
