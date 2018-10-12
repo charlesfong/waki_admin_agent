@@ -47,16 +47,31 @@
     margin-right:50px;
     margin-left:0px;
   }
+  .form-group.frm-group-select {
+  width:100%;
+  display:block;
+  }
 }
 
-.list-selected {
+/*LAYAR SUPER KECIL(iponX)*/
+@media (max-width: 378px) {
+  
+  .form-group.frm-group-select {
+  width:90%;
+  display:block;
+  }
+  .form-group.frm-group-select{
+  width:100%;
+  }
+}
+
+
+  .list-selected {
   background:rgba(255,255,255,0.2);
   color:#ffffff;
 }
-
-.form-group.frm-group-select {
-  width:280px;
-  display:inline-block;
+  .form-group.frm-group-select {
+   
 }
 
 .select-right {
@@ -67,6 +82,9 @@
   .select-right {
     float:right;
   }
+  .form-group.frm-group-select {
+  width:284px;
+  display:inline-block;}
 }
 
 .btn-edithapus-card {
