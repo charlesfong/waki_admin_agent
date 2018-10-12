@@ -1,4 +1,7 @@
 @extends('layouts.template')
+@section('css')
+    <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}">
+@endsection
 @section('navmenu')
     @if(Gate::check('dashboard'))
     <li> <a href="{{route('dashboard')}}">Dashboard</a></li>
@@ -9,7 +12,7 @@
     @endif
 
     @if(Gate::check('master-data-type'))
-    <li> <a href="">Master Data Type</a></li>
+    <li> <a href="{{route('type_cust')}}">Master Data Type</a></li>
     @endif
 
     @if(Gate::check('master-branch'))
@@ -17,11 +20,11 @@
     @endif
 
     @if(Gate::check('master-cso'))
-    <li> <a href="">Master CSO</a></li>
+    <li> <a href="{{route('cso')}}">Master CSO</a></li>
     @endif
 
     @if(Gate::check('master-user'))
-    <li> <a href="">Master User</a></li>
+    <li> <a href="{{route('user')}}">Master User</a></li>
     @endif
 
     @if(Gate::check('report'))
