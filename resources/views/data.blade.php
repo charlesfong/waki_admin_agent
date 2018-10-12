@@ -955,6 +955,11 @@
             return document.getElementById(el);
         };
 
+        //untuk refresh halaman ketika modal [SUCCESS Add] ditutup 
+        $('#modal-Notification').on('hidden.bs.modal', function() { 
+            location.reload(); 
+        });
+
         // COUNTRY METHOD
         $('#txtcountry-dataundangan').change(function (e){
             var countryVal = $('#txtcountry-dataundangan').val();
@@ -1242,7 +1247,7 @@
 
         $("#txttype-cust-dataundangan").change(function (e) {
             $("#input-DataUndangan").removeClass("d-none");
-            if($('#txttype-cust-dataundangan option:selected').text() == "UNDANGAN BANK"){//undangan id 11
+            if($('#txttype-cust-dataundangan option:selected').text() == 13){//undangan id 13
                 $("#Undangan-Bank").html(
                     "<span>BANK NAME</span><input list=\"bank_list\" name=\"bank_name\" class=\"text-uppercase form-control\" placeholder=\"example. BCA, CIMB, etc.\" required=\"\"><datalist id=\"bank_list\"><span class=\"invalid-feedback\"><strong></strong></span>@foreach ($banks as $bank)<option value=\"{{$bank->name}}\">@endforeach</datalist>"
                 );
@@ -1301,6 +1306,9 @@
             else{
                 // $('#modal-UpdateForm').modal('hide')
                 // $("#modal-NotificationUpdate").modal("show");
+                $('#modal-UpdateForm').modal('hide')
+                $("#modal-Notification").find("p#txt-notification").html(event.target.responseText);
+                $("#modal-Notification").modal("show");
             }
 
             document.getElementById("btn-actionAddDataUndangan").innerHTML = "SAVE";
@@ -1308,6 +1316,8 @@
         }
         function errorHandlerUndangan(event){
             document.getElementById("btn-actionAddDataUndangan").innerHTML = "SAVE";
+            $("#modal-Notification").find("p#txt-notification").html(event.target.responseText);
+            $("#modal-Notification").modal("show");
             // $("#txt-notification > div").html(event.target.responseText);
             // $('#modal-UpdateForm').modal('hide')
             // $("#modal-NotificationUpdate").modal("show");
@@ -1385,6 +1395,9 @@
             else{
                 // $('#modal-UpdateForm').modal('hide')
                 // $("#modal-NotificationUpdate").modal("show");
+                $('#modal-UpdateForm').modal('hide')
+                $("#modal-Notification").find("p#txt-notification").html(event.target.responseText);
+                $("#modal-Notification").modal("show");
             }
 
             document.getElementById("btn-actionAddDataOutsite").innerHTML = "SAVE";
@@ -1395,6 +1408,8 @@
             // $("#txt-notification > div").html(event.target.responseText);
             // $('#modal-UpdateForm').modal('hide')
             // $("#modal-NotificationUpdate").modal("show");
+            $("#modal-Notification").find("p#txt-notification").html(event.target.responseText);
+            $("#modal-Notification").modal("show");
         }
         /*===================================================*/
 
@@ -1457,6 +1472,9 @@
             else{
                 // $('#modal-UpdateForm').modal('hide')
                 // $("#modal-NotificationUpdate").modal("show");
+                $('#modal-UpdateForm').modal('hide')
+                $("#modal-Notification").find("p#txt-notification").html(event.target.responseText);
+                $("#modal-Notification").modal("show");
             }
 
             document.getElementById("btn-actionAddDataTherapy").innerHTML = "SAVE";
@@ -1467,6 +1485,8 @@
             // $("#txt-notification > div").html(event.target.responseText);
             // $('#modal-UpdateForm').modal('hide')
             // $("#modal-NotificationUpdate").modal("show");
+            $("#modal-Notification").find("p#txt-notification").html(event.target.responseText);
+            $("#modal-Notification").modal("show");
         }
         /*===================================================*/
 
@@ -1529,6 +1549,9 @@
             else{
                 // $('#modal-UpdateForm').modal('hide')
                 // $("#modal-NotificationUpdate").modal("show");
+                $('#modal-UpdateForm').modal('hide')
+                $("#modal-Notification").find("p#txt-notification").html(event.target.responseText);
+                $("#modal-Notification").modal("show");
             }
 
             document.getElementById("btn-actionAddMpc").innerHTML = "SAVE";
@@ -1539,6 +1562,8 @@
             // $("#txt-notification > div").html(event.target.responseText);
             // $('#modal-UpdateForm').modal('hide')
             // $("#modal-NotificationUpdate").modal("show");
+            $("#modal-Notification").find("p#txt-notification").html(event.target.responseText);
+            $("#modal-Notification").modal("show");
         }
         /*===================================================*/
     });
