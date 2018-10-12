@@ -1247,7 +1247,7 @@
 
         $("#txttype-cust-dataundangan").change(function (e) {
             $("#input-DataUndangan").removeClass("d-none");
-            if($('#txttype-cust-dataundangan option:selected').text() == 13){//undangan id 13
+            if($('#txttype-cust-dataundangan option:selected').val() == 13){//undangan id 13
                 $("#Undangan-Bank").html(
                     "<span>BANK NAME</span><input list=\"bank_list\" name=\"bank_name\" class=\"text-uppercase form-control\" placeholder=\"example. BCA, CIMB, etc.\" required=\"\"><datalist id=\"bank_list\"><span class=\"invalid-feedback\"><strong></strong></span>@foreach ($banks as $bank)<option value=\"{{$bank->name}}\">@endforeach</datalist>"
                 );
