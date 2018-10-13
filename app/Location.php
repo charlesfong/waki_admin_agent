@@ -10,7 +10,7 @@ class Location extends Model
         'name', 'country', 'active', 
     ];
 
-    public function dataOutsite()
+    public function data_outsite()
     {
         return $this->hasMany('App\DataOutsite');
     }
