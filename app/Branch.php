@@ -25,17 +25,17 @@ class Branch extends Model
         return $this->hasMany('App\Mpc');
     }
 
-    public function dataTherapy()
+    public function data_therapy()
     {
         return $this->hasMany('App\DataTherapy');
     }
 
-    public function dataOutsite()
+    public function data_outsite()
     {
         return $this->hasMany('App\DataOutsite');
     }
 
-    public function historyUndangan()
+    public function history_undangan()
     {
         return $this->hasMany('App\HistoryUndangan');
     }

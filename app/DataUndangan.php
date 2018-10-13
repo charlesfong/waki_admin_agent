@@ -10,7 +10,7 @@ class DataUndangan extends Model
         'code', 'registration_date', 'name', 'birth_date', 'address', 'phone', 'active',
     ];
 
-    public function historyUndangan()
+    public function history_undangan()
     {
         return $this->hasMany('App\HistoryUndangan');
     }
