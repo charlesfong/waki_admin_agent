@@ -69,7 +69,7 @@
                     </div>
                     <input class="form-control" type="text" name="keywordDataUndangan" value="{{ app('request')->input('keyword') }}" placeholder="Search by Phone Number..." style="height: 46.8px;" id="txt-keywordDataUndangan">
                     <div class="input-group-append">
-                        <button class="btn btn-light border" type="submit" id="btnFind-data-undangan">Search</button>
+                        <button class="btn btn-light border" type="submit" id="btnFind-data-undangan" onclick="function(){$('#modal-DataUndangan').modal('show')};">Search</button>
                     </div>
                     <span class="invalid-feedback">
                         <strong style="margin-left: 40px; font-size: 12pt;"></strong>
@@ -947,6 +947,7 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        $('#modal-DataUndangan').modal('show');
         /*METHOD - METHOD UMUM ATAU KESELURUHAN
         * Khusus method" PENOPANG PADA HALAMAN INI
         */

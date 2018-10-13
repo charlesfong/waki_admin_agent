@@ -130,7 +130,7 @@
                         <p id="txt-notification"></p>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-light" type="button" data-dismiss="modal">Close</button>
+                        <button class="btn btn-primary" type="button" data-dismiss="modal">OK</button>
                     </div>
                 </div>
             </div>

@@ -431,7 +431,7 @@
             location.reload(); 
         });
 
-        //-- Add User --//
+        //-- Add CSO --//
             var formAdd;
             $('#btn-confirmAddCso').click(function(e){
                 e.preventDefault();
@@ -481,7 +481,7 @@
                     }
                 }
                 else{
-                    $("#modal-Notification").find("p#txt-notification").html(event.target.responseText);
+                    $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">Data has been ADDED successfully</div>");
                     $("#modal-Notification").modal("show");
                 }
 
@@ -495,7 +495,7 @@
             function abortHandlerAdd(event){
             }
 
-        //-- Edit User --//
+        //-- Edit CSO --//
             var formEdit;
             $('#btn-confirmUpdateCso').click(function(e){
                 e.preventDefault();
@@ -553,7 +553,7 @@
                 else{
                     $('#modal-UpdateForm').modal('hide');
                     // $("#modal-NotificationUpdate").modal("show");
-                    $("#modal-Notification").find("p#txt-notification").html(event.target.responseText);
+                    $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">Data has been CHANGED successfully</div>");
                     $("#modal-Notification").modal("show");
                 }
 

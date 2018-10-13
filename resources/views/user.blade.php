@@ -607,7 +607,7 @@
                     }
                 }
                 else{
-                    $("#modal-Notification").find("p#txt-notification").html(event.target.responseText);
+                    $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">Data has been ADDED successfully</div>");
                     $("#modal-Notification").modal("show");
                 }
 
@@ -675,7 +675,7 @@
                 else{
                     // console.log(event);
                     $('#modal-UpdateForm').modal('hide')
-                    $("#modal-Notification").find("p#txt-notification").html(event.target.responseText);
+                    $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">Data has been CHANGED successfully</div>");
                     $("#modal-Notification").modal("show");
                 }
 
