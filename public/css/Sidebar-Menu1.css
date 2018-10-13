@@ -35,9 +35,9 @@ body {
   padding:15px;
 }
 
-#wrapper.toggled {
+/*#wrapper.toggled {
   padding-left:250px;
-}
+}*/
 
 #wrapper.toggled #page-content-wrapper {
   position:absolute;
@@ -106,6 +106,17 @@ body {
 @media (min-width: 768px) {
   #menu-toggle.toggled {
     visibility:visible;
+  }
+}
+
+@media (max-width:766px) {
+  #wrapper.toggled {
+  padding-left:0px;
+  }
+}
+@media (min-width:767px) {
+  #wrapper.toggled {
+  padding-left:250px;
   }
 }
 
