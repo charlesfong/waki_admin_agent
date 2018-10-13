@@ -4,8 +4,8 @@ $("#menu-toggle").click(function(e) {
         $("#menu-toggle").toggleClass("toggled");
         if(window.matchMedia("(max-width: 768px)").matches){
             $("#logo-waki").css("display","none");
-            $("#list-member").css("display","none");
-            $("#form-addMember").css("display","none");
+            $("#list-member").css("display","block");
+            $("#form-addMember").css("display","block");
         }
 });
 $("#MainMenu-toggle").click(function(e) {

@@ -37,22 +37,22 @@
         <ul class="nav nav-tabs">
             @if(Gate::check('find-data-undangan'))
             <li class="nav-item">
-                <a class="nav-link active" role="tab" data-toggle="tab" href="#tab-1" aria-selected="true">Data Undangan</a>
+                <a class="nav-link active" role="tab" data-toggle="tab" href="#tab-1" aria-selected="true" onclick="ShowList('1')">Data Undangan</a>
             </li>
             @endif
             @if(Gate::check('find-data-outsite'))
             <li class="nav-item">
-                <a class="nav-link" role="tab" data-toggle="tab" href="#tab-2" aria-selected="true">Data Outsite</a>
+                <a class="nav-link" role="tab" data-toggle="tab" href="#tab-2" aria-selected="true" onclick="ShowList('2')">Data Outsite</a>
             </li>
             @endif
             @if(Gate::check('find-data-therapy'))
             <li class="nav-item">
-                <a class="nav-link" role="tab" data-toggle="tab" href="#tab-3" aria-selected="true">Data Therapy</a>
+                <a class="nav-link" role="tab" data-toggle="tab" href="#tab-3" aria-selected="true"onclick="ShowList('3')">Data Therapy</a>
             </li>
             @endif
             @if(Gate::check('find-mpc'))
             <li class="nav-item">
-                <a class="nav-link" role="tab" data-toggle="tab" href="#tab-4" aria-selected="true">MPC</a>
+                <a class="nav-link" role="tab" data-toggle="tab" href="#tab-4" aria-selected="true"onclick="ShowList('4')">MPC</a>
             </li>
             @endif
         </ul>
@@ -383,7 +383,7 @@
                     </div>
                 </div>
             </form>
-            @endif
+            @endif            
 
         </div>
         <div class="tab-pane" role="tabpanel" id="tab-3">
@@ -726,9 +726,479 @@
     </div>
 </div>
 
-@if(Gate::check('browse-data-undangan'))
+<!---------------- KHUSUS UNTUK LIST DATA ---------------->
+@if(Gate::check('browse-data-outsite'))
+<div class="container d-none" id="ListTab-2" style="overflow-x:auto;">
+    <h1 style="text-align:center;color:#505e6c;">List Data Out-Site</h1>
 
+    <!-- KHUSUS BWAT UI SEARCH -->
+    <form class="search-form" action="{{ url()->current() }}">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <i class="fa fa-search"></i>
+                </span>
+            </div>
+            <input class="form-control" type="text" name="keywordDataOutsite" value="{{ app('request')->input('keywordDataOutsite') }}" placeholder="Search...">
+            <div class="input-group-append">
+                <button class="btn btn-light border" type="submit">Search</button>
+            </div>
+        </div>
+    </form>
+    <!-- KHUSUS BWAT UI SEARCH -->
+
+    <!-- untuk table data -->
+    <div class="table-responsive table table-striped table-indesktop">
+        <table class="table table-sm table-bordered">
+            <thead>
+                <tr>
+                    <th>REG DATE</th>
+                    <th>CODE</th>
+                    <th>NAME</th>
+                    <th>LOCATION</th>
+                    <th>PHONE</th>
+                    <th>TYPE CUST</th>
+                    <th style="display: none;">PROVINCE</th>
+                    <th style="display: none;">DISTRICT</th>
+                    <th style="display: none;">COUNTRY</th>
+                    <th style="display: none;">BRANCH</th>
+                    <th style="display: none;">CSO</th>
+                    <th style="text-align: center;" colspan="2">@if(Gate::check('edit-data-outsite'))EDIT @endif @if(Gate::check('delete-data-outsite'))/ DELETE @endif</th>
+                </tr>
+            </thead>
+            <tbody name="collection">
+                @php
+                $i = 0
+                @endphp
+                @foreach($dataOutsites as $dataOutsite)
+                <tr>
+                    <td>{{$dataOutsite->registration_date}}</td>
+                    <td>{{$dataOutsite->code}}</td>
+                    <td>{{$dataOutsite->name}}</td>
+                    <td>{{$dataOutsite->location['name']}} @if($dataOutsite->location == null)- @endif</td>
+                    <td>0{{$dataOutsite->phone / 23}}</td>
+                    <td>{{$dataOutsite->type_cust['name']}}</td>
+                    <td style="display: none;">{{$dataOutsite->province}}</td>
+                    <td style="display: none;">{{$dataOutsite->district}}</td>
+                    <td style="display: none;">{{$dataOutsite->branch['country']}}</td>
+                    <td style="display: none;">{{$dataOutsite->branch['name']}}</td>
+                    <td style="display: none;">{{$dataOutsite->cso['name']}}</td>
+                    @if(Gate::check('edit-data-outsite'))
+                    <td style="text-align: center;">
+                        <button class="btn btn-primary btn-editDataOutsite" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$dataOutsite->id}}">
+                            <i class="material-icons">mode_edit</i>
+                        </button>
+                    </td>
+                    @endif
+                    @if(Gate::check('delete-data-outsite'))
+                    <td style="text-align: center;">
+                        <button class="btn btn-primary btn-deleteDataOutsite" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$dataOutsite->id}}">
+                            <i class="material-icons">delete</i>
+                        </button>
+                    </td>
+                    @endif
+                </tr>
+                @php
+                $i++
+                @endphp
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+
+    <!-- untuk card data -->
+    @php
+    $i = 0
+    @endphp
+    @foreach($dataOutsites as $dataOutsite)
+    <div class="card-inmobile">
+        <div class="card" style="margin-bottom:10px;">
+            <div class="card-body">
+                <h6 class="card-title" style="border-bottom:solid 0.2px black;text-align:center;">{{$dataOutsite->code}} - {{$dataOutsite->name}}<br></h6>
+                <h6 class="text-muted card-subtitle mb-2" style="font-size:12px;">{{$dataOutsite->branch['country']}} - {{$dataOutsite->branch['code']}}<br></h6>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Registration Date :</b> {{$dataOutsite->registration_date}}<br></p>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Location :</b> {{$dataOutsite->location['name']}}<br></p>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Phone :</b> 0{{$dataOutsite->phone / 23}}<br></p>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:10px;"><b>CSO :</b> {{$dataOutsite->cso['name']}}<br></p>
+                @if(Gate::check('edit-data-outsite'))
+                <button class="btn btn-primary btn-edithapus-card btn-editDataOutsite" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$dataOutsite->id}}">
+                    <i class="material-icons">mode_edit</i>
+                </button>
+                @endif
+                @if(Gate::check('delete-data-outsite'))
+                <button class="btn btn-primary btn-edithapus-card btn-deleteDataOutsite" type="button" style="padding:0px 5px;margin-right:10px;" name="{{$i}}" value="{{$dataOutsite->id}}">
+                    <i class="material-icons">delete</i>
+                </button>
+                @endif
+            </div>
+        </div>
+    </div>
+    @php
+    $i++
+    @endphp
+    @endforeach
+
+    <!-- untuk pagination -->
+    <div class="pagination-wrapper" style="float:right;">
+        {{ $dataOutsites->links() }}
+    </div>
+</div>
 @endif
+
+@if(Gate::check('browse-data-therapy'))
+<div class="container d-none" id="ListTab-3" style="overflow-x:auto;">
+    <h1 style="text-align:center;color:#505e6c;">List Data Therapy</h1>
+
+    <!-- KHUSUS BWAT UI SEARCH -->
+    <form class="search-form" action="{{ url()->current() }}">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <i class="fa fa-search"></i>
+                </span>
+            </div>
+            <input class="form-control" type="text" name="keywordDataTherapy" value="{{ app('request')->input('keywordDataTherapy') }}" placeholder="Search...">
+            <div class="input-group-append">
+                <button class="btn btn-light border" type="submit">Search</button>
+            </div>
+        </div>
+    </form>
+    <!-- KHUSUS BWAT UI SEARCH -->
+
+    <!-- untuk table data -->
+    <div class="table-responsive table table-striped table-indesktop">
+        <table class="table table-sm table-bordered">
+            <thead>
+                <tr>
+                    <th>REG DATE</th>
+                    <th>CODE</th>
+                    <th>NAME</th>
+                    <th>PHONE</th>
+                    <th>BRANCH</th>
+                    <th>TYPE CUST</th>
+                    <th style="display: none;">ADDRESS</th>
+                    <th style="display: none;">PROVINCE</th>
+                    <th style="display: none;">DISTRICT</th>
+                    <th style="display: none;">COUNTRY</th>
+                    <th style="display: none;">CSO</th>
+                    <th style="text-align: center;" colspan="2">@if(Gate::check('edit-data-therapy'))EDIT @endif @if(Gate::check('delete-data-therapy'))/ DELETE @endif</th>
+                </tr>
+            </thead>
+            <tbody name="collection">
+                @php
+                $i = 0
+                @endphp
+                @foreach($dataTherapies as $dataTherapy)
+                <tr>
+                    <td>{{$dataTherapy->registration_date}}</td>
+                    <td>{{$dataTherapy->code}}</td>
+                    <td>{{$dataTherapy->name}}</td>
+                    <td>0{{$dataTherapy->phone / 23}}</td>
+                    <td>{{$dataTherapy->branch['code']}}</td>
+                    <td>{{$dataTherapy->type_cust['name']}}</td>
+                    <td style="display: none;">{{$dataTherapy->address}}</td>
+                    <td style="display: none;">{{$dataTherapy->province}}</td>
+                    <td style="display: none;">{{$dataTherapy->district}}</td>
+                    <td style="display: none;">{{$dataTherapy->branch['country']}}</td>
+                    <td style="display: none;">{{$dataTherapy->cso['name']}}</td>
+                    @if(Gate::check('edit-data-therapy'))
+                    <td style="text-align: center;">
+                        <button class="btn btn-primary btn-editDataTherapy" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$dataTherapy->id}}">
+                            <i class="material-icons">mode_edit</i>
+                        </button>
+                    </td>
+                    @endif
+                    @if(Gate::check('delete-data-therapy'))
+                    <td style="text-align: center;">
+                        <button class="btn btn-primary btn-deleteDataTherapy" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$dataTherapy->id}}">
+                            <i class="material-icons">delete</i>
+                        </button>
+                    </td>
+                    @endif
+                </tr>
+                @php
+                $i++
+                @endphp
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+
+    <!-- untuk card data -->
+    @php
+    $i = 0
+    @endphp
+    @foreach($dataTherapies as $dataTherapy)
+    <div class="card-inmobile">
+        <div class="card" style="margin-bottom:10px;">
+            <div class="card-body">
+                <h6 class="card-title" style="border-bottom:solid 0.2px black;text-align:center;">{{$dataTherapy->code}} - {{$dataTherapy->name}}<br></h6>
+                <h6 class="text-muted card-subtitle mb-2" style="font-size:12px;">{{$dataTherapy->branch['country']}} - {{$dataTherapy->branch['code']}}<br></h6>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Registration Date :</b> {{$dataTherapy->registration_date}}<br></p>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Address :</b> {{$dataTherapy->address}}<br></p>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Phone :</b> 0{{$dataTherapy->phone / 23}}<br></p>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:10px;"><b>CSO :</b> {{$dataTherapy->cso['name']}}<br></p>
+                @if(Gate::check('edit-data-therapy'))
+                <button class="btn btn-primary btn-edithapus-card btn-editDataTherapy" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$dataTherapy->id}}">
+                    <i class="material-icons">mode_edit</i>
+                </button>
+                @endif
+                @if(Gate::check('delete-data-therapy'))
+                <button class="btn btn-primary btn-edithapus-card btn-deleteDataTherapy" type="button" style="padding:0px 5px;margin-right:10px;" name="{{$i}}" value="{{$dataTherapy->id}}">
+                    <i class="material-icons">delete</i>
+                </button>
+                @endif
+            </div>
+        </div>
+    </div>
+    @php
+    $i++
+    @endphp
+    @endforeach
+
+    <!-- untuk pagination -->
+    <div class="pagination-wrapper" style="float:right;">
+        {{ $dataTherapies->links() }}
+    </div>
+</div>
+@endif
+
+@if(Gate::check('browse-mpc'))
+<div class="container d-none" id="ListTab-4" style="overflow-x:auto;">
+    <h1 style="text-align:center;color:#505e6c;">List MPC</h1>
+
+    <!-- KHUSUS BWAT UI SEARCH -->
+    <form class="search-form" action="{{ url()->current() }}">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <i class="fa fa-search"></i>
+                </span>
+            </div>
+            <input class="form-control" type="text" name="keywordMpc" value="{{ app('request')->input('keywordMpc') }}" placeholder="Search...">
+            <div class="input-group-append">
+                <button class="btn btn-light border" type="submit">Search</button>
+            </div>
+        </div>
+    </form>
+    <!-- KHUSUS BWAT UI SEARCH -->
+
+    <!-- untuk table data -->
+    <div class="table-responsive table table-striped table-indesktop">
+        <table class="table table-sm table-bordered">
+            <thead>
+                <tr>
+                    <th>REG DATE</th>
+                    <th>CODE</th>
+                    <th>NAME</th>
+                    <th>PHONE</th>
+                    <th>BRANCH</th>
+                    <th>CSO</th>
+                    <th style="display: none;">ADDRESS</th>
+                    <th style="display: none;">PROVINCE</th>
+                    <th style="display: none;">DISTRICT</th>
+                    <th style="display: none;">COUNTRY</th>
+                    <th style="display: none;">BIRTH DATE</th>
+                    <th style="display: none;">KTP</th>
+                    <th style="display: none;">GENDER</th>
+                    <th style="display: none;">USER NAME</th>
+                    <th style="text-align: center;" colspan="2">@if(Gate::check('edit-mpc'))EDIT @endif @if(Gate::check('delete-mpc'))/ DELETE @endif</th>
+                </tr>
+            </thead>
+            <tbody name="collection">
+                @php
+                $i = 0
+                @endphp
+                @foreach($dataMpcs as $mpc)
+                <tr>
+                    <td>{{$mpc->registration_date}}</td>
+                    <td>{{$mpc->code}}</td>
+                    <td>{{$mpc->name}}</td>
+                    <td>0{{$mpc->phone / 23}}</td>
+                    <td>{{$mpc->branch['code']}}</td>
+                    <td>{{$mpc->cso['name']}}</td>
+                    <td style="display: none;">{{$mpc->address}}</td>
+                    <td style="display: none;">{{$mpc->province}}</td>
+                    <td style="display: none;">{{$mpc->district}}</td>
+                    <td style="display: none;">{{$mpc->branch['country']}}</td>
+                    <td style="display: none;">{{$mpc->birth_date}}</td>
+                    <td style="display: none;">{{$mpc->ktp}}</td>
+                    <td style="display: none;">{{$mpc->gender}}</td>
+                    <td style="display: none;">{{$mpc->user['name']}}</td>
+                    @if(Gate::check('edit-mpc'))
+                    <td style="text-align: center;">
+                        <button class="btn btn-primary btn-editMpc" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$mpc->id}}">
+                            <i class="material-icons">mode_edit</i>
+                        </button>
+                    </td>
+                    @endif
+                    @if(Gate::check('delete-mpc'))
+                    <td style="text-align: center;">
+                        <button class="btn btn-primary btn-deleteMpc" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$mpc->id}}">
+                            <i class="material-icons">delete</i>
+                        </button>
+                    </td>
+                    @endif
+                </tr>
+                @php
+                $i++
+                @endphp
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+
+    <!-- untuk card data -->
+    @php
+    $i = 0
+    @endphp
+    @foreach($dataMpcs as $mpc)
+    <div class="card-inmobile">
+        <div class="card" style="margin-bottom:10px;">
+            <div class="card-body">
+                <h6 class="card-title" style="border-bottom:solid 0.2px black;text-align:center;">{{$mpc->code}} - {{$mpc->name}}<br></h6>
+                <h6 class="text-muted card-subtitle mb-2" style="font-size:12px;">{{$mpc->branch['country']}} - {{$mpc->branch['code']}}<br></h6>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Registration Date :</b> {{$mpc->registration_date}}<br></p>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>No. KTP :</b> {{$mpc->ktp}}<br></p>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Birth Date :</b> {{$mpc->birth_date}}<br></p>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Gender :</b> {{$mpc->gender}}<br></p>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Address :</b> {{$mpc->address}}<br></p>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Phone :</b> 0{{$mpc->phone / 23}}<br></p>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>CSO :</b> {{$mpc->cso['name']}}<br></p>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:10px;"><b>User Keyin :</b> {{$mpc->user['name']}}<br></p>
+                @if(Gate::check('edit-mpc'))
+                <button class="btn btn-primary btn-edithapus-card btn-editMpc" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$mpc->id}}">
+                    <i class="material-icons">mode_edit</i>
+                </button>
+                @endif
+                @if(Gate::check('delete-mpc'))
+                <button class="btn btn-primary btn-edithapus-card btn-deleteMpc" type="button" style="padding:0px 5px;margin-right:10px;" name="{{$i}}" value="{{$mpc->id}}">
+                    <i class="material-icons">delete</i>
+                </button>
+                @endif
+            </div>
+        </div>
+    </div>
+    @php
+    $i++
+    @endphp
+    @endforeach
+
+    <!-- untuk pagination -->
+    <div class="pagination-wrapper" style="float:right;">
+        {{ $dataMpcs->links() }}
+    </div>
+</div>
+@endif
+
+@if(Gate::check('browse-data-undangan'))
+<div class="container" id="ListTab-1" style="overflow-x:auto;">
+    <h1 style="text-align:center;color:#505e6c;">List Data Undangan</h1>
+
+    <!-- KHUSUS BWAT UI SEARCH -->
+    <form class="search-form" action="{{ url()->current() }}">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <i class="fa fa-search"></i>
+                </span>
+            </div>
+            <input class="form-control" type="text" name="keywordDataUndangan" value="{{ app('request')->input('keywordDataUndangan') }}" placeholder="Search...">
+            <div class="input-group-append">
+                <button class="btn btn-light border" type="submit">Search</button>
+            </div>
+        </div>
+    </form>
+    <!-- KHUSUS BWAT UI SEARCH -->
+
+    <!-- untuk table data -->
+    <div class="table-responsive table table-striped table-indesktop">
+        <table class="table table-sm table-bordered">
+            <thead>
+                <tr>
+                    <th>REG DATE</th>
+                    <th>CODE</th>
+                    <th>NAME</th>
+                    <th>PHONE</th>
+                    <th style="display: none;">ADDRESS</th>
+                    <th style="display: none;">BIRTH DATE</th>
+                    <th style="text-align: center;" colspan="2">@if(Gate::check('edit-data-undangan'))EDIT @endif @if(Gate::check('delete-data-undangan'))/ DELETE @endif</th>
+                </tr>
+            </thead>
+            <tbody name="collection">
+                @php
+                $i = 0
+                @endphp
+                @foreach($dataUndangans as $dataUndangan)
+                <tr>
+                    <td>{{$dataUndangan->registration_date}}</td>
+                    <td>{{$dataUndangan->code}}</td>
+                    <td>{{$dataUndangan->name}}</td>
+                    <td>0{{$dataUndangan->phone / 23}}</td>
+                    <td style="display: none;">{{$dataUndangan->address}}</td>
+                    <td style="display: none;">{{$dataUndangan->birth_date}}</td>
+                    @if(Gate::check('edit-data-undangan'))
+                    <td style="text-align: center;">
+                        <button class="btn btn-primary btn-editDataUndangan" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$dataUndangan->id}}">
+                            <i class="material-icons">mode_edit</i>
+                        </button>
+                    </td>
+                    @endif
+                    @if(Gate::check('delete-data-undangan'))
+                    <td style="text-align: center;">
+                        <button class="btn btn-primary btn-deleteDataUndangan" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$dataUndangan->id}}">
+                            <i class="material-icons">delete</i>
+                        </button>
+                    </td>
+                    @endif
+                </tr>
+                @php
+                $i++
+                @endphp
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+
+    <!-- untuk card data -->
+    @php
+    $i = 0
+    @endphp
+    @foreach($dataUndangans as $dataUndangan)
+    <div class="card-inmobile">
+        <div class="card" style="margin-bottom:10px;">
+            <div class="card-body">
+                <h6 class="card-title" style="border-bottom:solid 0.2px black;text-align:center;">{{$dataUndangan->code}} - {{$dataUndangan->name}}<br></h6>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Registration Date :</b> {{$dataUndangan->registration_date}}<br></p>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Birth Date :</b> {{$dataUndangan->birth_date}}<br></p>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Address :</b> {{$dataUndangan->address}}<br></p>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Phone :</b> 0{{$dataUndangan->phone / 23}}<br></p>
+                @if(Gate::check('edit-data-undangan'))
+                <button class="btn btn-primary btn-edithapus-card btn-editDataUndangan" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$dataUndangan->id}}">
+                    <i class="material-icons">mode_edit</i>
+                </button>
+                @endif
+                @if(Gate::check('delete-data-undangan'))
+                <button class="btn btn-primary btn-edithapus-card btn-deleteDataUndangan" type="button" style="padding:0px 5px;margin-right:10px;" name="{{$i}}" value="{{$dataUndangan->id}}">
+                    <i class="material-icons">delete</i>
+                </button>
+                @endif
+            </div>
+        </div>
+    </div>
+    @php
+    $i++
+    @endphp
+    @endforeach
+
+    <!-- untuk pagination -->
+    <div class="pagination-wrapper" style="float:right;">
+        {{ $dataUndangans->links() }}
+    </div>
+</div>
+@endif
+
+<!--===========================================================-->
 
 <!-- modal Find Data Undangan -->
 <div class="modal fade" role="dialog" tabindex="-1" id="modal-DataUndangan">
@@ -944,14 +1414,22 @@
 </script>
 @endcan
 
-
 <script type="text/javascript">
+    //////////// KHUSUS UNTUK SCRIPT ONCLICK TAB//////
+    function ShowList(id) {
+        $("#ListTab-1").addClass("d-none");
+        $("#ListTab-2").addClass("d-none");
+        $("#ListTab-3").addClass("d-none");
+        $("#ListTab-4").addClass("d-none");
+        $("#ListTab-"+id).removeClass("d-none");
+    }
+    ///////////////////////////////////////////////////
+
     $(document).ready(function () {
         $('#modal-DataUndangan').modal('show');
         /*METHOD - METHOD UMUM ATAU KESELURUHAN
         * Khusus method" PENOPANG PADA HALAMAN INI
         */
-
         function _(el){
             return document.getElementById(el);
         };

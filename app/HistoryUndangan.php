@@ -20,12 +20,12 @@ class HistoryUndangan extends Model
         return $this->belongsTo('App\Cso');
     }
 
-    public function typeCust()
+    public function type_cust()
     {
         return $this->belongsTo('App\TypeCust');
     }
 
-    public function dataUndangan()
+    public function data_undangan()
     {
         return $this->belongsTo('App\DataUndangan');
     }
