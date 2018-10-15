@@ -10,7 +10,7 @@ class Bank extends Model
         'name', 'active',
     ];
 
-    public function historyUndangan()
+    public function history_undangan()
     {
         return $this->hasMany('App\HistoryUndangan');
     }
