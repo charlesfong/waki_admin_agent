@@ -35,22 +35,22 @@
 <div class="container contact-clean" id="form-addMember">
     <div class="tab-content">
         <ul class="nav nav-tabs">
-            @if(Gate::check('find-data-undangan'))
+            @if(Gate::check('find-data-undangan') || Gate::check('browse-data-undangan') || Gate::check('add-data-undangan'))
             <li class="nav-item">
                 <a class="nav-link active" role="tab" data-toggle="tab" href="#tab-1" aria-selected="true" onclick="ShowList('1')">Data Undangan</a>
             </li>
             @endif
-            @if(Gate::check('find-data-outsite'))
+            @if(Gate::check('find-data-outsite') || Gate::check('browse-data-outsite') || Gate::check('add-data-outsite'))
             <li class="nav-item">
-                <a class="nav-link" role="tab" data-toggle="tab" href="#tab-2" aria-selected="true" onclick="ShowList('2')">Data Outsite</a>
+                <a class="nav-link" role="tab" data-toggle="tab" href="#tab-2" aria-selected="true" onclick="ShowList('2')">Data Out-Site</a>
             </li>
             @endif
-            @if(Gate::check('find-data-therapy'))
+            @if(Gate::check('find-data-therapy') || Gate::check('browse-data-therapy') || Gate::check('add-data-therapy'))
             <li class="nav-item">
                 <a class="nav-link" role="tab" data-toggle="tab" href="#tab-3" aria-selected="true"onclick="ShowList('3')">Data Therapy</a>
             </li>
             @endif
-            @if(Gate::check('find-mpc'))
+            @if(Gate::check('find-mpc') || Gate::check('browse-mpc') || Gate::check('add-mpc'))
             <li class="nav-item">
                 <a class="nav-link" role="tab" data-toggle="tab" href="#tab-4" aria-selected="true"onclick="ShowList('4')">MPC</a>
             </li>
@@ -233,7 +233,7 @@
         <div class="tab-pane" role="tabpanel" id="tab-2">
             @if(Gate::check('find-data-outsite'))
             <form action="{{ url()->current() }}" style="display: block;float: inherit;">
-                <h1 style="text-align: center;color: rgb(80, 94, 108);">Find Data Outsite</h1>
+                <h1 style="text-align: center;color: rgb(80, 94, 108);">Find Data Out-Site</h1>
                 <br>
                 <div class="input-group">
                     <div class="input-group-prepend">
@@ -1426,7 +1426,36 @@
     ///////////////////////////////////////////////////
 
     $(document).ready(function () {
-        $('#modal-DataUndangan').modal('show');
+        var url = window.location.href;
+
+        //Jika ada search (submit), ketika refresh langsung menuju tab tertentu
+        //Default akan ke tab Undangan
+        if(url.includes("keywordDataOutsite"))
+        {
+            $("a[href='#tab-1']").removeClass("active");
+            $("a[href='#tab-2']").addClass("active");
+            $("#tab-1").removeClass("active");
+            $("#tab-2").addClass("active");
+            ShowList(2);
+        }
+        else if(url.includes("keywordDataTherapy"))
+        {
+            $("a[href='#tab-1']").removeClass("active");
+            $("a[href='#tab-3']").addClass("active");
+            $("#tab-1").removeClass("active");
+            $("#tab-3").addClass("active");
+            ShowList(3);
+        }
+        else if(url.includes("keywordMpc"))
+        {
+            $("a[href='#tab-1']").removeClass("active");
+            $("a[href='#tab-4']").addClass("active");
+            $("#tab-1").removeClass("active");
+            $("#tab-4").addClass("active");
+            ShowList(4);
+        }
+
+        //$('#modal-DataUndangan').modal('show');
         /*METHOD - METHOD UMUM ATAU KESELURUHAN
         * Khusus method" PENOPANG PADA HALAMAN INI
         */
@@ -1786,7 +1815,7 @@
                 // $('#modal-UpdateForm').modal('hide')
                 // $("#modal-NotificationUpdate").modal("show");
                 $('#modal-UpdateForm').modal('hide')
-                $("#modal-Notification").find("p#txt-notification").html(event.target.responseText);
+                $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">Data has been ADDED successfully</div>");
                 $("#modal-Notification").modal("show");
             }
 
@@ -1875,7 +1904,7 @@
                 // $('#modal-UpdateForm').modal('hide')
                 // $("#modal-NotificationUpdate").modal("show");
                 $('#modal-UpdateForm').modal('hide')
-                $("#modal-Notification").find("p#txt-notification").html(event.target.responseText);
+                $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">Data has been ADDED successfully</div>");
                 $("#modal-Notification").modal("show");
             }
 
@@ -1952,7 +1981,7 @@
                 // $('#modal-UpdateForm').modal('hide')
                 // $("#modal-NotificationUpdate").modal("show");
                 $('#modal-UpdateForm').modal('hide')
-                $("#modal-Notification").find("p#txt-notification").html(event.target.responseText);
+                $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">Data has been ADDED successfully</div>");
                 $("#modal-Notification").modal("show");
             }
 
@@ -2029,7 +2058,7 @@
                 // $('#modal-UpdateForm').modal('hide')
                 // $("#modal-NotificationUpdate").modal("show");
                 $('#modal-UpdateForm').modal('hide')
-                $("#modal-Notification").find("p#txt-notification").html(event.target.responseText);
+                $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">Data has been ADDED successfully</div>");
                 $("#modal-Notification").modal("show");
             }
 
