@@ -46,7 +46,7 @@ class UserController extends Controller
             }
             else
             {
-                $users = User::when($request->keyword, function ($query) use ($request) {
+                $users = User::when($request->keyword, function ($query) use ($request, $user) {
                     $query->where('users.code', 'like', "%{$request->keyword}%")
                         ->where([
                             ['users.active', true],
@@ -80,7 +80,7 @@ class UserController extends Controller
         }
         else
         {
-            $users = User::when($request->keyword, function ($query) use ($request) {
+            $users = User::when($request->keyword, function ($query) use ($request, $user) {
                 $query->where('code', 'like', "%{$request->keyword}%")
                     ->where([
                         ['active', true],
