@@ -55,7 +55,7 @@ class CsoController extends Controller
             }
             else
             {
-                $csos = Cso::when($request->keyword,function ($query) use ($request){
+                $csos = Cso::when($request->keyword,function ($query) use ($request, $user){
                     $query->where('csos.code', 'like', "%{$request->keyword}%")
                         ->where([
                             ['csos.active', true],
@@ -109,7 +109,7 @@ class CsoController extends Controller
         }
         else
         {
-            $csos = Cso::when($request->keyword,function ($query) use ($request){
+            $csos = Cso::when($request->keyword,function ($query) use ($request, $user){
                 $query->where('code', 'like', "%{$request->keyword}%")
                         ->where([
                             ['active', true],

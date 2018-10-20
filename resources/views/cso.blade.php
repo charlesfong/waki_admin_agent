@@ -108,7 +108,7 @@
         </div>
         <div class="form-group frm-group-select select-right {{ $errors->has('district') ? ' has-error' : '' }}" style="/*float:right;*/">
             <span>DISTRICT</span>
-            <select id="district" class="form-control{{ $errors->has('district') ? ' is-invalid' : '' }}" name="district" value="{{old('district')}}" required>
+            <select id="district" class="form-control{{ $errors->has('district') ? ' is-invalid' : '' }} text-uppercase" name="district" value="{{old('district')}}" required>
                 <optgroup label="District">
                     <option value="" disabled selected>SELECT PROVINCE FIRST</option>
                 </optgroup>

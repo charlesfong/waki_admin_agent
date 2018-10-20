@@ -34,19 +34,19 @@ class DataController extends Controller
 		* maka dia bisa buka table salah satu data tersebut
 		* sample : "if(all-branch-mpc || all-country-mpc)"
 		*/
-		if($user->can('all-branch-mpc') || $user->can('all-country-mpc'))
+		if($user->can('browse-mpc'))
 		{
 			$dataMpcs = $this->IndexMpc($request, $user);
 		}
-		if($user->can('all-branch-data-undangan') || $user->can('all-country-data-undangan'))
+		if($user->can('browse-data-undangan'))
 		{
 			$dataUndangans = $this->IndexUndangan($request, $user);
 		}
-		if($user->can('all-branch-data-outsite') || $user->can('all-country-data-outsite'))
+		if($user->can('browse-data-outsite'))
 		{
 			$dataOutsites = $this->IndexOutsite($request, $user);
 		}
-		if($user->can('all-branch-data-therapy') || $user->can('all-country-data-therapy'))
+		if($user->can('browse-data-therapy'))
 		{
 			$dataTherapies = $this->IndexTherapy($request, $user);
 		}
@@ -112,7 +112,7 @@ class DataController extends Controller
             }
             else
             {
-            	$mpcs = Mpc::when($request->keywordMpc, function ($query) use ($request) {
+            	$mpcs = Mpc::when($request->keywordMpc, function ($query) use ($request, $user) {
                     $query->where('mpcs.code', 'like', "%{$request->keywordMpc}%")
                         ->where([
                             ['mpcs.active', true],
@@ -192,7 +192,7 @@ class DataController extends Controller
         }
         else
         {
-            $mpcs = Mpc::when($request->keywordMpc, function ($query) use ($request) {
+            $mpcs = Mpc::when($request->keywordMpc, function ($query) use ($request, $user) {
                 $query->where('mpcs.code', 'like', "%{$request->keywordMpc}%")
 	                ->where([
 		                ['mpcs.active', true],
@@ -294,127 +294,101 @@ class DataController extends Controller
 
                 $data_undangans->appends($request->only('keywordDataUndangan'));
             }
-            // else
-            // {
-            // 	$data_undangans = DataUndangan::when($request->keywordDataUndangan, function ($query) use ($request) {
-            //         $query->where('code', 'like', "%{$request->keywordMpc}%")
-            //             ->where([
-            //                 ['active', true],
-            //                 ['country', $user->branch['country']]
-            //             ])
-            //             ->orWhere('name', 'like', "%{$request->keywordMpc}%")
-            //             ->where([
-            //                 ['mpcs.active', true],
-            //                 ['branches.country', $user->branch['country']]
-            //             ])
-            //             ->orWhere('mpcs.address', 'like', "%{$request->keywordMpc}%")
-            //             ->where([
-            //                 ['mpcs.active', true],
-            //                 ['branches.country', $user->branch['country']]
-            //             ])
-            //             ->orWhere('mpcs.phone', 'like', "%{$request->keywordMpc}%")
-            //             ->where([
-            //                 ['mpcs.active', true],
-            //                 ['branches.country', $user->branch['country']]
-            //             ])
-            //             ->orWhere('mpcs.registration_date', 'like', "%{$request->keywordMpc}%")
-            //             ->where([
-            //                 ['mpcs.active', true],
-            //                 ['branches.country', $user->branch['country']]
-            //             ])
-            //             ->orWhere('mpcs.birth_date', 'like', "%{$request->keywordMpc}%")
-            //             ->where([
-            //                 ['mpcs.active', true],
-            //                 ['branches.country', $user->branch['country']]
-            //             ]);
-            //     })
-            //     ->where([['mpcs.active', true],
-	           //          ['branches.country', $user->branch['country']]])
-            //     ->join('branches', 'mpcs.branch_id', '=', 'branches.id')
-            //     ->join('csos', 'mpcs.cso_id', '=', 'csos.id')
-            //     ->join('users', 'mpcs.user_id', '=', 'users.id')
-            //     ->select('mpcs.*')
-            //     ->paginate(10);
+            else
+            {
+            	$data_undangans = DataUndangan::when($request->keywordDataUndangan, function ($query) use ($request, $user) {
+                    $query->where('data_undangans.code', 'like', "%{$request->keywordDataUndangan}%")
+                        ->where([
+                            ['data_undangans.active', true],
+                            ['branches.country', $user->branch['country']]
+                        ])
+                        ->orWhere('data_undangans.name', 'like', "%{$request->keywordDataUndangan}%")
+                        ->where([
+                            ['data_undangans.active', true],
+                            ['branches.country', $user->branch['country']]
+                        ])
+                        ->orWhere('data_undangans.address', 'like', "%{$request->keywordDataUndangan}%")
+                        ->where([
+                            ['data_undangans.active', true],
+                            ['branches.country', $user->branch['country']]
+                        ])
+                        ->orWhere('data_undangans.phone', 'like', "%{$request->keywordDataUndangan}%")
+                        ->where([
+                            ['data_undangans.active', true],
+                            ['branches.country', $user->branch['country']]
+                        ])
+                        ->orWhere('data_undangans.registration_date', 'like', "%{$request->keywordDataUndangan}%")
+                        ->where([
+                            ['data_undangans.active', true],
+                            ['branches.country', $user->branch['country']]
+                        ])
+                        ->orWhere('data_undangans.birth_date', 'like', "%{$request->keywordDataUndangan}%")
+                        ->where([
+                            ['data_undangans.active', true],
+                            ['branches.country', $user->branch['country']]
+                        ]);
+                })
+                ->where([['data_undangans.active', true],
+	                    ['branches.country', $user->branch['country']]])
+                ->join('history_undangans', 'data_undangans.id', '=', 'history_undangans.data_undangan_id')
+                ->leftjoin('banks', 'history_undangans.bank_id', '=', 'banks.id')
+                ->join('branches', 'history_undangans.branch_id', '=', 'branches.id')
+                ->join('csos', 'history_undangans.cso_id', '=', 'csos.id')
+                ->join('type_custs', 'history_undangans.type_cust_id', '=', 'type_custs.id')
+                ->select('data_undangans.*')
+                ->paginate(10);
 
-            //     $mpcs->appends($request->only('keywordMpc'));
-            // }
+                $data_undangans->appends($request->only('keywordDataUndangan'));
+            }
         }
-        // else
-        // {
-        //     $mpcs = Mpc::when($request->keywordMpc, function ($query) use ($request) {
-        //         $query->where('mpcs.code', 'like', "%{$request->keywordMpc}%")
-	       //          ->where([
-		      //           ['mpcs.active', true],
-		      //           ['mpcs.branch_id', $user->branch_id]
-		      //       ])
-        //             ->orWhere('mpcs.name', 'like', "%{$request->keywordMpc}%")
-        //             ->where([
-		      //           ['mpcs.active', true],
-		      //           ['mpcs.branch_id', $user->branch_id]
-		      //       ])
-        //             ->orWhere('mpcs.address', 'like', "%{$request->keywordMpc}%")
-        //             ->where([
-		      //           ['mpcs.active', true],
-		      //           ['mpcs.branch_id', $user->branch_id]
-		      //       ])
-        //             ->orWhere('mpcs.phone', 'like', "%{$request->keywordMpc}%")
-        //             ->where([
-		      //           ['mpcs.active', true],
-		      //           ['mpcs.branch_id', $user->branch_id]
-		      //       ])
-        //             ->orWhere('mpcs.province', 'like', "%{$request->keywordMpc}%")
-        //             ->where([
-		      //           ['mpcs.active', true],
-		      //           ['mpcs.branch_id', $user->branch_id]
-		      //       ])
-        //             ->orWhere('mpcs.district', 'like', "%{$request->keywordMpc}%")
-        //             ->where([
-		      //           ['mpcs.active', true],
-		      //           ['mpcs.branch_id', $user->branch_id]
-		      //       ])
-        //             ->orWhere('mpcs.registration_date', 'like', "%{$request->keywordMpc}%")
-        //             ->where([
-		      //           ['mpcs.active', true],
-		      //           ['mpcs.branch_id', $user->branch_id]
-		      //       ])
-        //             ->orWhere('mpcs.ktp', 'like', "%{$request->keywordMpc}%")
-        //             ->where([
-		      //           ['mpcs.active', true],
-		      //           ['mpcs.branch_id', $user->branch_id]
-		      //       ])
-        //             ->orWhere('mpcs.birth_date', 'like', "%{$request->keywordMpc}%")
-        //             ->where([
-		      //           ['mpcs.active', true],
-		      //           ['mpcs.branch_id', $user->branch_id]
-		      //       ])
-        //             ->orWhere('mpcs.gender', 'like', "%{$request->keywordMpc}%")
-        //             ->where([
-		      //           ['mpcs.active', true],
-		      //           ['mpcs.branch_id', $user->branch_id]
-		      //       ])
-        //             ->orWhere('csos.name', 'like', "%{$request->keywordMpc}%")
-        //             ->where([
-		      //           ['mpcs.active', true],
-		      //           ['mpcs.branch_id', $user->branch_id]
-		      //       ])
-        //             ->orWhere('users.name', 'like', "%{$request->keywordMpc}%")
-        //             ->where([
-		      //           ['mpcs.active', true],
-		      //           ['mpcs.branch_id', $user->branch_id]
-		      //       ]);
-        //     })
-        //     ->where([
-        //         ['mpcs.active', true],
-        //         ['mpcs.branch_id', $user->branch_id]
-        //     ])
-        //     ->join('csos', 'mpcs.cso_id', '=', 'csos.id')
-        //     ->join('users', 'mpcs.user_id', '=', 'users.id')
-        //     ->select('mpcs.*')
-        //     ->paginate(10);
+        else
+        {
+            $data_undangans = DataUndangan::when($request->keywordDataUndangan, function ($query) use ($request, $user) {
+                $query->where('data_undangans.code', 'like', "%{$request->keywordDataUndangan}%")
+	                ->where([
+		                ['data_undangans.active', true],
+		                ['history_undangans.branch_id', $user->branch_id]
+		            ])
+                    ->orWhere('data_undangans.name', 'like', "%{$request->keywordDataUndangan}%")
+                    ->where([
+		                ['data_undangans.active', true],
+		                ['history_undangans.branch_id', $user->branch_id]
+		            ])
+                    ->orWhere('data_undangans.address', 'like', "%{$request->keywordDataUndangan}%")
+                    ->where([
+		                ['data_undangans.active', true],
+		                ['history_undangans.branch_id', $user->branch_id]
+		            ])
+                    ->orWhere('data_undangans.phone', 'like', "%{$request->keywordDataUndangan}%")
+                    ->where([
+		                ['data_undangans.active', true],
+		                ['history_undangans.branch_id', $user->branch_id]
+		            ])
+                    ->orWhere('data_undangans.registration_date', 'like', "%{$request->keywordDataUndangan}%")
+                    ->where([
+		                ['data_undangans.active', true],
+		                ['history_undangans.branch_id', $user->branch_id]
+		            ])
+                    ->orWhere('data_undangans.birth_date', 'like', "%{$request->keywordDataUndangan}%")
+                    ->where([
+		                ['data_undangans.active', true],
+		                ['history_undangans.branch_id', $user->branch_id]
+		            ]);
+            })
+            ->where([
+                ['data_undangans.active', true],
+                ['history_undangans.branch_id', $user->branch_id]
+            ])
+            ->join('history_undangans', 'data_undangans.id', '=', 'history_undangans.data_undangan_id')
+            ->leftjoin('banks', 'history_undangans.bank_id', '=', 'banks.id')
+            ->join('branches', 'history_undangans.branch_id', '=', 'branches.id')
+            ->join('csos', 'history_undangans.cso_id', '=', 'csos.id')
+            ->join('type_custs', 'history_undangans.type_cust_id', '=', 'type_custs.id')
+            ->select('data_undangans.*')
+            ->paginate(10);
 
-        //     $mpcs->appends($request->only('keywordMpc'));
-        // }
-
+            $data_undangans->appends($request->only('keywordDataUndangan'));
+        }
         return $data_undangans;
 	}
 
@@ -459,7 +433,7 @@ class DataController extends Controller
             }
             else
             {
-            	$data_outsites = DataOutsite::when($request->keywordDataOutsite, function ($query) use ($request) {
+            	$data_outsites = DataOutsite::when($request->keywordDataOutsite, function ($query) use ($request, $user) {
                     $query->where('data_outsites.code', 'like', "%{$request->keywordDataOutsite}%")
                         ->where([
                             ['data_outsites.active', true],
@@ -512,11 +486,11 @@ class DataController extends Controller
                             ['branches.country', $user->branch['country']]
                         ]);
                 })
-                ->where([['mpcs.active', true],
+                ->where([['data_outsites.active', true],
 	                    ['branches.country', $user->branch['country']]])
                 ->join('branches', 'data_outsites.branch_id', '=', 'branches.id')
                 ->join('csos', 'data_outsites.cso_id', '=', 'csos.id')
-                ->leftjoin('locations', 'data_outsites.user_id', '=', 'locations.id')
+                ->leftjoin('locations', 'data_outsites.location_id', '=', 'locations.id')
                 ->join('type_custs', 'data_outsites.type_cust_id', '=', 'type_custs.id')
                 ->select('data_outsites.*')
                 ->paginate(10);
@@ -526,18 +500,13 @@ class DataController extends Controller
         }
         else
         {
-            $data_outsites = DataOutsite::when($request->keywordDataOutsite, function ($query) use ($request) {
+            $data_outsites = DataOutsite::when($request->keywordDataOutsite, function ($query) use ($request, $user) {
                 $query->where('data_outsites.code', 'like', "%{$request->keywordDataOutsite}%")
 	                ->where([
 		                ['data_outsites.active', true],
 		                ['data_outsites.branch_id', $user->branch_id]
 		            ])
                     ->orWhere('data_outsites.name', 'like', "%{$request->keywordDataOutsite}%")
-                    ->where([
-		                ['data_outsites.active', true],
-		                ['data_outsites.branch_id', $user->branch_id]
-		            ])
-                    ->orWhere('data_outsites.address', 'like', "%{$request->keywordDataOutsite}%")
                     ->where([
 		                ['data_outsites.active', true],
 		                ['data_outsites.branch_id', $user->branch_id]
@@ -562,44 +531,35 @@ class DataController extends Controller
 		                ['data_outsites.active', true],
 		                ['data_outsites.branch_id', $user->branch_id]
 		            ])
-                    ->orWhere('data_outsites.ktp', 'like', "%{$request->keywordDataOutsite}%")
-                    ->where([
-		                ['data_outsites.active', true],
-		                ['data_outsites.branch_id', $user->branch_id]
-		            ])
-                    ->orWhere('data_outsites.birth_date', 'like', "%{$request->keywordDataOutsite}%")
-                    ->where([
-		                ['data_outsites.active', true],
-		                ['data_outsites.branch_id', $user->branch_id]
-		            ])
-                    ->orWhere('data_outsites.gender', 'like', "%{$request->keywordDataOutsite}%")
-                    ->where([
-		                ['data_outsites.active', true],
-		                ['data_outsites.branch_id', $user->branch_id]
-		            ])
 		            //------------------------------------------------------------------------------------------
+                    ->orWhere('branches.name', 'like', "%{$request->keywordDataOutsite}%")
+                    ->where([
+                        ['data_outsites.active', true],
+                        ['branches.country', $user->branch_id]
+                    ])
                     ->orWhere('csos.name', 'like', "%{$request->keywordDataOutsite}%")
                     ->where([
-		                ['data_outsites.active', true],
-		                ['data_outsites.branch_id', $user->branch_id]
-		            ])
-                    ->orWhere('users.name', 'like', "%{$request->keywordDataOutsite}%")
+                        ['data_outsites.active', true],
+                        ['branches.country', $user->branch_id]
+                    ])
+                    ->orWhere('locations.name', 'like', "%{$request->keywordDataOutsite}%")
                     ->where([
-		                ['data_outsites.active', true],
-		                ['data_outsites.branch_id', $user->branch_id]
-		            ])
+                        ['data_outsites.active', true],
+                        ['branches.country', $user->branch_id]
+                    ])                        
                     ->orWhere('type_custs.name', 'like', "%{$request->keywordDataOutsite}%")
                     ->where([
-		                ['data_outsites.active', true],
-		                ['data_outsites.branch_id', $user->branch_id]
-		            ]);
+                        ['data_outsites.active', true],
+                        ['branches.country', $user->branch_id]
+                    ]);
             })
             ->where([
                 ['data_outsites.active', true],
                 ['data_outsites.branch_id', $user->branch_id]
             ])
             ->join('csos', 'data_outsites.cso_id', '=', 'csos.id')
-            ->leftjoin('locations', 'data_outsites.user_id', '=', 'locations.id')
+            ->join('branches', 'data_outsites.branch_id', '=', 'branches.id')
+            ->leftjoin('locations', 'data_outsites.location_id', '=', 'locations.id')
             ->join('type_custs', 'data_outsites.type_cust_id', '=', 'type_custs.id')
             ->select('data_outsites.*')
             ->paginate(10);
@@ -651,7 +611,7 @@ class DataController extends Controller
             }
             else
             {
-            	$data_therapies = DataTherapy::when($request->keywordDataTherapy, function ($query) use ($request) {
+            	$data_therapies = DataTherapy::when($request->keywordDataTherapy, function ($query) use ($request, $user) {
                     $query->where('data_therapies.code', 'like', "%{$request->keywordDataTherapy}%")
                         ->where([
                             ['data_therapies.active', true],
@@ -717,7 +677,7 @@ class DataController extends Controller
         }
         else
         {
-            $data_therapies = DataTherapy::when($request->keywordDataTherapy, function ($query) use ($request) {
+            $data_therapies = DataTherapy::when($request->keywordDataTherapy, function ($query) use ($request, $user) {
                 $query->where('data_therapies.code', 'like', "%{$request->keywordDataOutsite}%")
 	                ->where([
 		                ['data_therapies.active', true],
@@ -754,26 +714,27 @@ class DataController extends Controller
 		                ['data_therapies.branch_id', $user->branch_id]
 		            ])
 		            //------------------------------------------------------------------------------------------
-                    ->orWhere('csos.name', 'like', "%{$request->keywordDataOutsite}%")
+                    ->orWhere('branches.name', 'like', "%{$request->keywordDataTherapy}%")
                     ->where([
-		                ['data_therapies.active', true],
-		                ['data_therapies.branch_id', $user->branch_id]
-		            ])
-                    ->orWhere('users.name', 'like', "%{$request->keywordDataOutsite}%")
+                        ['data_therapies.active', true],
+                        ['branches.country', $user->branch_id]
+                    ])
+                    ->orWhere('csos.name', 'like', "%{$request->keywordDataTherapy}%")
                     ->where([
-		                ['data_therapies.active', true],
-		                ['data_therapies.branch_id', $user->branch_id]
-		            ])
-                    ->orWhere('type_custs.name', 'like', "%{$request->keywordDataOutsite}%")
+                        ['data_therapies.active', true],
+                        ['branches.country', $user->branch_id]
+                    ])                      
+                    ->orWhere('type_custs.name', 'like', "%{$request->keywordDataTherapy}%")
                     ->where([
-		                ['data_therapies.active', true],
-		                ['data_therapies.branch_id', $user->branch_id]
-		            ]);
+                        ['data_therapies.active', true],
+                        ['branches.country', $user->branch_id]
+                    ]);
             })
             ->where([
                 ['data_therapies.active', true],
                 ['data_therapies.branch_id', $user->branch_id]
             ])
+            ->join('branches', 'data_therapies.branch_id', '=', 'branches.id')
             ->join('csos', 'data_therapies.cso_id', '=', 'csos.id')
             ->join('type_custs', 'data_therapies.type_cust_id', '=', 'type_custs.id')
             ->select('data_therapies.*')

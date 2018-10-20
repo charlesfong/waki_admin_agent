@@ -331,7 +331,8 @@ a.label:hover, a.label:focus {
   border: 0; }
 
 .panel-container {
-  padding-top: 20px; }
+  padding-top: 20px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23); }
 
 .panel-heading .fa-toggle-up, .panel-heading .fa-toggle-down {
   font-size: 17px; }
@@ -877,7 +878,8 @@ h1.page-header {
 .easypiechart-panel {
   text-align: center;
   padding: 1px 0;
-  margin-bottom: 20px; }
+  margin-bottom: 20px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23); }
 
 .placeholder h2 {
   margin-bottom: 0px; }
