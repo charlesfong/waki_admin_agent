@@ -73,7 +73,7 @@
                     <div class="panel panel-red panel-widget ">
                         <div class="row no-padding"><em class="fa fa-xl fa-credit-card color-red"></em>
                             <div class="large">2000</div>
-                            <div class="text-muted">M.P.C.</div>
+                            <div class="text-muted">MPC</div>
                         </div>
                     </div>
                 </div>
@@ -100,7 +100,7 @@
                 <div class="panel panel-default">
                     <div class="panel-body easypiechart-panel">
                         <h4>Data Undangan</h4>
-                        <div class="easypiechart" id="easypiechart-blue" data-percent="100" ><span class="percent">100%</span></div>
+                        <div class="easypiechart" id="easypiechart-blue" data-percent="100" ><span class="percent">&#x25B2;100%</span></div>
                     </div>
                 </div>
             </div>
@@ -108,7 +108,7 @@
                 <div class="panel panel-default">
                     <div class="panel-body easypiechart-panel">
                         <h4>Data Outsite</h4>
-                        <div class="easypiechart" id="easypiechart-orange" data-percent="80" ><span class="percent">80%</span></div>
+                        <div class="easypiechart" id="easypiechart-orange" data-percent="50" ><span class="percent">&#x25BC;50%</span></div>
                     </div>
                 </div>
             </div>
@@ -116,15 +116,15 @@
                 <div class="panel panel-default">
                     <div class="panel-body easypiechart-panel">
                         <h4>Data Therapy</h4>
-                        <div class="easypiechart" id="easypiechart-teal" data-percent="60" ><span class="percent">60%</span></div>
+                        <div class="easypiechart" id="easypiechart-teal" data-percent="60" ><span class="percent">&#x25B2;60%</span></div>
                     </div>
                 </div>
             </div>
             <div class="col-xs-6 col-md-3">
                 <div class="panel panel-default">
                     <div class="panel-body easypiechart-panel">
-                        <h4>M.P.C.</h4>
-                        <div class="easypiechart" id="easypiechart-red" data-percent="40" ><span class="percent">40%</span></div>
+                        <h4>MPC</h4>
+                        <div class="easypiechart" id="easypiechart-red" data-percent="40" ><span class="percent">&#x25BC;40%</span></div>
                     </div>
                 </div>
             </div>
