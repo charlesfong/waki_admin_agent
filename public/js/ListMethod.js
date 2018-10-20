@@ -4,79 +4,43 @@ function capitalize(string) { //INDONESIA -> Indonesia
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-//      METHOD - METHOD KHUSUS MEMBER
+//      METHOD - METHOD KHUSUS EDIT DATA MASTER YG BERGUNA UNTUK NGAMBIL DATA DARI TABLE SAJA
 //
-//function untuk mengambil data dari table MEMBER
-var actionDelete = $("#actionDelete").prop('action');
-var actionEdit = $("#actionEdit").prop('action');
-
-function GetListMemberData(idx){
-    var element_table = document.getElementsByName('collection');
-    var element_tableRows = element_table[0].rows;
-    var member_reg_date = element_tableRows[idx].cells[0].innerHTML;
-    var member_kode = element_tableRows[idx].cells[1].innerHTML;
-    var member_nama = element_tableRows[idx].cells[2].innerHTML;
-    var member_address = element_tableRows[idx].cells[3].innerHTML;
-    var member_province = element_tableRows[idx].cells[4].innerHTML;
-    var member_district = element_tableRows[idx].cells[5].innerHTML;
-    var member_country = element_tableRows[idx].cells[6].innerHTML;
-    var member_branch = element_tableRows[idx].cells[7].innerHTML;
-    var member_phone = element_tableRows[idx].cells[8].innerHTML;
-    var member_email = element_tableRows[idx].cells[9].innerHTML;
-    var member_age = element_tableRows[idx].cells[10].innerHTML;
-    
-    return {kode : member_kode, nama : member_nama, address : member_address, country : member_country, branch : member_branch, 
-        phone : member_phone, email : member_email, reg_date : member_reg_date, province : member_province, district : member_district,
-        age : member_age};
-}
+////////////////////////////////////////////////////////////////////////////////////////
 
 $("#change-password").click(function(e) {
-        $("#modal-ChangePassword").modal("show");
+    $("#modal-ChangePassword").modal("show");
 });
 
-//untuk menampilkan modal hapus data MEMBER dan menampilkan data mana yang mau di hapus
-$(".btn-deleteMember").click(function(e) {
-    var dataMember = GetListMemberData(this.name);
-    document.getElementById("delete-member").innerHTML = "Do you want to delete "+ dataMember.kode +" - "+ dataMember.nama +"?";
-    document.getElementById("btn-confirmDeleteMember").value = this.value;
-    $("#actionDelete").prop('action', actionDelete+'/'+this.value);
-    $("#modal-DeleteConfirm").modal("show");
-});
+//function untuk mengambil data dari table DATA OUTSITE
+function GetListDataOutsite(idx){
+    var element_table = document.getElementsByName('ListDataOutsite');
+    var element_tableRows = element_table[0].rows;
+    var dataoutsite_reg_date = element_tableRows[idx].cells[0].innerHTML;
+    var dataoutsite_kode = element_tableRows[idx].cells[1].innerHTML;
+    var dataoutsite_nama = element_tableRows[idx].cells[2].innerHTML;
+    var dataoutsite_location = element_tableRows[idx].cells[3].innerHTML;
+    var dataoutsite_phone = element_tableRows[idx].cells[4].innerHTML;
+    var dataoutsite_province = element_tableRows[idx].cells[6].innerHTML;
+    var dataoutsite_district = element_tableRows[idx].cells[7].innerHTML;
+    var dataoutsite_country = element_tableRows[idx].cells[8].innerHTML;
+    var dataoutsite_branch = element_tableRows[idx].cells[9].innerHTML;
+    var dataoutsite_cso = element_tableRows[idx].cells[10].innerHTML;
+    var dataoutsite_typecustId = element_tableRows[idx].cells[11].innerHTML;
+    
+    return {kode : dataoutsite_kode, nama : dataoutsite_nama, location : dataoutsite_location, country : dataoutsite_country, branch : dataoutsite_branch, cso : dataoutsite_cso,
+        phone : dataoutsite_phone, reg_date : dataoutsite_reg_date, province : dataoutsite_province, district : dataoutsite_district, typecust : dataoutsite_typecustId};
+}
 
+//untuk menampilkan modal hapus data OUTSITE dan menampilkan data mana yang mau di hapus
+// $(".btn-deleteDataOutsite").click(function(e) {
+//     var dataOutsite = GetListDataOutsite(this.name);
+//     document.getElementById("txt-delete-dataoutsite").innerHTML = "Do you want to delete "+ dataOutsite.kode +" - "+ dataOutsite.nama +"?";
+//     document.getElementById("btn-confirmDeleteDataOutsite").value = this.value;
+//     $("#actionDelete").prop('action', actionDelete+'/'+this.value);
+//     $("#modal-DeleteConfirm").modal("show");
+// });
 
-//untuk menampilkan modal edit data MEMBER dan menampilkan data mana yg mau di edit
-$(".btn-editMember").click(function(e) {
-    var dataMember = GetListMemberData(this.name);
-    document.getElementById("txtregdate-member").value = dataMember.reg_date;
-    document.getElementById("txtkode-member").value = dataMember.kode;
-    document.getElementById("txtnama-member").value = dataMember.nama;
-    document.getElementById("txtaddress-member").value = dataMember.address;
-    document.getElementById("txtcountry-member").value = dataMember.country;
-    //document.getElementById("txtbranch-member").value = dataMember.branch;
-    document.getElementById("txtprovince-member").value = dataMember.province;
-    document.getElementById("txtphone-member").value = dataMember.phone;
-    document.getElementById("txtemail-member").value = dataMember.email;
-    document.getElementById("txtage-member").value = dataMember.age;
-    document.getElementById("btn-confirmUpdateMember").value = 
-    this.value;
-    $("#actionEdit").prop('action', actionEdit+'/'+this.value);
-
-    var pilihanProvinsi = dataMember.province;
-    var isiOption = "";
-
-    var $el = $("#txtdistrict-member");
-    $el.empty();
-    $.get( "etc/select-"+unescape(pilihanProvinsi)+".php", function( data ) {
-      $el.append(data);
-    });
-    setTimeout(function(){
-        document.getElementById("txtdistrict-member").value = dataMember.district;
-    }, 300)
-    //$("#txtdistrict-member").children("optgroup").eq(0).children("option:contains('"+dataMember.district+"')").attr("selected", "selected");
-    //alert($("#txtdistrict-member").children("optgroup").eq(0).html());
-
-    $("#modal-UpdateForm").modal("show");
-});
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //

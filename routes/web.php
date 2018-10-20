@@ -54,14 +54,26 @@ Route::group(['prefix' => 'data'], function () {
     Route::post('/adddataoutsite', 'DataController@storeDataOutsite')
         ->name('store_dataoutsite')
         ->middleware('can:add-data-outsite');
-        //Add Data Therapy
+    //Add Data Therapy
     Route::post('/adddatatherapy', 'DataController@storeDataTherapy')
         ->name('store_datatherapy')
         ->middleware('can:add-data-therapy');
-        //Add Data MPC
+    //Add Data MPC
     Route::post('/addmpc', 'DataController@storeMpc')
         ->name('store_mpc')
         ->middleware('can:add-mpc');
+    //Edit Data Outsite
+    Route::post('/editdataoutsite', 'DataController@updateDataOutsite')
+        ->name('update_dataoutsite')
+        ->middleware('can:edit-data-outsite');
+    //Edit Data Undangan
+    Route::post('/editdataundangan', 'DataController@updateDataUndangan')
+        ->name('update_dataundangan')
+        ->middleware('can:edit-data-undangan');
+    //Delete Data Outsite
+    Route::post('/deletedataoutsite', 'DataController@deleteDataOutsite')
+        ->name('delete_dataoutsite')
+        ->middleware('can:delete-data-outsite');
 });
 
 //-- MASTER DATA TYPE --//
