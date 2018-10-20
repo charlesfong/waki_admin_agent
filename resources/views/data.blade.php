@@ -766,7 +766,7 @@
                     <th style="text-align: center;" colspan="2">@if(Gate::check('edit-data-outsite'))EDIT @endif @if(Gate::check('delete-data-outsite'))/ DELETE @endif</th>
                 </tr>
             </thead>
-            <tbody name="collection">
+            <tbody name="ListDataOutsite">
                 @php
                 $i = 0
                 @endphp
@@ -781,8 +781,9 @@
                     <td style="display: none;">{{$dataOutsite->province}}</td>
                     <td style="display: none;">{{$dataOutsite->district}}</td>
                     <td style="display: none;">{{$dataOutsite->branch['country']}}</td>
-                    <td style="display: none;">{{$dataOutsite->branch['name']}}</td>
-                    <td style="display: none;">{{$dataOutsite->cso['name']}}</td>
+                    <td style="display: none;">{{$dataOutsite->branch['id']}}</td>
+                    <td style="display: none;">{{$dataOutsite->cso['id']}}</td>
+                    <td style="display: none;">{{$dataOutsite->type_cust['id']}}</td>
                     @if(Gate::check('edit-data-outsite'))
                     <td style="text-align: center;">
                         <button class="btn btn-primary btn-editDataOutsite" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$dataOutsite->id}}">
@@ -900,7 +901,7 @@
                     <td style="display: none;">{{$dataTherapy->province}}</td>
                     <td style="display: none;">{{$dataTherapy->district}}</td>
                     <td style="display: none;">{{$dataTherapy->branch['country']}}</td>
-                    <td style="display: none;">{{$dataTherapy->cso['name']}}</td>
+                    <td style="display: none;">{{$dataTherapy->cso['id']}}</td>
                     @if(Gate::check('edit-data-therapy'))
                     <td style="text-align: center;">
                         <button class="btn btn-primary btn-editDataTherapy" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$dataTherapy->id}}">
@@ -1200,6 +1201,214 @@
 
 <!--===========================================================-->
 
+
+<!---------------- KHUSUS UNTUK EDIT DATA ---------------->
+
+@if(Gate::check('edit-data-outsite'))
+<div class="modal fade" role="dialog" tabindex="-1" id="modal-EditDataOutsite">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="text-center">Edit Data Out-Site</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <!-- FORM UNTUK UPDATE DATA -->
+            <form id="actionEditDataOutsite" name="frmEditDataOutsite" method="POST" action="{{ route('update_dataoutsite') }}">
+                {{ csrf_field() }}
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <span>CODE</span>
+                        <input id="edit-txtcode-dataoutsite" type="text" name="code" class="text-uppercase form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <span>TIPE OUT-SITE</span>
+                        <select id="edit-txttype-cust-dataoutsite" class="text-uppercase form-control" name="type_cust" value="" required>
+                            <optgroup label="TIPE OUT-SITE"> 
+                                <option value="" disabled selected>SELECT TIPE OUT-SITE</option>
+                                @foreach ($type_custs as $type_cust)
+                                    @if($type_cust->type_input == "OUT-SITE")
+                                        <option value="{{$type_cust->id}}">{{$type_cust->name}}</option>
+                                    @endif
+                                @endforeach
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <span>REGISTRATION DATE</span>
+                        <input id="edit-txtreg-date-dataoutsite" type="date" name="registration_date" class="text-uppercase form-control" required>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span>NAME</span>
+                        <input id="edit-txtname-dataoutsite" type="text" name="name" class="text-uppercase form-control" placeholder="NAME" required>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div id="edit-Outsite-Location" class="form-group">
+                        
+                    </div>
+                    <div class="form-group frm-group-select">
+                        <span>COUNTRY</span>
+                        <select id="edit-txtcountry-dataoutsite" class="text-uppercase form-control" name="country" required>
+                            <optgroup label="Country">
+                                @include('etc.select-country')
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group frm-group-select select-right">
+                        <span>BRANCH</span>
+                        <select id="edit-txtbranch-dataoutsite" class="text-uppercase form-control" name="branch" required>
+                            <optgroup label="Branch">
+                                @can('all-branch-data-outsite')
+                                    @can('all-country-data-outsite')
+                                        <option value="" disabled selected>SELECT COUNTRY FIRST</option>
+                                    @endcan
+                                    @cannot('all-country-data-outsite')
+                                        <option value="" selected disabled>SELECT YOUR OPTION</option>
+                                        @foreach ($branches as $branch)
+                                            <option value="{{$branch->id}}" {{($branch->id == Auth::user()->branch_id ? "selected" : "")}}>{{$branch->code}} - {{$branch->name}}</option>
+                                        @endforeach
+                                    @endcan
+                                @endcan
+                                @cannot('all-branch-data-outsite')
+                                    <option value="{{Auth::user()->branch_id}}">{{Auth::user()->branch['name']}}</option>
+                                @endcan
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+
+
+                    <!-- CSO -->
+                    <div class="form-group">
+                        <span>CSO</span>
+                        <select id="edit-txtcso-dataoutsite" class="text-uppercase form-control" name="cso" required>
+                            <optgroup label="Cso">
+                                @can('all-branch-data-outsite')
+                                    <option value="" disabled selected>SELECT BRANCH FIRST</option>
+                                @endcan
+                                @cannot('all-branch-data-outsite')
+                                <option value="" selected disabled>SELECT YOUR OPTION</option>
+                                    @foreach ($csos as $cso)
+                                        @if($cso->branch_id == Auth::user()->branch_id)
+                                            <option value="{{$cso->id}}">{{$cso->name}}</option>
+                                        @endif
+                                    @endforeach
+                                @endcan
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+
+                    <!-- Khusus untuk Indo untuk sementara -->
+                    <div class="form-group frm-group-select">
+                        <span>PROVINCE</span>
+                        <select id="edit-txtprovince-dataoutsite" class="text-uppercase form-control" name="province" required>
+                            <optgroup label="Province">
+                                @include('etc.select-province')
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group frm-group-select select-right">
+                        <span>DISTRICT</span>
+                        <select id="edit-txtdistrict-dataoutsite" class="form-control text-uppercase" name="district"required>
+                            <optgroup label="District">
+                                <option disabled selected>SELECT PROVINCE FIRST</option>
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <span>PHONE</span>
+                        <input id="edit-txtphone-dataoutsite" type="number" name="phone" class="form-control" placeholder="0XXXXXXXXXXX" required>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-light" type="button" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="btn-confirmUpdateDataOutsite" value="-">SAVE</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
+
+@if(Gate::check('edit-data-undangan'))
+<div class="modal fade" role="dialog" tabindex="-1" id="modal-EditDataUndangan">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="text-center">Edit Data Undangan</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <!-- FORM UNTUK UPDATE DATA -->
+            <form id="actionEditDataUndangan" name="frmEditDataUndangan" method="POST" action="{{ route('update_dataundangan') }}">
+                {{ csrf_field() }}
+
+                
+            </form>
+        </div>
+    </div>
+</div>
+@endif
+
+<!--=======================================================================-->
+
+<!----------------------- KHUSUS UNTUK DELETE DATA -------------------------->
+
+@if(Gate::check('delete-data-outsite'))
+<!-- <div class="modal fade" role="dialog" tabindex="-1" id="modal-DeleteConfirm">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="txt-delete-dataoutsite"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-light" type="button" data-dismiss="modal">Close</button>
+                <form id="actionDelete" action="{{route('delete_dataoutsite', ['id' => ''])}}" method="post">
+                    {{csrf_field()}}
+                    <button class="btn btn-danger" type="submit" id="btn-confirmDeleteDataOutsite" value="-">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> -->
+@endif
+
+<!--=======================================================================-->
+
 <!-- modal Find Data Undangan -->
 <div class="modal fade" role="dialog" tabindex="-1" id="modal-DataUndangan">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -1462,6 +1671,82 @@
         function _(el){
             return document.getElementById(el);
         };
+
+        function addToDistrict(id, data, callback) {
+            id.append(data);
+            callback();
+        };
+
+        function RetriveSelectedBranch(var_country, var_branch, id_branch){
+            id_branch = $(id_branch).children("optgroup").eq(0);
+            branches = "<option value=\"\" selected disabled>SELECT YOUR OPTION</option>";
+
+            $.ajax({
+                headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                type: 'post',
+                url: "{{route('select-country')}}",
+                data: {
+                    'country': var_country
+                },
+                success: function(data){
+                    if(data.length > 0)
+                    {
+                        data.forEach(function(key, value){
+                            if(data[value].id == var_branch){
+                                branches += '<option value="'+data[value].id+'" selected>'+data[value].code+' - '+data[value].name+'</option>';
+                            }
+                            else{
+                                branches += '<option value="'+data[value].id+'">'+data[value].code+' - '+data[value].name+'</option>';
+                            }
+                        });
+                        id_branch.html("");
+                        id_branch.append(branches);
+                    }
+                    else
+                    {
+                        id_branch.html("");
+                        id_branch.append("<option value=\"\" selected>BRANCH NOT FOUND</option>");
+                    }
+                },
+            });
+        }
+
+        function RetriveSelectedCso(var_branch, var_cso, id_cso){
+            id_cso = $(id_cso).children("optgroup").eq(0);
+            csos = "<option value=\"\" selected disabled>SELECT YOUR OPTION</option>";
+            $.ajax({
+                headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                type: 'post',
+                url: "{{route('select-branch')}}",
+                data: {
+                    'branch_id': var_branch
+                },
+                success: function(data){
+                    if(data.length > 0)
+                    {
+                        data.forEach(function(key, value){
+                            if(data[value].id == var_cso){
+                                csos += '<option value="'+data[value].id+'" selected>'+data[value].code+' - '+data[value].name+'</option>';
+                            }
+                            else{
+                                csos += '<option value="'+data[value].id+'">'+data[value].code+' - '+data[value].name+'</option>';
+                            }
+                        });
+                        id_cso.html("");
+                        id_cso.append(csos);
+                    }
+                    else
+                    {
+                        id_cso.html("");
+                        id_cso.append("<option value=\"\" selected>CSO NOT FOUND</option>");
+                    }
+                },
+            });
+        }
 
         //untuk refresh halaman ketika modal [SUCCESS Add] ditutup 
         $('#modal-Notification').on('hidden.bs.modal', function() { 
@@ -1765,6 +2050,12 @@
             }
         });
 
+        $(".btn-editDataUndangan").click(function(e) {
+            
+
+            $("#modal-EditDataUndangan").modal("show");
+        });
+
         $("#actionAddDataUndangan").on("submit", function (e) {
             e.preventDefault();
             frmAddUndangan = _("actionAddDataUndangan");
@@ -1812,19 +2103,16 @@
                 }
             }
             else{
-                // $('#modal-UpdateForm').modal('hide')
-                // $("#modal-NotificationUpdate").modal("show");
                 $('#modal-UpdateForm').modal('hide')
-                $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">Data has been ADDED successfully</div>");
+                $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">New Data Undangan has been ADDED successfully</div>");
                 $("#modal-Notification").modal("show");
             }
 
             document.getElementById("btn-actionAddDataUndangan").innerHTML = "SAVE";
-            console.log(event.target.responseText);
         }
         function errorHandlerUndangan(event){
             document.getElementById("btn-actionAddDataUndangan").innerHTML = "SAVE";
-            $("#modal-Notification").find("p#txt-notification").html(event.target.responseText);
+            $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-error\">"+event.target.responseText+"</div>");
             $("#modal-Notification").modal("show");
             // $("#txt-notification > div").html(event.target.responseText);
             // $('#modal-UpdateForm').modal('hide')
@@ -1836,22 +2124,77 @@
         /*METHOD - METHOD DATA OUTSITE
         * Khusus method" outsite dari awal sampai akhir
         */
+        var actionDeleteDataOutsite = $("#actionEditDataOutsite").prop('action');
+        var actionEditDataOutsite = $("#actionEditDataOutsite").prop('action');
         var frmAddOutsite;
+        var frmEditOutsite;
+        var isAddDataOutsite = true;
+        var tempLocation = "";
 
         $('#btnFind-data-outsite').click(function(e){
             e.preventDefault();
         });
 
-        $("#txttype-cust-dataoutsite").change(function (e) {
-            $("#input-DataOutsite").removeClass("d-none");
-            if($('#txttype-cust-dataoutsite option:selected').val() == 2 || $('#txttype-cust-dataoutsite option:selected').val() == 4){//Ms. Rumah id 2 dan CFD id 4
-                $("#Outsite-Location").html(
+        $("#txttype-cust-dataoutsite, #edit-txttype-cust-dataoutsite").change(function (e) {
+            var LocationDOM = "edit-Outsite-Location";
+            var LocationNya = tempLocation;
+            if(this.id == "txttype-cust-dataoutsite"){
+                $("#input-DataOutsite").removeClass("d-none");
+                LocationDOM = "Outsite-Location";
+                LocationNya = "";
+            }
+            if($('#'+this.id+' option:selected').val() == 2 || $('#'+this.id+' option:selected').val() == 4){//Ms. Rumah id 2 dan CFD id 4
+                $("#"+LocationDOM).html(
                     "<span>LOCATION NAME</span><input list=\"location_list\" name=\"location_name\" class=\"text-uppercase form-control\" placeholder=\"example. CITRALAND, PAKUWON, etc.\" required=\"\"><datalist id=\"location_list\"><span class=\"invalid-feedback\"><strong></strong></span>@foreach ($locations as $location)<option value=\"{{$location->name}}\">@endforeach</datalist>"
                 );
+                $("#"+LocationDOM+" > input").val(LocationNya);
             }
             else{
-                $("#Outsite-Location").html("");
+                $("#"+LocationDOM).html("");
             }
+        });
+
+        //untuk menampilkan modal edit data OUTSITE dan menampilkan data mana yg mau di edit
+        $(".btn-editDataOutsite").click(function(e) {
+            var dataOutsite = GetListDataOutsite(this.name);
+            document.getElementById("edit-txtreg-date-dataoutsite").value = dataOutsite.reg_date;
+            document.getElementById("edit-txtcode-dataoutsite").value = dataOutsite.kode;
+            document.getElementById("edit-txtname-dataoutsite").value = dataOutsite.nama;
+            document.getElementById("edit-txtcountry-dataoutsite").value = dataOutsite.country;
+            document.getElementById("edit-txtprovince-dataoutsite").value = dataOutsite.province;
+            document.getElementById("edit-txtphone-dataoutsite").value = dataOutsite.phone;
+            document.getElementById("edit-txttype-cust-dataoutsite").value = dataOutsite.typecust;
+            document.getElementById("btn-confirmUpdateDataOutsite").value = this.value;
+            tempLocation = dataOutsite.location;
+
+            var pilihanProvinsi = dataOutsite.province;
+            var pilihanCso = dataOutsite.cso;
+            var pilihanBranch = dataOutsite.branch;
+            var isiOption = "";
+
+            //UPDATE DISTRICT
+            var districtTemp = $("#edit-txtdistrict-dataoutsite").children("optgroup").eq(0);
+            districtTemp.empty();
+            $.get( "etc/select-"+unescape(pilihanProvinsi)+".php", function( data ) {
+                addToDistrict(districtTemp, data, function(){
+                    document.getElementById("edit-txtdistrict-dataoutsite").value = dataOutsite.district;
+                });
+            });
+
+            //UPDATE BRANCH & CSO
+            RetriveSelectedBranch(dataOutsite.country, dataOutsite.branch, "#edit-txtbranch-dataoutsite");
+            RetriveSelectedCso(dataOutsite.branch, dataOutsite.cso, "#edit-txtcso-dataoutsite");
+
+            //CEK ADA LOKASI APA TIDAK
+            $("#edit-Outsite-Location").html("");
+            if(dataOutsite.location != " - "){
+                $("#edit-Outsite-Location").html(
+                    "<span>LOCATION NAME</span><input list=\"location_list\" name=\"location_name\" class=\"text-uppercase form-control\" placeholder=\"example. CITRALAND, PAKUWON, etc.\" required=\"\"><datalist id=\"edit-location_list\"><span class=\"invalid-feedback\"><strong></strong></span>@foreach ($locations as $location)<option value=\"{{$location->name}}\">@endforeach</datalist>"
+                );
+                $("#edit-Outsite-Location > input").val(dataOutsite.location);
+            }
+
+            $("#modal-EditDataOutsite").modal("show");
         });
 
         $("#actionAddDataOutsite").on("submit", function (e) {
@@ -1868,56 +2211,121 @@
             ajax.setRequestHeader("X-CSRF-TOKEN",$('meta[name="csrf-token"]').attr('content'));
             ajax.send(frmAddOutsite);
         });
+
+        $("#actionEditDataOutsite").on("submit", function (e) {
+            e.preventDefault();
+            isAddDataOutsite = false;
+            frmEditOutsite = _("actionEditDataOutsite");
+            frmEditOutsite = new FormData(frmEditOutsite);
+            frmEditOutsite.append("id",$(this).find("button").eq(1).val());
+            var URLNya = $("#actionEditDataOutsite").attr('action');
+
+            var ajax = new XMLHttpRequest();
+            ajax.upload.addEventListener("progress", progressHandlerOutsite, false);
+            ajax.addEventListener("load", completeHandlerOutsite, false);
+            ajax.addEventListener("error", errorHandlerOutsite, false);
+            ajax.open("POST", URLNya);
+            ajax.setRequestHeader("X-CSRF-TOKEN",$('meta[name="csrf-token"]').attr('content'));
+            ajax.send(frmEditOutsite);
+        });
+        
         function progressHandlerOutsite(event){
-            document.getElementById("btn-actionAddDataOutsite").innerHTML = "UPLOADING...";
+            if(isAddDataOutsite){
+                document.getElementById("btn-actionAddDataOutsite").innerHTML = "UPLOADING...";
+            }
+            else{
+                document.getElementById("btn-confirmUpdateDataOutsite").innerHTML = "UPLOADING...";
+            }
         }
         function completeHandlerOutsite(event){
             var hasil = JSON.parse(event.target.responseText);
 
-            for (var key of frmAddOutsite.keys()) {
-                $("#actionAddDataOutsite").find("input[name="+key+"]").removeClass("is-invalid");
-                $("#actionAddDataOutsite").find("select[name="+key+"]").removeClass("is-invalid");
-                $("#actionAddDataOutsite").find("textarea[name="+key+"]").removeClass("is-invalid");
-
-                $("#actionAddDataOutsite").find("input[name="+key+"]").next().find("strong").text("");
-                $("#actionAddDataOutsite").find("select[name="+key+"]").next().find("strong").text("");
-                $("#actionAddDataOutsite").find("textarea[name="+key+"]").next().find("strong").text("");
-            }
-
-            if(hasil['errors'] != null){
+            if(isAddDataOutsite){
                 for (var key of frmAddOutsite.keys()) {
-                    if(typeof hasil['errors'][key] === 'undefined') {
-                        
-                    }
-                    else {
-                        $("#actionAddDataOutsite").find("input[name="+key+"]").addClass("is-invalid");
-                        $("#actionAddDataOutsite").find("select[name="+key+"]").addClass("is-invalid");
-                        $("#actionAddDataOutsite").find("textarea[name="+key+"]").addClass("is-invalid");
+                    $("#actionAddDataOutsite").find("input[name="+key+"]").removeClass("is-invalid");
+                    $("#actionAddDataOutsite").find("select[name="+key+"]").removeClass("is-invalid");
+                    $("#actionAddDataOutsite").find("textarea[name="+key+"]").removeClass("is-invalid");
 
-                        $("#actionAddDataOutsite").find("input[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
-                        $("#actionAddDataOutsite").find("select[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
-                        $("#actionAddDataOutsite").find("textarea[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
+                    $("#actionAddDataOutsite").find("input[name="+key+"]").next().find("strong").text("");
+                    $("#actionAddDataOutsite").find("select[name="+key+"]").next().find("strong").text("");
+                    $("#actionAddDataOutsite").find("textarea[name="+key+"]").next().find("strong").text("");
+                }
+
+                if(hasil['errors'] != null){
+                    for (var key of frmAddOutsite.keys()) {
+                        if(typeof hasil['errors'][key] === 'undefined') {
+                            
+                        }
+                        else {
+                            $("#actionAddDataOutsite").find("input[name="+key+"]").addClass("is-invalid");
+                            $("#actionAddDataOutsite").find("select[name="+key+"]").addClass("is-invalid");
+                            $("#actionAddDataOutsite").find("textarea[name="+key+"]").addClass("is-invalid");
+
+                            $("#actionAddDataOutsite").find("input[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
+                            $("#actionAddDataOutsite").find("select[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
+                            $("#actionAddDataOutsite").find("textarea[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
+                        }
                     }
                 }
+                else{
+                    // $('#modal-UpdateForm').modal('hide')
+                    // $("#modal-NotificationUpdate").modal("show");
+                    $('#modal-UpdateForm').modal('hide')
+                    $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">New Data Out-Site has been ADDED successfully</div>");
+                    $("#modal-Notification").modal("show");
+                }
+
+                document.getElementById("btn-actionAddDataOutsite").innerHTML = "SAVE";
             }
             else{
-                // $('#modal-UpdateForm').modal('hide')
-                // $("#modal-NotificationUpdate").modal("show");
-                $('#modal-UpdateForm').modal('hide')
-                $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">Data has been ADDED successfully</div>");
-                $("#modal-Notification").modal("show");
-            }
+                for (var key of frmEditOutsite.keys()) {
+                    $("#actionEditDataOutsite").find("input[name="+key+"]").removeClass("is-invalid");
+                    $("#actionEditDataOutsite").find("select[name="+key+"]").removeClass("is-invalid");
+                    $("#actionEditDataOutsite").find("textarea[name="+key+"]").removeClass("is-invalid");
 
-            document.getElementById("btn-actionAddDataOutsite").innerHTML = "SAVE";
-            console.log(event.target.responseText);
+                    $("#actionEditDataOutsite").find("input[name="+key+"]").next().find("strong").text("");
+                    $("#actionEditDataOutsite").find("select[name="+key+"]").next().find("strong").text("");
+                    $("#actionEditDataOutsite").find("textarea[name="+key+"]").next().find("strong").text("");
+                }
+
+                if(hasil['errors'] != null){
+                    for (var key of frmEditOutsite.keys()) {
+                        if(typeof hasil['errors'][key] === 'undefined') {
+                            
+                        }
+                        else {
+                            $("#actionEditDataOutsite").find("input[name="+key+"]").addClass("is-invalid");
+                            $("#actionEditDataOutsite").find("select[name="+key+"]").addClass("is-invalid");
+                            $("#actionEditDataOutsite").find("textarea[name="+key+"]").addClass("is-invalid");
+
+                            $("#actionEditDataOutsite").find("input[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
+                            $("#actionEditDataOutsite").find("select[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
+                            $("#actionEditDataOutsite").find("textarea[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
+                        }
+                    }
+                }
+                else{
+                    // $('#modal-UpdateForm').modal('hide')
+                    // $("#modal-NotificationUpdate").modal("show");
+                    $('#modal-UpdateForm').modal('hide')
+                    $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">New Data Out-Site has been ADDED successfully</div>");
+                    $("#modal-Notification").modal("show");
+                }
+
+                document.getElementById("btn-confirmUpdateDataOutsite").innerHTML = "SAVE";
+            }
         }
         function errorHandlerOutsite(event){
-            document.getElementById("btn-actionAddDataOutsite").innerHTML = "SAVE";
-            // $("#txt-notification > div").html(event.target.responseText);
-            // $('#modal-UpdateForm').modal('hide')
-            // $("#modal-NotificationUpdate").modal("show");
-            $("#modal-Notification").find("p#txt-notification").html(event.target.responseText);
-            $("#modal-Notification").modal("show");
+            if(isAddDataOutsite){
+                document.getElementById("btn-actionAddDataOutsite").innerHTML = "SAVE";
+                $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-error\">"+event.target.responseText+"</div>");
+                $("#modal-Notification").modal("show");
+            }
+            else{
+                document.getElementById("btn-confirmUpdateDataOutsite").innerHTML = "SAVE";
+                $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-error\">"+event.target.responseText+"</div>");
+                $("#modal-Notification").modal("show");
+            }
         }
         /*===================================================*/
 
@@ -1978,22 +2386,16 @@
                 }
             }
             else{
-                // $('#modal-UpdateForm').modal('hide')
-                // $("#modal-NotificationUpdate").modal("show");
                 $('#modal-UpdateForm').modal('hide')
-                $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">Data has been ADDED successfully</div>");
+                $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">New Data Therapy has been ADDED successfully</div>");
                 $("#modal-Notification").modal("show");
             }
 
             document.getElementById("btn-actionAddDataTherapy").innerHTML = "SAVE";
-            console.log(event.target.responseText);
         }
         function errorHandlerTherapy(event){
             document.getElementById("btn-actionAddDataTherapy").innerHTML = "SAVE";
-            // $("#txt-notification > div").html(event.target.responseText);
-            // $('#modal-UpdateForm').modal('hide')
-            // $("#modal-NotificationUpdate").modal("show");
-            $("#modal-Notification").find("p#txt-notification").html(event.target.responseText);
+            $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-error\">"+event.target.responseText+"</div>");
             $("#modal-Notification").modal("show");
         }
         /*===================================================*/
@@ -2058,19 +2460,18 @@
                 // $('#modal-UpdateForm').modal('hide')
                 // $("#modal-NotificationUpdate").modal("show");
                 $('#modal-UpdateForm').modal('hide')
-                $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">Data has been ADDED successfully</div>");
+                $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">New MPC has been ADDED successfully</div>");
                 $("#modal-Notification").modal("show");
             }
 
             document.getElementById("btn-actionAddMpc").innerHTML = "SAVE";
-            console.log(event.target.responseText);
         }
         function errorHandlerMpc(event){
             document.getElementById("btn-actionAddMpc").innerHTML = "SAVE";
             // $("#txt-notification > div").html(event.target.responseText);
             // $('#modal-UpdateForm').modal('hide')
             // $("#modal-NotificationUpdate").modal("show");
-            $("#modal-Notification").find("p#txt-notification").html(event.target.responseText);
+            $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-error\">"+event.target.responseText+"</div>");
             $("#modal-Notification").modal("show");
         }
         /*===================================================*/

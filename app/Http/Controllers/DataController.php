@@ -1085,4 +1085,193 @@ class DataController extends Controller
             return response()->json(['success'=>'Berhasil !!']);
         }
     }
+
+    /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+    /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++    BUAT EDIT/UPDATE DATA    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+    /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+    /*Function store untuk merubah data pada table DATA UNDANGAN
+    * menggunakan parameter request langsung
+    * jadi gk pake request dia jenis nya apa tapi langsung di panggil di route nya
+    * user_id bisa di dapet dari Auth->usernya yg lagi online sekarang atau login
+    * pertama kali masukin di buat langsung sama masuk ke history-nya
+    */
+    public function updateDataUndangan(Request $request)
+    {
+        if ($request->has('phone') && $request->phone != null)
+            $request->merge(['phone'=> ($request->phone * 23)]);
+
+        $validator = \Validator::make($request->all(), [
+            'name' => 'required',
+            'address' => 'required',
+            'registration_date' => 'required',
+            'phone' => [
+                'required',
+                Rule::unique('data_undangans')->whereNot('id', $request->get('id'))->where('active', 1),
+            ],
+            'province' => 'required',
+            'district' => 'required',
+            'branch' => 'required',
+            'country' => 'required',
+            'birth_date' => 'required',
+            'cso' => 'required',
+            'type_cust' => 'required',
+        ]);
+
+        if($request->type_cust == 8){
+            $validator = \Validator::make($request->all(), [
+                'name' => 'required',
+                'address' => 'required',
+                'registration_date' => 'required',
+                'phone' => [
+                    'required',
+                    Rule::unique('data_undangans')->whereNot('id', $request->get('id'))->where('active', 1),
+                ],
+                'bank_name' => 'required',
+                'province' => 'required',
+                'district' => 'required',
+                'branch' => 'required',
+                'country' => 'required',
+                'birth_date' => 'required',
+                'cso' => 'required',
+                'type_cust' => 'required',
+            ]);
+        }
+
+        if ($validator->fails())
+        {
+            $arr_Errors = $validator->errors()->all();
+            $arr_Keys = $validator->errors()->keys();
+            $arr_Hasil = [];
+            for ($i=0; $i < count($arr_Keys); $i++) { 
+                $arr_Hasil[$arr_Keys[$i]] = $arr_Errors[$i];
+            }
+            return response()->json(['errors'=>$arr_Hasil]);
+        }
+        else {
+            $DataUndanganNya = DataUndangan::find($request->get('id'));
+
+            $user = Auth::user();
+            $count = DataUndangan::all()->count();
+            $count++;
+
+            $data = $request->only('code', 'registration_date', 'name', 'birth_date', 'address', 'phone', 'province', 'district');
+            $data['name'] = strtoupper($data['name']);
+            $data['address'] = strtoupper($data['address']);
+
+            //Khusus untuk Bank Input
+            if($request->bank_name != null || $request->bank_name != ""){
+                if(Bank::where([['name', $request->bank_name],['active', true]])->count() == 0){
+                    $tempBank['name'] = strtoupper($request->bank_name);
+                    $bankObj = Bank::create($tempBank);
+                    $data['bank_id'] = $bankObj->id;
+                }
+                else {
+                    $bankObj = Bank::where([['name', $request->bank_name],['active', true]])->get();
+                    $bankObj = $bankObj[0];
+                    $data['bank_id'] = $bankObj->id;
+                }
+            }
+
+            //masukin data ke data_undangan duluan
+            $idDataUndangan = DataUndangan::create($data);
+
+            //ngemasukin data ke array $data
+            $data['branch_id'] = $request->get('branch');
+            $data['cso_id'] = $request->get('cso');
+            $data['type_cust_id'] = $request->get('type_cust');
+            $data['data_undangan_id'] = $idDataUndangan->id;
+            $data['date'] = $data['registration_date'];
+
+            $DataUndanganNya->fill($data)->save();
+
+            return response()->json(['success'=>'Berhasil !!']);
+        }
+    }
+
+    /*Function store untuk merubah data pada table DATA OUTSITE
+    * menggunakan parameter request langsung
+    * jadi gk pake request dia jenis nya apa tapi langsung di panggil di route nya
+    */
+    public function updateDataOutsite(Request $request)
+    {
+        if ($request->has('phone') && $request->phone != null)
+            $request->merge(['phone'=> ($request->phone * 23)]);
+
+        $validator = \Validator::make($request->all(), [
+            'name' => 'required',
+            'registration_date' => 'required',
+            'phone' => [
+                'required',
+                Rule::unique('data_outsites')->whereNot('id', $request->get('id'))->where('active', 1),
+            ],
+            'province' => 'required',
+            'district' => 'required',
+            'branch' => 'required',
+            'country' => 'required',
+            'cso' => 'required',
+            'type_cust' => 'required',
+        ]);
+
+        if($request->type_cust == 2 || $request->type_cust == 4 ){
+            $validator = \Validator::make($request->all(), [
+                'name' => 'required',
+                'location_name' => 'required',
+                'registration_date' => 'required',
+                'phone' => [
+                    'required',
+                    Rule::unique('data_outsites')->whereNot('id', $request->get('id'))->where('active', 1),
+                ],
+                'province' => 'required',
+                'district' => 'required',
+                'branch' => 'required',
+                'country' => 'required',
+                'cso' => 'required',
+                'type_cust' => 'required',
+            ]);
+        }
+
+        if ($validator->fails())
+        {
+            $arr_Errors = $validator->errors()->all();
+            $arr_Keys = $validator->errors()->keys();
+            $arr_Hasil = [];
+            for ($i=0; $i < count($arr_Keys); $i++) { 
+                $arr_Hasil[$arr_Keys[$i]] = $arr_Errors[$i];
+            }
+            return response()->json(['errors'=>$arr_Hasil]);
+        }
+        else {
+            $data = $request->only('code', 'registration_date', 'name', 'location_name', 'phone', 'province', 'district');
+            $data['name'] = strtoupper($data['name']);
+
+            //Khusus untuk Location Input
+            if($request->location_name != null || $request->location_name != ""){
+                if(Location::where([['name', $request->location_name],['active', true]])->count() == 0){
+                    $tempLocation['name'] = strtoupper($request->location_name);
+                    $countryTemp = Branch::where([['id', $request->branch], ['active', true]])->get();
+                    $tempLocation['country'] = $countryTemp[0]['country'];
+                    $locationObj = Location::create($tempLocation);
+                    $data['location_id'] = $locationObj->id;
+                }
+                else {
+                    $countryTemp = Branch::where([['id', $request->branch], ['active', true]])->get();
+                    $locationObj = location::where([['name', $request->location_name], ['country', $countryTemp[0]['country']], ['active', true]])->get();
+                    $locationObj = $locationObj[0];
+                    $data['location_id'] = $locationObj->id;
+                }
+            }
+
+            //ngemasukin data ke array $data
+            $data['branch_id'] = $request->get('branch');
+            $data['cso_id'] = $request->get('cso');
+            $data['type_cust_id'] = $request->get('type_cust');
+
+            //masukin data ke data_outsite
+            $DataOutsitenNya = DataOutsite::find($request->get('id'));
+            $DataOutsitenNya->fill($data)->save();
+
+            return response()->json(['success'=>'Berhasil !!']);
+        }
+    }
 }
