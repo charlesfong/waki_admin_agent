@@ -126,14 +126,14 @@
         </div>
         <div class="form-group frm-group-select select-right {{ $errors->has('komisi') ? ' has-error' : '' }}">
             <span>COMMISSION</span>
-            <input type="number" step="0.01" name="komisi" class="form-control {{ $errors->has('komisi') ? ' is-invalid' : '' }}" placeholder="0.00" value="{{ old('komisi') }}" onkeypress="return isNumberKey(event)" required>
+            <input type="number" step="0.01" name="komisi" class="form-control {{ $errors->has('komisi') ? ' is-invalid' : '' }}" placeholder="0.00" value="{{ old('komisi') }}" onkeypress="return isNumberKey(event)">
             <span class="invalid-feedback">
                 <strong>{{ $errors->first('komisi') }}</strong>
             </span>
         </div>
         <div class="form-group {{ $errors->has('no_rekening') ? ' has-error' : '' }}">
             <span>BANK ACCOUNT</span>
-            <input type="number" name="no_rekening" class="text-uppercase form-control {{ $errors->has('no_rekening') ? ' is-invalid' : '' }}" placeholder="Bank Account" value="{{ old('no_rekening') }}" onkeypress="return isNumberKey(event)" required>
+            <input type="number" name="no_rekening" class="text-uppercase form-control {{ $errors->has('no_rekening') ? ' is-invalid' : '' }}" placeholder="Bank Account" value="{{ old('no_rekening') }}" onkeypress="return isNumberKey(event)">
             <span class="invalid-feedback">
                 <strong>{{ $errors->first('no_rekening') }}</strong>
             </span>

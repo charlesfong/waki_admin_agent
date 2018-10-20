@@ -179,9 +179,7 @@ class CsoController extends Controller
                 'required',
                 Rule::unique('csos')->where('active', 1),
             ],
-            'komisi' => 'required',
             'no_rekening' => [
-                'required',
                 Rule::unique('csos')->where('active', 1),
             ],
             'province' => 'required',

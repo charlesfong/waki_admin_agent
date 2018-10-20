@@ -173,14 +173,16 @@
                         <span>CSO</span>
                         <select id="txtcso-dataundangan" class="text-uppercase form-control" name="cso" required>
                             <optgroup label="Cso">
-                                @can('all-branch-data-undangan')
-                                    <option value="" disabled selected>SELECT BRANCH FIRST</option>
-                                @endcan
-                                @cannot('all-branch-data-undangan')
                                 <option value="" selected disabled>SELECT YOUR OPTION</option>
+                                @can('all-country-cso')
                                     @foreach ($csos as $cso)
-                                        @if($cso->branch_id == Auth::user()->branch_id)
-                                            <option value="{{$cso->id}}">{{$cso->name}}</option>
+                                        <option value="{{$cso->id}}">{{$cso->code}} - {{$cso->name}}</option>
+                                    @endforeach
+                                @endcan
+                                @cannot('all-country-cso')
+                                    @foreach ($csos as $cso)
+                                        @if($cso->branch['country'] == Auth::user()->branch['country'])
+                                            <option value="{{$cso->id}}">{{$cso->code}} - {{$cso->name}}</option>
                                         @endif
                                     @endforeach
                                 @endcan
@@ -329,14 +331,16 @@
                         <span>CSO</span>
                         <select id="txtcso-dataoutsite" class="text-uppercase form-control" name="cso" required>
                             <optgroup label="Cso">
-                                @can('all-branch-data-outsite')
-                                    <option value="" disabled selected>SELECT BRANCH FIRST</option>
-                                @endcan
-                                @cannot('all-branch-data-outsite')
                                 <option value="" selected disabled>SELECT YOUR OPTION</option>
+                                @can('all-country-cso')
                                     @foreach ($csos as $cso)
-                                        @if($cso->branch_id == Auth::user()->branch_id)
-                                            <option value="{{$cso->id}}">{{$cso->name}}</option>
+                                        <option value="{{$cso->id}}">{{$cso->code}} - {{$cso->name}}</option>
+                                    @endforeach
+                                @endcan
+                                @cannot('all-country-cso')
+                                    @foreach ($csos as $cso)
+                                        @if($cso->branch['country'] == Auth::user()->branch['country'])
+                                            <option value="{{$cso->id}}">{{$cso->code}} - {{$cso->name}}</option>
                                         @endif
                                     @endforeach
                                 @endcan
@@ -488,17 +492,19 @@
                     <span>CSO</span>
                     <select id="txtcso-datatherapy" class="text-uppercase form-control" name="cso" required>
                         <optgroup label="Cso">
-                            @can('all-branch-data-therapy')
-                                <option value="" disabled selected>SELECT BRANCH FIRST</option>
-                            @endcan
-                            @cannot('all-branch-data-therapy')
                             <option value="" selected disabled>SELECT YOUR OPTION</option>
-                                @foreach ($csos as $cso)
-                                    @if($cso->branch_id == Auth::user()->branch_id)
-                                        <option value="{{$cso->id}}">{{$cso->name}}</option>
-                                    @endif
-                                @endforeach
-                            @endcan
+                                @can('all-country-cso')
+                                    @foreach ($csos as $cso)
+                                        <option value="{{$cso->id}}">{{$cso->code}} - {{$cso->name}}</option>
+                                    @endforeach
+                                @endcan
+                                @cannot('all-country-cso')
+                                    @foreach ($csos as $cso)
+                                        @if($cso->branch['country'] == Auth::user()->branch['country'])
+                                            <option value="{{$cso->id}}">{{$cso->code}} - {{$cso->name}}</option>
+                                        @endif
+                                    @endforeach
+                                @endcan
                         </optgroup>
                     </select>
                     <span class="invalid-feedback">
@@ -667,17 +673,19 @@
                     <span>CSO</span>
                     <select id="txtcso-mpc" class="text-uppercase form-control" name="cso" required>
                         <optgroup label="Cso">
-                            @can('all-branch-mpc')
-                                <option value="" disabled selected>SELECT BRANCH FIRST</option>
-                            @endcan
-                            @cannot('all-branch-mpc')
                             <option value="" selected disabled>SELECT YOUR OPTION</option>
-                                @foreach ($csos as $cso)
-                                    @if($cso->branch_id == Auth::user()->branch_id)
-                                        <option value="{{$cso->id}}">{{$cso->name}}</option>
-                                    @endif
-                                @endforeach
-                            @endcan
+                                @can('all-country-cso')
+                                    @foreach ($csos as $cso)
+                                        <option value="{{$cso->id}}">{{$cso->code}} - {{$cso->name}}</option>
+                                    @endforeach
+                                @endcan
+                                @cannot('all-country-cso')
+                                    @foreach ($csos as $cso)
+                                        @if($cso->branch['country'] == Auth::user()->branch['country'])
+                                            <option value="{{$cso->id}}">{{$cso->code}} - {{$cso->name}}</option>
+                                        @endif
+                                    @endforeach
+                                @endcan
                         </optgroup>
                     </select>
                     <span class="invalid-feedback">
@@ -1876,7 +1884,7 @@
         });
 
         // BRANCH METHOD
-        $('#txtbranch-dataundangan').change(function (e){
+        /*$('#txtbranch-dataundangan').change(function (e){
             var branchVal = $('#txtbranch-dataundangan').val();
             var csos = "<option value=\"\" selected disabled>SELECT YOUR OPTION</option>";
 
@@ -1995,7 +2003,7 @@
                     }
                 },
             });
-        });
+        });*/
 
         // PROVINCE METHOD
         $('#txtprovince-dataundangan').change(function (e) {
