@@ -21,8 +21,8 @@ class CreateCsosTable extends Migration
             $table->string('name');
             $table->string('address');
             $table->string('phone');
-            $table->string('komisi')->default(0);
-            $table->string('no_rekening');
+            $table->string('komisi')->default("0");
+            $table->string('no_rekening')->default("-");
             $table->string('province');
             $table->string('district');
             $table->boolean('active')->default(true);

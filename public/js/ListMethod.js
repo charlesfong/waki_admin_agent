@@ -52,6 +52,29 @@ function GetListDataTherapy(idx){
         phone : datatherapy_phone, reg_date : datatherapy_reg_date, province : datatherapy_province, district : datatherapy_district, typecust : datatherapy_typecustId};
 }
 
+//function untuk mengambil data dari table MPC
+function GetListMpc(idx){
+    var element_table = document.getElementsByName('ListMpc');
+    var element_tableRows = element_table[0].rows;
+    var mpc_reg_date = element_tableRows[idx].cells[0].innerHTML;
+    var mpc_kode = element_tableRows[idx].cells[1].innerHTML;
+    var mpc_nama = element_tableRows[idx].cells[2].innerHTML;
+    var mpc_phone = element_tableRows[idx].cells[3].innerHTML;
+    var mpc_address = element_tableRows[idx].cells[6].innerHTML;
+    var mpc_province = element_tableRows[idx].cells[7].innerHTML;
+    var mpc_district = element_tableRows[idx].cells[8].innerHTML;
+    var mpc_country = element_tableRows[idx].cells[9].innerHTML;
+    var mpc_birth_date = element_tableRows[idx].cells[10].innerHTML;
+    var mpc_ktp = element_tableRows[idx].cells[11].innerHTML;
+    var mpc_gender = element_tableRows[idx].cells[12].innerHTML;
+    var mpc_user_id = element_tableRows[idx].cells[13].innerHTML;
+    var mpc_cso = element_tableRows[idx].cells[14].innerHTML;
+    var mpc_branch = element_tableRows[idx].cells[15].innerHTML;
+    
+    return {kode : mpc_kode, nama : mpc_nama, address : mpc_address, country : mpc_country, branch : mpc_branch, cso : mpc_cso,
+        phone : mpc_phone, reg_date : mpc_reg_date, province : mpc_province, district : mpc_district, birth_date : mpc_birth_date,
+        ktp : mpc_ktp, gender : mpc_gender, user_id : mpc_user_id};
+}
 
 //untuk menampilkan modal hapus data OUTSITE dan menampilkan data mana yang mau di hapus
 // $(".btn-deleteDataOutsite").click(function(e) {

@@ -78,7 +78,20 @@ Route::group(['prefix' => 'data'], function () {
     Route::post('/editdatatherapy', 'DataController@updateDataTherapy')
         ->name('update_datatherapy')
         ->middleware('can:edit-data-therapy');
+    //Edit Mpc
+    Route::post('/editmpc', 'DataController@updateMpc')
+        ->name('update_mpc')
+        ->middleware('can:edit-mpc');
 
+
+    //Find Mpc
+    Route::post('/findmpc', 'DataController@findMpc')
+        ->name('find_mpc')
+        ->middleware('can:find-mpc');
+    //Find Data Outsite
+    Route::post('/finddataoutsite', 'DataController@findDataOutsite')
+        ->name('find_dataoutsite')
+        ->middleware('can:find-data-outsite');
 
     //Delete Data Outsite
     Route::post('/deletedataoutsite', 'DataController@deleteDataOutsite')

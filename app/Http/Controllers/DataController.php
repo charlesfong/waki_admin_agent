@@ -1275,6 +1275,9 @@ class DataController extends Controller
                     $data['location_id'] = $locationObj->id;
                 }
             }
+            else {
+                $data['location_id'] = null;
+            }
 
             //ngemasukin data ke array $data
             $data['branch_id'] = $request->get('branch');
@@ -1400,6 +1403,47 @@ class DataController extends Controller
             $MpcNya->fill($data)->save();
 
             return response()->json(['success'=>'Berhasil !!']);
+        }
+    }
+
+    /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+    /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++    BUAT FIND DATA    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+    /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+    /*Function mencari data MPC
+    * menggunakan parameter request langsung
+    */
+    public function findMpc(Request $request)
+    {
+        if ($request->has('phone') && $request->phone != null)
+            $request->merge(['phone'=> ($request->phone * 23)]);
+
+        $MpcNya = Mpc::where([['phone', $request->phone],['active', true]])->first();
+        if($MpcNya != null){
+            return response()->json(['success'=>$MpcNya]);
+        }
+        else{
+            return response()->json(['errors'=>'Data Tidak di Temukan !!']);
+        }
+    }
+
+    /*Function mencari data MPC
+    * menggunakan parameter request langsung
+    */
+    public function findDataOutsite(Request $request)
+    {
+        if ($request->has('phone') && $request->phone != null)
+            $request->merge(['phone'=> ($request->phone * 23)]);
+
+        $DataOutsiteNya = DataOutsite::where([['phone', $request->phone],['active', true]])->first();
+        $DataOutsiteNya['location'] = Location::find($DataOutsiteNya['location_id']);
+        $DataOutsiteNya['type_cust'] = TypeCust::find($DataOutsiteNya['type_cust_id']);
+        $DataOutsiteNya['phone'] = $DataOutsiteNya['phone'] / 23;
+        if($DataOutsiteNya != null){
+            return response()->json(['success'=>$DataOutsiteNya]);
+        }
+        else{
+            return response()->json(['errors'=>'Data Tidak di Temukan !!']);
         }
     }
 }
