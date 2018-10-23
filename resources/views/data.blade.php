@@ -763,6 +763,7 @@
                     <th style="display: none;">COUNTRY</th>
                     <th style="display: none;">BRANCH</th>
                     <th style="display: none;">CSO</th>
+                    <th style="display: none;">TYPE CUST ID</th>
                     <th style="text-align: center;" colspan="2">@if(Gate::check('edit-data-outsite'))EDIT @endif @if(Gate::check('delete-data-outsite'))/ DELETE @endif</th>
                 </tr>
             </thead>
@@ -882,10 +883,11 @@
                     <th style="display: none;">DISTRICT</th>
                     <th style="display: none;">COUNTRY</th>
                     <th style="display: none;">CSO</th>
+                    <th style="display: none;">TYPE CUST ID</th>
                     <th style="text-align: center;" colspan="2">@if(Gate::check('edit-data-therapy'))EDIT @endif @if(Gate::check('delete-data-therapy'))/ DELETE @endif</th>
                 </tr>
             </thead>
-            <tbody name="collection">
+            <tbody name="ListDataTherapy">
                 @php
                 $i = 0
                 @endphp
@@ -902,6 +904,8 @@
                     <td style="display: none;">{{$dataTherapy->district}}</td>
                     <td style="display: none;">{{$dataTherapy->branch['country']}}</td>
                     <td style="display: none;">{{$dataTherapy->cso['id']}}</td>
+                    <td style="display: none;">{{$dataTherapy->type_cust['id']}}</td>
+                    <td style="display: none;">{{$dataTherapy->branch['id']}}</td>
                     @if(Gate::check('edit-data-therapy'))
                     <td style="text-align: center;">
                         <button class="btn btn-primary btn-editDataTherapy" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$dataTherapy->id}}">
@@ -1372,6 +1376,161 @@
                 {{ csrf_field() }}
 
                 
+            </form>
+        </div>
+    </div>
+</div>
+@endif
+
+@if(Gate::check('edit-data-therapy'))
+<div class="modal fade" role="dialog" tabindex="-1" id="modal-EditDataTherapy">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="text-center">Edit Data Therapy</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <!-- FORM UNTUK UPDATE DATA -->
+            <form id="actionEditDataTherapy" name="frmEditDataTherapy" method="POST" action="{{ route('update_datatherapy') }}">
+                {{ csrf_field() }}
+                <div class="modal-body">
+                    <div class="form-group">
+                        <span>CODE</span>
+                        <input id="edit-txtcode-datatherapy" type="text" name="code" class="text-uppercase form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <span>TIPE THERAPY</span>
+                        <select id="edit-txttype-cust-datatherapy" class="text-uppercase form-control" name="type_cust" value="" required>
+                            <optgroup label="TIPE THERAPY"> 
+                                <option value="" disabled selected>SELECT TIPE THERAPY</option>
+                                @foreach ($type_custs as $type_cust)
+                                    @if($type_cust->type_input == "THERAPY")
+                                        <option value="{{$type_cust->id}}">{{$type_cust->name}}</option>
+                                    @endif
+                                @endforeach
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <span>REGISTRATION DATE</span>
+                        <input id="edit-txtreg-date-datatherapy" type="date" name="registration_date" class="text-uppercase form-control" required>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span>NAME</span>
+                        <input id="edit-txtname-datatherapy" type="text" name="name" class="text-uppercase form-control" placeholder="NAME" required>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span>ADDRESS</span>
+                        <textarea id="edit-txtaddress-datatherapy" name="address" class="text-uppercase form-control form-control-sm" placeholder="Address" required></textarea>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group frm-group-select">
+                        <span>COUNTRY</span>
+                        <select id="edit-txtcountry-datatherapy" class="text-uppercase form-control" name="country" required>
+                            <optgroup label="Country">
+                                @include('etc.select-country')
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group frm-group-select select-right">
+                        <span>BRANCH</span>
+                        <select id="edit-txtbranch-datatherapy" class="text-uppercase form-control" name="branch" required>
+                            <optgroup label="Branch">
+                                @can('all-branch-data-therapy')
+                                    @can('all-country-data-therapy')
+                                        <option value="" disabled selected>SELECT COUNTRY FIRST</option>
+                                    @endcan
+                                    @cannot('all-country-data-therapy')
+                                        <option value="" selected disabled>SELECT YOUR OPTION</option>
+                                        @foreach ($branches as $branch)
+                                            <option value="{{$branch->id}}" {{($branch->id == Auth::user()->branch_id ? "selected" : "")}}>{{$branch->code}} - {{$branch->name}}</option>
+                                        @endforeach
+                                    @endcan
+                                @endcan
+                                @cannot('all-branch-data-therapy')
+                                    <option value="{{Auth::user()->branch_id}}">{{Auth::user()->branch['name']}}</option>
+                                @endcan
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+
+
+                    <!-- CSO -->
+                    <div class="form-group">
+                        <span>CSO</span>
+                        <select id="edit-txtcso-datatherapy" class="text-uppercase form-control" name="cso" required>
+                            <optgroup label="Cso">
+                                @can('all-branch-data-therapy')
+                                    <option value="" disabled selected>SELECT BRANCH FIRST</option>
+                                @endcan
+                                @cannot('all-branch-data-therapy')
+                                <option value="" selected disabled>SELECT YOUR OPTION</option>
+                                    @foreach ($csos as $cso)
+                                        @if($cso->branch_id == Auth::user()->branch_id)
+                                            <option value="{{$cso->id}}">{{$cso->name}}</option>
+                                        @endif
+                                    @endforeach
+                                @endcan
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+
+                    <!-- Khusus untuk Indo untuk sementara -->
+                    <div class="form-group frm-group-select">
+                        <span>PROVINCE</span>
+                        <select id="edit-txtprovince-datatherapy" class="text-uppercase form-control" name="province" required>
+                            <optgroup label="Province">
+                                @include('etc.select-province')
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group frm-group-select select-right">
+                        <span>DISTRICT</span>
+                        <select id="edit-txtdistrict-datatherapy" class="form-control text-uppercase" name="district"required>
+                            <optgroup label="District">
+                                <option disabled selected>SELECT PROVINCE FIRST</option>
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <span>PHONE</span>
+                        <input id="edit-txtphone-datatherapy" type="number" name="phone" class="form-control" placeholder="0XXXXXXXXXXX" required>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-light" type="button" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="btn-confirmUpdateDataTherapy" value="-">SAVE</button>
+                    </div>
+                </div>
             </form>
         </div>
     </div>
@@ -2333,10 +2492,47 @@
         /*METHOD - METHOD DATA THERAPY
         * Khusus method" therapy dari awal sampai akhir
         */
+        var actionDeleteDataTherapy = $("#actionEditDataTherapy").prop('action');
+        var actionEditDataTherapy = $("#actionEditDataTherapy").prop('action');
         var frmAddTherapy;
+        var frmEditTherapy;
+        var isAddDataTherapy = true;
 
         $('#btnFind-data-therapy').click(function(e){
             e.preventDefault();
+        });
+
+        $(".btn-editDataTherapy").click(function(e) {
+            var dataTherapy = GetListDataTherapy(this.name);
+            document.getElementById("edit-txtreg-date-datatherapy").value = dataTherapy.reg_date;
+            document.getElementById("edit-txtcode-datatherapy").value = dataTherapy.kode;
+            document.getElementById("edit-txtname-datatherapy").value = dataTherapy.nama;
+            document.getElementById("edit-txtaddress-datatherapy").value = dataTherapy.address;
+            document.getElementById("edit-txtcountry-datatherapy").value = dataTherapy.country;
+            document.getElementById("edit-txtprovince-datatherapy").value = dataTherapy.province;
+            document.getElementById("edit-txtphone-datatherapy").value = dataTherapy.phone;
+            document.getElementById("edit-txttype-cust-datatherapy").value = dataTherapy.typecust;
+            document.getElementById("btn-confirmUpdateDataTherapy").value = this.value;
+
+            var pilihanProvinsi = dataTherapy.province;
+            var pilihanCso = dataTherapy.cso;
+            var pilihanBranch = dataTherapy.branch;
+            var isiOption = "";
+
+            //UPDATE DISTRICT
+            var districtTemp = $("#edit-txtdistrict-datatherapy").children("optgroup").eq(0);
+            districtTemp.empty();
+            $.get( "etc/select-"+unescape(pilihanProvinsi)+".php", function( data ) {
+                addToDistrict(districtTemp, data, function(){
+                    document.getElementById("edit-txtdistrict-datatherapy").value = dataTherapy.district;
+                });
+            });
+
+            //UPDATE BRANCH & CSO
+            RetriveSelectedBranch(dataTherapy.country, dataTherapy.branch, "#edit-txtbranch-datatherapy");
+            RetriveSelectedCso(dataTherapy.branch, dataTherapy.cso, "#edit-txtcso-datatherapy");
+
+            $("#modal-EditDataTherapy").modal("show");
         });
 
         $("#actionAddDataTherapy").on("submit", function (e) {
@@ -2457,8 +2653,6 @@
                 }
             }
             else{
-                // $('#modal-UpdateForm').modal('hide')
-                // $("#modal-NotificationUpdate").modal("show");
                 $('#modal-UpdateForm').modal('hide')
                 $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">New MPC has been ADDED successfully</div>");
                 $("#modal-Notification").modal("show");
@@ -2468,9 +2662,6 @@
         }
         function errorHandlerMpc(event){
             document.getElementById("btn-actionAddMpc").innerHTML = "SAVE";
-            // $("#txt-notification > div").html(event.target.responseText);
-            // $('#modal-UpdateForm').modal('hide')
-            // $("#modal-NotificationUpdate").modal("show");
             $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-error\">"+event.target.responseText+"</div>");
             $("#modal-Notification").modal("show");
         }

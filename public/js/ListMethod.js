@@ -32,6 +32,27 @@ function GetListDataOutsite(idx){
         phone : dataoutsite_phone, reg_date : dataoutsite_reg_date, province : dataoutsite_province, district : dataoutsite_district, typecust : dataoutsite_typecustId};
 }
 
+//function untuk mengambil data dari table DATA THERAPY
+function GetListDataTherapy(idx){
+    var element_table = document.getElementsByName('ListDataTherapy');
+    var element_tableRows = element_table[0].rows;
+    var datatherapy_reg_date = element_tableRows[idx].cells[0].innerHTML;
+    var datatherapy_kode = element_tableRows[idx].cells[1].innerHTML;
+    var datatherapy_nama = element_tableRows[idx].cells[2].innerHTML;
+    var datatherapy_phone = element_tableRows[idx].cells[3].innerHTML;
+    var datatherapy_address = element_tableRows[idx].cells[6].innerHTML;
+    var datatherapy_province = element_tableRows[idx].cells[7].innerHTML;
+    var datatherapy_district = element_tableRows[idx].cells[8].innerHTML;
+    var datatherapy_country = element_tableRows[idx].cells[9].innerHTML;
+    var datatherapy_cso = element_tableRows[idx].cells[10].innerHTML;
+    var datatherapy_typecustId = element_tableRows[idx].cells[11].innerHTML;
+    var datatherapy_branch = element_tableRows[idx].cells[12].innerHTML;
+    
+    return {kode : datatherapy_kode, nama : datatherapy_nama, address : datatherapy_address, country : datatherapy_country, branch : datatherapy_branch, cso : datatherapy_cso,
+        phone : datatherapy_phone, reg_date : datatherapy_reg_date, province : datatherapy_province, district : datatherapy_district, typecust : datatherapy_typecustId};
+}
+
+
 //untuk menampilkan modal hapus data OUTSITE dan menampilkan data mana yang mau di hapus
 // $(".btn-deleteDataOutsite").click(function(e) {
 //     var dataOutsite = GetListDataOutsite(this.name);

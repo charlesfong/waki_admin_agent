@@ -46,6 +46,8 @@ Route::group(['prefix' => 'data'], function () {
     Route::get('/', 'DataController@index')
     	->name('data')
     	->middleware('auth');
+
+        
     //Add Data Undangan
     Route::post('/adddataundangan', 'DataController@storeDataUndangan')
         ->name('store_dataundangan')
@@ -62,6 +64,8 @@ Route::group(['prefix' => 'data'], function () {
     Route::post('/addmpc', 'DataController@storeMpc')
         ->name('store_mpc')
         ->middleware('can:add-mpc');
+
+
     //Edit Data Outsite
     Route::post('/editdataoutsite', 'DataController@updateDataOutsite')
         ->name('update_dataoutsite')
@@ -70,6 +74,12 @@ Route::group(['prefix' => 'data'], function () {
     Route::post('/editdataundangan', 'DataController@updateDataUndangan')
         ->name('update_dataundangan')
         ->middleware('can:edit-data-undangan');
+    //Edit Data Therapy
+    Route::post('/editdatatherapy', 'DataController@updateDataTherapy')
+        ->name('update_datatherapy')
+        ->middleware('can:edit-data-therapy');
+
+
     //Delete Data Outsite
     Route::post('/deletedataoutsite', 'DataController@deleteDataOutsite')
         ->name('delete_dataoutsite')
