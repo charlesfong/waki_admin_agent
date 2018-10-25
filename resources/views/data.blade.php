@@ -67,9 +67,9 @@
                             <i class="fa fa-search"></i>
                         </span>
                     </div>
-                    <input class="form-control" type="text" name="keywordDataUndangan" value="{{ app('request')->input('keyword') }}" placeholder="Search by Phone Number..." style="height: 46.8px;" id="txt-keywordDataUndangan">
+                    <input class="form-control" type="text" name="find" placeholder="Search by Phone Number..." style="height: 46.8px;" id="txt-keywordDataUndangan">
                     <div class="input-group-append">
-                        <button class="btn btn-light border" type="submit" id="btnFind-data-undangan" onclick="function(){$('#modal-DataUndangan').modal('show')};">Search</button>
+                        <button class="btn btn-light border" type="submit" id="btnFind-data-undangan">Search</button>
                     </div>
                     <span class="invalid-feedback">
                         <strong style="margin-left: 40px; font-size: 12pt;"></strong>
@@ -234,7 +234,7 @@
         </div>
         <div class="tab-pane" role="tabpanel" id="tab-2">
             @if(Gate::check('find-data-outsite'))
-            <form action="{{ url()->current() }}" style="display: block;float: inherit;">
+            <form id="actionFindDataOutsite" name="FindDataOutsite" action="{{ route('find_dataoutsite') }}" style="display: block;float: inherit;">
                 <h1 style="text-align: center;color: rgb(80, 94, 108);">Find Data Out-Site</h1>
                 <br>
                 <div class="input-group">
@@ -243,9 +243,9 @@
                             <i class="fa fa-search"></i>
                         </span>
                     </div>
-                    <input class="form-control" type="text" name="keyword" value="{{ app('request')->input('keyword') }}" placeholder="Search by Phone Number..." style="height: 46.8px;">
+                    <input class="form-control" type="text" name="find" placeholder="Search by Phone Number..." style="height: 46.8px;">
                     <div class="input-group-append">
-                        <button class="btn btn-light border" type="submit" disabled>Search</button>
+                        <button class="btn btn-light border" type="submit">Search</button>
                     </div>
                 </div>
             </form>
@@ -401,7 +401,7 @@
                             <i class="fa fa-search"></i>
                         </span>
                     </div>
-                    <input class="form-control" type="text" name="keyword" value="{{ app('request')->input('keyword') }}" placeholder="Search by Phone Number..." style="height: 46.8px;">
+                    <input class="form-control" type="text" name="find" placeholder="Search by Phone Number..." style="height: 46.8px;">
                     <div class="input-group-append">
                         <button class="btn btn-light border" type="submit" disabled>Search</button>
                     </div>
@@ -552,7 +552,7 @@
         </div>
         <div class="tab-pane" role="tabpanel" id="tab-4">
             @if(Gate::check('find-mpc'))
-            <form action="{{ url()->current() }}" style="display: block;float: inherit;">
+            <form id="actionFindMpc" name="FindMpc" action="{{ route('find_mpc') }}" style="display: block;float: inherit;">
                 <h1 style="text-align: center;color: rgb(80, 94, 108);">Find MPC</h1>
                 <br>
                 <div class="input-group">
@@ -561,9 +561,9 @@
                             <i class="fa fa-search"></i>
                         </span>
                     </div>
-                    <input class="form-control" type="text" name="keywordMpc" value="{{ app('request')->input('keywordMpc') }}" placeholder="Search by Phone Number..." style="height: 46.8px;">
+                    <input class="form-control" type="text" name="find" placeholder="Search by Phone Number..." style="height: 46.8px;">
                     <div class="input-group-append">
-                        <button class="btn btn-light border" type="submit" disabled>Search</button>
+                        <button class="btn btn-light border" type="submit">Search</button>
                     </div>
                 </div>
             </form>
@@ -771,6 +771,7 @@
                     <th style="display: none;">COUNTRY</th>
                     <th style="display: none;">BRANCH</th>
                     <th style="display: none;">CSO</th>
+                    <th style="display: none;">TYPE CUST ID</th>
                     <th style="text-align: center;" colspan="2">@if(Gate::check('edit-data-outsite'))EDIT @endif @if(Gate::check('delete-data-outsite'))/ DELETE @endif</th>
                 </tr>
             </thead>
@@ -890,10 +891,11 @@
                     <th style="display: none;">DISTRICT</th>
                     <th style="display: none;">COUNTRY</th>
                     <th style="display: none;">CSO</th>
+                    <th style="display: none;">TYPE CUST ID</th>
                     <th style="text-align: center;" colspan="2">@if(Gate::check('edit-data-therapy'))EDIT @endif @if(Gate::check('delete-data-therapy'))/ DELETE @endif</th>
                 </tr>
             </thead>
-            <tbody name="collection">
+            <tbody name="ListDataTherapy">
                 @php
                 $i = 0
                 @endphp
@@ -910,6 +912,8 @@
                     <td style="display: none;">{{$dataTherapy->district}}</td>
                     <td style="display: none;">{{$dataTherapy->branch['country']}}</td>
                     <td style="display: none;">{{$dataTherapy->cso['id']}}</td>
+                    <td style="display: none;">{{$dataTherapy->type_cust['id']}}</td>
+                    <td style="display: none;">{{$dataTherapy->branch['id']}}</td>
                     @if(Gate::check('edit-data-therapy'))
                     <td style="text-align: center;">
                         <button class="btn btn-primary btn-editDataTherapy" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$dataTherapy->id}}">
@@ -1011,10 +1015,12 @@
                     <th style="display: none;">KTP</th>
                     <th style="display: none;">GENDER</th>
                     <th style="display: none;">USER NAME</th>
+                    <th style="display: none;">CSO ID</th>
+                    <th style="display: none;">BRANCH ID</th>
                     <th style="text-align: center;" colspan="2">@if(Gate::check('edit-mpc'))EDIT @endif @if(Gate::check('delete-mpc'))/ DELETE @endif</th>
                 </tr>
             </thead>
-            <tbody name="collection">
+            <tbody name="ListMpc">
                 @php
                 $i = 0
                 @endphp
@@ -1033,7 +1039,9 @@
                     <td style="display: none;">{{$mpc->birth_date}}</td>
                     <td style="display: none;">{{$mpc->ktp}}</td>
                     <td style="display: none;">{{$mpc->gender}}</td>
-                    <td style="display: none;">{{$mpc->user['name']}}</td>
+                    <td style="display: none;">{{$mpc->user['id']}}</td>
+                    <td style="display: none;">{{$mpc->cso['id']}}</td>
+                    <td style="display: none;">{{$mpc->branch['id']}}</td>
                     @if(Gate::check('edit-mpc'))
                     <td style="text-align: center;">
                         <button class="btn btn-primary btn-editMpc" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$mpc->id}}">
@@ -1134,7 +1142,7 @@
                     <th style="text-align: center;" colspan="2">@if(Gate::check('edit-data-undangan'))EDIT @endif @if(Gate::check('delete-data-undangan'))/ DELETE @endif</th>
                 </tr>
             </thead>
-            <tbody name="collection">
+            <tbody name="ListDataUndangan">
                 @php
                 $i = 0
                 @endphp
@@ -1304,14 +1312,15 @@
                         <span>CSO</span>
                         <select id="edit-txtcso-dataoutsite" class="text-uppercase form-control" name="cso" required>
                             <optgroup label="Cso">
-                                @can('all-branch-data-outsite')
-                                    <option value="" disabled selected>SELECT BRANCH FIRST</option>
-                                @endcan
-                                @cannot('all-branch-data-outsite')
-                                <option value="" selected disabled>SELECT YOUR OPTION</option>
+                                @can('all-country-cso')
                                     @foreach ($csos as $cso)
-                                        @if($cso->branch_id == Auth::user()->branch_id)
-                                            <option value="{{$cso->id}}">{{$cso->name}}</option>
+                                        <option value="{{$cso->id}}">{{$cso->code}} - {{$cso->name}}</option>
+                                    @endforeach
+                                @endcan
+                                @cannot('all-country-cso')
+                                    @foreach ($csos as $cso)
+                                        @if($cso->branch['country'] == Auth::user()->branch['country'])
+                                            <option value="{{$cso->id}}">{{$cso->code}} - {{$cso->name}}</option>
                                         @endif
                                     @endforeach
                                 @endcan
@@ -1386,6 +1395,336 @@
 </div>
 @endif
 
+@if(Gate::check('edit-data-therapy'))
+<div class="modal fade" role="dialog" tabindex="-1" id="modal-EditDataTherapy">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="text-center">Edit Data Therapy</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <!-- FORM UNTUK UPDATE DATA -->
+            <form id="actionEditDataTherapy" name="frmEditDataTherapy" method="POST" action="{{ route('update_datatherapy') }}">
+                {{ csrf_field() }}
+                <div class="modal-body">
+                    <div class="form-group">
+                        <span>CODE</span>
+                        <input id="edit-txtcode-datatherapy" type="text" name="code" class="text-uppercase form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <span>TIPE THERAPY</span>
+                        <select id="edit-txttype-cust-datatherapy" class="text-uppercase form-control" name="type_cust" value="" required>
+                            <optgroup label="TIPE THERAPY"> 
+                                <option value="" disabled selected>SELECT TIPE THERAPY</option>
+                                @foreach ($type_custs as $type_cust)
+                                    @if($type_cust->type_input == "THERAPY")
+                                        <option value="{{$type_cust->id}}">{{$type_cust->name}}</option>
+                                    @endif
+                                @endforeach
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <span>REGISTRATION DATE</span>
+                        <input id="edit-txtreg-date-datatherapy" type="date" name="registration_date" class="text-uppercase form-control" required>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span>NAME</span>
+                        <input id="edit-txtname-datatherapy" type="text" name="name" class="text-uppercase form-control" placeholder="NAME" required>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span>ADDRESS</span>
+                        <textarea id="edit-txtaddress-datatherapy" name="address" class="text-uppercase form-control form-control-sm" placeholder="Address" required></textarea>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group frm-group-select">
+                        <span>COUNTRY</span>
+                        <select id="edit-txtcountry-datatherapy" class="text-uppercase form-control" name="country" required>
+                            <optgroup label="Country">
+                                @include('etc.select-country')
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group frm-group-select select-right">
+                        <span>BRANCH</span>
+                        <select id="edit-txtbranch-datatherapy" class="text-uppercase form-control" name="branch" required>
+                            <optgroup label="Branch">
+                                @can('all-branch-data-therapy')
+                                    @can('all-country-data-therapy')
+                                        <option value="" disabled selected>SELECT COUNTRY FIRST</option>
+                                    @endcan
+                                    @cannot('all-country-data-therapy')
+                                        <option value="" selected disabled>SELECT YOUR OPTION</option>
+                                        @foreach ($branches as $branch)
+                                            <option value="{{$branch->id}}" {{($branch->id == Auth::user()->branch_id ? "selected" : "")}}>{{$branch->code}} - {{$branch->name}}</option>
+                                        @endforeach
+                                    @endcan
+                                @endcan
+                                @cannot('all-branch-data-therapy')
+                                    <option value="{{Auth::user()->branch_id}}">{{Auth::user()->branch['name']}}</option>
+                                @endcan
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+
+
+                    <!-- CSO -->
+                    <div class="form-group">
+                        <span>CSO</span>
+                        <select id="edit-txtcso-datatherapy" class="text-uppercase form-control" name="cso" required>
+                            <optgroup label="Cso">
+                                @can('all-country-cso')
+                                    @foreach ($csos as $cso)
+                                        <option value="{{$cso->id}}">{{$cso->code}} - {{$cso->name}}</option>
+                                    @endforeach
+                                @endcan
+                                @cannot('all-country-cso')
+                                    @foreach ($csos as $cso)
+                                        @if($cso->branch['country'] == Auth::user()->branch['country'])
+                                            <option value="{{$cso->id}}">{{$cso->code}} - {{$cso->name}}</option>
+                                        @endif
+                                    @endforeach
+                                @endcan
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+
+                    <!-- Khusus untuk Indo untuk sementara -->
+                    <div class="form-group frm-group-select">
+                        <span>PROVINCE</span>
+                        <select id="edit-txtprovince-datatherapy" class="text-uppercase form-control" name="province" required>
+                            <optgroup label="Province">
+                                @include('etc.select-province')
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group frm-group-select select-right">
+                        <span>DISTRICT</span>
+                        <select id="edit-txtdistrict-datatherapy" class="form-control text-uppercase" name="district"required>
+                            <optgroup label="District">
+                                <option disabled selected>SELECT PROVINCE FIRST</option>
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <span>PHONE</span>
+                        <input id="edit-txtphone-datatherapy" type="number" name="phone" class="form-control" placeholder="0XXXXXXXXXXX" required>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-light" type="button" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="btn-confirmUpdateDataTherapy" value="-">SAVE</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
+
+@if(Gate::check('edit-mpc'))
+<div class="modal fade" role="dialog" tabindex="-1" id="modal-EditMpc">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="text-center">Edit MPC</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <!-- FORM UNTUK UPDATE DATA -->
+            <form id="actionEditMpc" name="frmEditMpc" method="POST" action="{{ route('update_mpc') }}">
+                {{ csrf_field() }}
+                <div class="modal-body">
+                    <div class="form-group">
+                        <span>REGISTRATION DATE</span>
+                        <input id="edit-txtreg-date-mpc" type="date" name="registration_date" class="text-uppercase form-control" required>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group frm-group-select">
+                        <span>MPC CODE</span>
+                        <input id="edit-txtcode-mpc" type="text" id="txtcode-mpc" class="text-uppercase form-control" name="code" placeholder="MPC CODE" required>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group frm-group-select select-right">
+                        <span>KTP</span>
+                        <input type="number" id="edit-txtktp-mpc" class="form-control text-uppercase" name="ktp"  placeholder="KTP" required>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span>NAME</span>
+                        <input id="edit-txtname-mpc" type="text" name="name" class="text-uppercase form-control" placeholder="NAME" required>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group frm-group-select">
+                        <span>BIRTH DATE</span>
+                        <input id="edit-txtbirth-date-mpc" type="date" name="birth_date" class="text-uppercase form-control"required>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group frm-group-select select-right">
+                        <span>GENDER</span>
+                        <select id="edit-txtgender-mpc" class="text-uppercase form-control" name="gender" required>
+                            <optgroup label="Gender">
+                                <option value="" disabled selected>SELECT GENDER</option>
+                                <option value="PRIA">PRIA</option>
+                                <option value="WANITA">WANITA</option>
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span>ADDRESS</span>
+                        <textarea id="edit-txtaddress-mpc" name="address" class="text-uppercase form-control form-control-sm" placeholder="Address" required></textarea>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group frm-group-select">
+                        <span>COUNTRY</span>
+                        <select id="edit-txtcountry-mpc" class="text-uppercase form-control" name="country" required>
+                            <optgroup label="Country">
+                                @include('etc.select-country')
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group frm-group-select select-right">
+                        <span>BRANCH</span>
+                        <select id="edit-txtbranch-mpc" class="text-uppercase form-control" name="branch" required>
+                            <optgroup label="Branch">
+                                @can('all-branch-mpc')
+                                    @can('all-country-mpc')
+                                        <option value="" disabled selected>SELECT COUNTRY FIRST</option>
+                                    @endcan
+                                    @cannot('all-country-mpc')
+                                        <option value="" selected disabled>SELECT YOUR OPTION</option>
+                                        @foreach ($branches as $branch)
+                                            <option value="{{$branch->id}}" {{($branch->id == Auth::user()->branch_id ? "selected" : "")}}>{{$branch->code}} - {{$branch->name}}</option>
+                                        @endforeach
+                                    @endcan
+                                @endcan
+                                @cannot('all-branch-mpc')
+                                    <option value="{{Auth::user()->branch_id}}">{{Auth::user()->branch['name']}}</option>
+                                @endcan
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+
+
+                    <!-- CSO -->
+                    <div class="form-group">
+                        <span>CSO</span>
+                        <select id="edit-txtcso-mpc" class="text-uppercase form-control" name="cso" required>
+                            <optgroup label="Cso">
+                                <option value="" selected disabled>SELECT YOUR OPTION</option>
+                                    @can('all-country-cso')
+                                        @foreach ($csos as $cso)
+                                            <option value="{{$cso->id}}">{{$cso->code}} - {{$cso->name}}</option>
+                                        @endforeach
+                                    @endcan
+                                    @cannot('all-country-cso')
+                                        @foreach ($csos as $cso)
+                                            @if($cso->branch['country'] == Auth::user()->branch['country'])
+                                                <option value="{{$cso->id}}">{{$cso->code}} - {{$cso->name}}</option>
+                                            @endif
+                                        @endforeach
+                                    @endcan
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+
+                    <!-- Khusus untuk Indo untuk sementara -->
+                    <div class="form-group frm-group-select">
+                        <span>PROVINCE</span>
+                        <select id="edit-txtprovince-mpc" class="text-uppercase form-control" name="province" required>
+                            <optgroup label="Province">
+                                @include('etc.select-province')
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group frm-group-select select-right">
+                        <span>DISTRICT</span>
+                        <select id="edit-txtdistrict-mpc" class="form-control text-uppercase" name="district"required>
+                            <optgroup label="District">
+                                <option disabled selected>SELECT PROVINCE FIRST</option>
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <span>PHONE</span>
+                        <input id="edit-txtphone-mpc" type="number" name="phone" class="form-control" placeholder="0XXXXXXXXXXX" required>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-light" type="button" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="btn-confirmUpdateMpc" value="-">SAVE</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
+
 <!--=======================================================================-->
 
 <!----------------------- KHUSUS UNTUK DELETE DATA -------------------------->
@@ -1417,12 +1756,67 @@
 
 <!--=======================================================================-->
 
+
+@if(Gate::check('find-mpc'))
 <!-- modal Find Data Undangan -->
-<div class="modal fade" role="dialog" tabindex="-1" id="modal-DataUndangan">
+<div class="modal fade" role="dialog" tabindex="-1" id="modal-FindMpc">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Data Undangan Found</h4>
+                <h4 id="txt-FindMpc" class="modal-title"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Code</b> : <span class="txt-Kode">NONE</span></p>
+                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>KTP</b> : <span class="txt-Ktp">NONE</span></p>
+                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Name</b> : <span class="txt-Name">NONE</span></p>
+                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Gender</b> : <span class="txt-Gender">NONE</span></p>
+                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Phone</b> : <span class="txt-Phone">NONE</span></p>
+                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Birth Date</b> : <span class="txt-BirthDate">NONE</span></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-light" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
+@if(Gate::check('find-data-outsite'))
+<!-- modal Find Data Undangan -->
+<div class="modal fade" role="dialog" tabindex="-1" id="modal-FindDataOutsite">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="txt-FindDataOutsite" class="modal-title"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Code</b> : <span class="txt-Kode">NONE</span></p>
+                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Name</b> : <span class="txt-Name">NONE</span></p>
+                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Phone</b> : <span class="txt-Phone">NONE</span></p>
+                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Location</b> : <span class="txt-Location">NONE</span></p>
+                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Type Customer</b> : <span class="txt-TypeCust">NONE</span></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-light" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
+@if(Gate::check('find-data-undangan'))
+<!-- modal Find Data Undangan -->
+<!-- <div class="modal fade" role="dialog" tabindex="-1" id="modal-FindMpc">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="txtFind" class="modal-title"></h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
@@ -1431,10 +1825,10 @@
                 <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Name</b> : Budi Santoso</p>
                 <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Address</b> : Jl. Kelapa Muda 12</p>
                 <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Phone</b> : 081544468999</p>
-                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Birth Date</b> : 6-June-1966</p>
+                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Birth Date</b> : 6-June-1966</p> -->
 
                 <!-- untuk table data -->
-                <div class="table-responsive table table-striped">
+                <!-- <div class="table-responsive table table-striped">
                     <table class="table table-sm table-bordered">
                         <thead>
                             <tr>
@@ -1456,7 +1850,10 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
+@endif
+
+<!--=======================================================================-->
 
 @endsection
 
@@ -2139,8 +2536,39 @@
         var isAddDataOutsite = true;
         var tempLocation = "";
 
-        $('#btnFind-data-outsite').click(function(e){
+        $('#actionFindDataOutsite').on("submit", function (e) {
             e.preventDefault();
+            var URLNya = $("#actionFindDataOutsite").attr('action');
+            var PhoneNya = $("#actionFindDataOutsite").find("input[name=find]").val();
+
+            $.ajax({
+                headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                type: 'post',
+                url: URLNya,
+                data: {
+                    'phone': PhoneNya
+                },
+                success: function(data){
+                    if(data['success'] != null)
+                    {
+                        console.log(data['success']);
+                        $("#modal-FindDataOutsite").modal("show");
+                        $("#modal-FindDataOutsite").find("span.txt-Kode").html(data['success']['code']);
+                        $("#modal-FindDataOutsite").find("span.txt-Name").html(data['success']['name']);
+                        $("#modal-FindDataOutsite").find("span.txt-Location").html(data['success']['location']['name']);
+                        $("#modal-FindDataOutsite").find("span.txt-Phone").html(data['success']['phone']);
+                        $("#modal-FindDataOutsite").find("span.txt-TypeCust").html(data['success']['type_cust']['name']);
+                        $("#modal-FindDataOutsite").find("h4#txt-FindDataOutsite").html("DATA IS FOUND");
+                    }
+                    else
+                    {
+                        $("#modal-FindDataOutsite").modal("show");
+                        $("#modal-FindDataOutsite").find("h4#txt-FindDataOutsite").html("DATA ISN'T FOUND");
+                    }
+                },
+            });
         });
 
         $("#txttype-cust-dataoutsite, #edit-txttype-cust-dataoutsite").change(function (e) {
@@ -2172,6 +2600,7 @@
             document.getElementById("edit-txtprovince-dataoutsite").value = dataOutsite.province;
             document.getElementById("edit-txtphone-dataoutsite").value = dataOutsite.phone;
             document.getElementById("edit-txttype-cust-dataoutsite").value = dataOutsite.typecust;
+            document.getElementById("edit-txtcso-dataoutsite").value = dataOutsite.cso;
             document.getElementById("btn-confirmUpdateDataOutsite").value = this.value;
             tempLocation = dataOutsite.location;
 
@@ -2189,9 +2618,8 @@
                 });
             });
 
-            //UPDATE BRANCH & CSO
+            //UPDATE BRANCH
             RetriveSelectedBranch(dataOutsite.country, dataOutsite.branch, "#edit-txtbranch-dataoutsite");
-            RetriveSelectedCso(dataOutsite.branch, dataOutsite.cso, "#edit-txtcso-dataoutsite");
 
             //CEK ADA LOKASI APA TIDAK
             $("#edit-Outsite-Location").html("");
@@ -2315,8 +2743,8 @@
                 else{
                     // $('#modal-UpdateForm').modal('hide')
                     // $("#modal-NotificationUpdate").modal("show");
-                    $('#modal-UpdateForm').modal('hide')
-                    $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">New Data Out-Site has been ADDED successfully</div>");
+                    $('#modal-EditDataOutsite').modal('hide')
+                    $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">The Data Out-Site has been CHANGED successfully</div>");
                     $("#modal-Notification").modal("show");
                 }
 
@@ -2341,10 +2769,47 @@
         /*METHOD - METHOD DATA THERAPY
         * Khusus method" therapy dari awal sampai akhir
         */
+        var actionDeleteDataTherapy = $("#actionEditDataTherapy").prop('action');
+        var actionEditDataTherapy = $("#actionEditDataTherapy").prop('action');
         var frmAddTherapy;
+        var frmEditTherapy;
+        var isAddDataTherapy = true;
 
         $('#btnFind-data-therapy').click(function(e){
             e.preventDefault();
+        });
+
+        $(".btn-editDataTherapy").click(function(e) {
+            var dataTherapy = GetListDataTherapy(this.name);
+            document.getElementById("edit-txtreg-date-datatherapy").value = dataTherapy.reg_date;
+            document.getElementById("edit-txtcode-datatherapy").value = dataTherapy.kode;
+            document.getElementById("edit-txtname-datatherapy").value = dataTherapy.nama;
+            document.getElementById("edit-txtaddress-datatherapy").value = dataTherapy.address;
+            document.getElementById("edit-txtcountry-datatherapy").value = dataTherapy.country;
+            document.getElementById("edit-txtprovince-datatherapy").value = dataTherapy.province;
+            document.getElementById("edit-txtphone-datatherapy").value = dataTherapy.phone;
+            document.getElementById("edit-txttype-cust-datatherapy").value = dataTherapy.typecust;
+            document.getElementById("edit-txtcso-datatherapy").value = dataTherapy.cso;
+            document.getElementById("btn-confirmUpdateDataTherapy").value = this.value;
+
+            var pilihanProvinsi = dataTherapy.province;
+            var pilihanCso = dataTherapy.cso;
+            var pilihanBranch = dataTherapy.branch;
+            var isiOption = "";
+
+            //UPDATE DISTRICT
+            var districtTemp = $("#edit-txtdistrict-datatherapy").children("optgroup").eq(0);
+            districtTemp.empty();
+            $.get( "etc/select-"+unescape(pilihanProvinsi)+".php", function( data ) {
+                addToDistrict(districtTemp, data, function(){
+                    document.getElementById("edit-txtdistrict-datatherapy").value = dataTherapy.district;
+                });
+            });
+
+            //UPDATE BRANCH
+            RetriveSelectedBranch(dataTherapy.country, dataTherapy.branch, "#edit-txtbranch-datatherapy");
+
+            $("#modal-EditDataTherapy").modal("show");
         });
 
         $("#actionAddDataTherapy").on("submit", function (e) {
@@ -2361,48 +2826,110 @@
             ajax.setRequestHeader("X-CSRF-TOKEN",$('meta[name="csrf-token"]').attr('content'));
             ajax.send(frmAddTherapy);
         });
+
+        $("#actionEditDataTherapy").on("submit", function (e) {
+            e.preventDefault();
+            isAddDataTherapy = false;
+            frmEditTherapy = _("actionEditDataTherapy");
+            frmEditTherapy = new FormData(frmEditTherapy);
+            frmEditTherapy.append("id",$(this).find("button").eq(1).val());
+            var URLNya = $("#actionEditDataTherapy").attr('action');
+
+            var ajax = new XMLHttpRequest();
+            ajax.upload.addEventListener("progress", progressHandlerTherapy, false);
+            ajax.addEventListener("load", completeHandlerTherapy, false);
+            ajax.addEventListener("error", errorHandlerTherapy, false);
+            ajax.open("POST", URLNya);
+            ajax.setRequestHeader("X-CSRF-TOKEN",$('meta[name="csrf-token"]').attr('content'));
+            ajax.send(frmEditTherapy);
+        });
+
         function progressHandlerTherapy(event){
-            document.getElementById("btn-actionAddDataTherapy").innerHTML = "UPLOADING...";
+            if(isAddDataTherapy){
+                document.getElementById("btn-actionAddDataTherapy").innerHTML = "UPLOADING...";
+            }
+            else{
+                document.getElementById("btn-confirmUpdateDataTherapy").innerHTML = "UPLOADING...";
+            }
         }
         function completeHandlerTherapy(event){
             var hasil = JSON.parse(event.target.responseText);
 
-            for (var key of frmAddTherapy.keys()) {
-                $("#actionAddDataTherapy").find("input[name="+key+"]").removeClass("is-invalid");
-                $("#actionAddDataTherapy").find("select[name="+key+"]").removeClass("is-invalid");
-                $("#actionAddDataTherapy").find("textarea[name="+key+"]").removeClass("is-invalid");
-
-                $("#actionAddDataTherapy").find("input[name="+key+"]").next().find("strong").text("");
-                $("#actionAddDataTherapy").find("select[name="+key+"]").next().find("strong").text("");
-                $("#actionAddDataTherapy").find("textarea[name="+key+"]").next().find("strong").text("");
-            }
-
-            if(hasil['errors'] != null){
+            if(isAddDataTherapy){
                 for (var key of frmAddTherapy.keys()) {
-                    if(typeof hasil['errors'][key] === 'undefined') {
-                        
-                    }
-                    else {
-                        $("#actionAddDataTherapy").find("input[name="+key+"]").addClass("is-invalid");
-                        $("#actionAddDataTherapy").find("select[name="+key+"]").addClass("is-invalid");
-                        $("#actionAddDataTherapy").find("textarea[name="+key+"]").addClass("is-invalid");
+                    $("#actionAddDataTherapy").find("input[name="+key+"]").removeClass("is-invalid");
+                    $("#actionAddDataTherapy").find("select[name="+key+"]").removeClass("is-invalid");
+                    $("#actionAddDataTherapy").find("textarea[name="+key+"]").removeClass("is-invalid");
 
-                        $("#actionAddDataTherapy").find("input[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
-                        $("#actionAddDataTherapy").find("select[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
-                        $("#actionAddDataTherapy").find("textarea[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
+                    $("#actionAddDataTherapy").find("input[name="+key+"]").next().find("strong").text("");
+                    $("#actionAddDataTherapy").find("select[name="+key+"]").next().find("strong").text("");
+                    $("#actionAddDataTherapy").find("textarea[name="+key+"]").next().find("strong").text("");
+                }
+
+                if(hasil['errors'] != null){
+                    for (var key of frmAddTherapy.keys()) {
+                        if(typeof hasil['errors'][key] === 'undefined') {
+                            
+                        }
+                        else {
+                            $("#actionAddDataTherapy").find("input[name="+key+"]").addClass("is-invalid");
+                            $("#actionAddDataTherapy").find("select[name="+key+"]").addClass("is-invalid");
+                            $("#actionAddDataTherapy").find("textarea[name="+key+"]").addClass("is-invalid");
+
+                            $("#actionAddDataTherapy").find("input[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
+                            $("#actionAddDataTherapy").find("select[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
+                            $("#actionAddDataTherapy").find("textarea[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
+                        }
                     }
                 }
+                else{
+                    $('#modal-UpdateForm').modal('hide')
+                    $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">New Data Therapy has been ADDED successfully</div>");
+                    $("#modal-Notification").modal("show");
+                }
+
+                document.getElementById("btn-actionAddDataTherapy").innerHTML = "SAVE";
             }
             else{
-                $('#modal-UpdateForm').modal('hide')
-                $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">New Data Therapy has been ADDED successfully</div>");
-                $("#modal-Notification").modal("show");
+                for (var key of frmEditTherapy.keys()) {
+                    $("#actionEditDataTherapy").find("input[name="+key+"]").removeClass("is-invalid");
+                    $("#actionEditDataTherapy").find("select[name="+key+"]").removeClass("is-invalid");
+                    $("#actionEditDataTherapy").find("textarea[name="+key+"]").removeClass("is-invalid");
+
+                    $("#actionEditDataTherapy").find("input[name="+key+"]").next().find("strong").text("");
+                    $("#actionEditDataTherapy").find("select[name="+key+"]").next().find("strong").text("");
+                    $("#actionEditDataTherapy").find("textarea[name="+key+"]").next().find("strong").text("");
+                }
+
+                if(hasil['errors'] != null){
+                    for (var key of frmEditTherapy.keys()) {
+                        if(typeof hasil['errors'][key] === 'undefined') {
+                            
+                        }
+                        else {
+                            $("#actionEditDataTherapy").find("input[name="+key+"]").addClass("is-invalid");
+                            $("#actionEditDataTherapy").find("select[name="+key+"]").addClass("is-invalid");
+                            $("#actionEditDataTherapy").find("textarea[name="+key+"]").addClass("is-invalid");
+
+                            $("#actionEditDataTherapy").find("input[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
+                            $("#actionEditDataTherapy").find("select[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
+                            $("#actionEditDataTherapy").find("textarea[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
+                        }
+                    }
+                }
+                else{
+                    $('#modal-EditDataTherapy').modal('hide')
+                    $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">The Data Therapy has been CHANGED successfully</div>");
+                    $("#modal-Notification").modal("show");
+                }
+
+                document.getElementById("btn-confirmUpdateDataTherapy").innerHTML = "SAVE";
             }
 
-            document.getElementById("btn-actionAddDataTherapy").innerHTML = "SAVE";
+            
         }
         function errorHandlerTherapy(event){
-            document.getElementById("btn-actionAddDataTherapy").innerHTML = "SAVE";
+            document.getElementById("btn-confirmUpdateDataTherapy").innerHTML = "SAVE";
             $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-error\">"+event.target.responseText+"</div>");
             $("#modal-Notification").modal("show");
         }
@@ -2412,10 +2939,81 @@
         /*METHOD - METHOD MPC
         * Khusus method" mpc dari awal sampai akhir
         */
+        var actionDeleteMpc = $("#actionEditMpc").prop('action');
+        var actionEditMpc = $("#actionEditMpc").prop('action');
         var frmAddMpc;
+        var frmEditMpc;
+        var isAddMpc= true;
 
-        $('#btnFind-mpc').click(function(e){
+        $('#actionFindMpc').on("submit", function (e) {
             e.preventDefault();
+            var URLNya = $("#actionFindMpc").attr('action');
+            var PhoneNya = $("#actionFindMpc").find("input[name=find]").val();
+
+            $.ajax({
+                headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                type: 'post',
+                url: URLNya,
+                data: {
+                    'phone': PhoneNya
+                },
+                success: function(data){
+                    if(data['success'] != null)
+                    {
+                        $("#modal-FindMpc").modal("show");
+                        $("#modal-FindMpc").find("span.txt-Kode").html(data['success']['code']);
+                        $("#modal-FindMpc").find("span.txt-Ktp").html(data['success']['ktp']);
+                        $("#modal-FindMpc").find("span.txt-Name").html(data['success']['name']);
+                        $("#modal-FindMpc").find("span.txt-Gender").html(data['success']['gender']);
+                        $("#modal-FindMpc").find("span.txt-Phone").html(data['success']['phone']);
+                        $("#modal-FindMpc").find("span.txt-BirthDate").html(data['success']['birth_date']);
+                        $("#modal-FindMpc").find("h4#txt-FindMpc").html("DATA IS FOUND");
+                    }
+                    else
+                    {
+                        $("#modal-FindMpc").modal("show");
+                        $("#modal-FindMpc").find("h4#txt-FindMpc").html("DATA ISN'T FOUND");
+                    }
+                },
+            });
+        });
+
+        $(".btn-editMpc").click(function(e) {
+            var mpc = GetListMpc(this.name);
+            document.getElementById("edit-txtreg-date-mpc").value = mpc.reg_date;
+            document.getElementById("edit-txtcode-mpc").value = mpc.kode;
+            document.getElementById("edit-txtname-mpc").value = mpc.nama;
+            document.getElementById("edit-txtphone-mpc").value = mpc.phone;
+            document.getElementById("edit-txtaddress-mpc").value = mpc.address;
+            document.getElementById("edit-txtprovince-mpc").value = mpc.province;
+            document.getElementById("edit-txtcountry-mpc").value = mpc.country;
+            document.getElementById("edit-txtbirth-date-mpc").value = mpc.birth_date;
+            document.getElementById("edit-txtktp-mpc").value = mpc.ktp;
+            document.getElementById("edit-txtgender-mpc").value = mpc.gender;
+            document.getElementById("edit-txtcso-mpc").value = mpc.cso;
+            document.getElementById("edit-txtbranch-mpc").value = mpc.branch;
+            document.getElementById("btn-confirmUpdateMpc").value = this.value;
+
+            var pilihanProvinsi = mpc.province;
+            var pilihanCso = mpc.cso;
+            var pilihanBranch = mpc.branch;
+            var isiOption = "";
+
+            //UPDATE DISTRICT
+            var districtTemp = $("#edit-txtdistrict-mpc").children("optgroup").eq(0);
+            districtTemp.empty();
+            $.get( "etc/select-"+unescape(pilihanProvinsi)+".php", function( data ) {
+                addToDistrict(districtTemp, data, function(){
+                    document.getElementById("edit-txtdistrict-mpc").value = mpc.district;
+                });
+            });
+
+            //UPDATE BRANCH
+            RetriveSelectedBranch(mpc.country, mpc.branch, "#edit-txtbranch-mpc");
+
+            $("#modal-EditMpc").modal("show");
         });
 
         $("#actionAddMpc").on("submit", function (e) {
@@ -2432,53 +3030,115 @@
             ajax.setRequestHeader("X-CSRF-TOKEN",$('meta[name="csrf-token"]').attr('content'));
             ajax.send(frmAddMpc);
         });
+
+        $("#actionEditMpc").on("submit", function (e) {
+            e.preventDefault();
+            isAddMpc = false;
+            frmEditMpc = _("actionEditMpc");
+            frmEditMpc = new FormData(frmEditMpc);
+            frmEditMpc.append("id",$(this).find("button").eq(1).val());
+            var URLNya = $("#actionEditMpc").attr('action');
+
+            var ajax = new XMLHttpRequest();
+            ajax.upload.addEventListener("progress", progressHandlerMpc, false);
+            ajax.addEventListener("load", completeHandlerMpc, false);
+            ajax.addEventListener("error", errorHandlerMpc, false);
+            ajax.open("POST", URLNya);
+            ajax.setRequestHeader("X-CSRF-TOKEN",$('meta[name="csrf-token"]').attr('content'));
+            ajax.send(frmEditMpc);
+        });
+
         function progressHandlerMpc(event){
-            document.getElementById("btn-actionAddMpc").innerHTML = "UPLOADING...";
+            if(isAddMpc){
+                document.getElementById("btn-actionAddMpc").innerHTML = "UPLOADING...";
+            }
+            else{
+                document.getElementById("btn-confirmUpdateMpc").innerHTML = "UPLOADING...";
+            }
         }
         function completeHandlerMpc(event){
             var hasil = JSON.parse(event.target.responseText);
 
-            for (var key of frmAddMpc.keys()) {
-                $("#actionAddMpc").find("input[name="+key+"]").removeClass("is-invalid");
-                $("#actionAddMpc").find("select[name="+key+"]").removeClass("is-invalid");
-                $("#actionAddMpc").find("textarea[name="+key+"]").removeClass("is-invalid");
-
-                $("#actionAddMpc").find("input[name="+key+"]").next().find("strong").text("");
-                $("#actionAddMpc").find("select[name="+key+"]").next().find("strong").text("");
-                $("#actionAddMpc").find("textarea[name="+key+"]").next().find("strong").text("");
-            }
-
-            if(hasil['errors'] != null){
+            if(isAddMpc){
                 for (var key of frmAddMpc.keys()) {
-                    if(typeof hasil['errors'][key] === 'undefined') {
-                        
-                    }
-                    else {
-                        $("#actionAddMpc").find("input[name="+key+"]").addClass("is-invalid");
-                        $("#actionAddMpc").find("select[name="+key+"]").addClass("is-invalid");
-                        $("#actionAddMpc").find("textarea[name="+key+"]").addClass("is-invalid");
+                    $("#actionAddMpc").find("input[name="+key+"]").removeClass("is-invalid");
+                    $("#actionAddMpc").find("select[name="+key+"]").removeClass("is-invalid");
+                    $("#actionAddMpc").find("textarea[name="+key+"]").removeClass("is-invalid");
 
-                        $("#actionAddMpc").find("input[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
-                        $("#actionAddMpc").find("select[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
-                        $("#actionAddMpc").find("textarea[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
+                    $("#actionAddMpc").find("input[name="+key+"]").next().find("strong").text("");
+                    $("#actionAddMpc").find("select[name="+key+"]").next().find("strong").text("");
+                    $("#actionAddMpc").find("textarea[name="+key+"]").next().find("strong").text("");
+                }
+
+                if(hasil['errors'] != null){
+                    for (var key of frmAddMpc.keys()) {
+                        if(typeof hasil['errors'][key] === 'undefined') {
+                            
+                        }
+                        else {
+                            $("#actionAddMpc").find("input[name="+key+"]").addClass("is-invalid");
+                            $("#actionAddMpc").find("select[name="+key+"]").addClass("is-invalid");
+                            $("#actionAddMpc").find("textarea[name="+key+"]").addClass("is-invalid");
+
+                            $("#actionAddMpc").find("input[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
+                            $("#actionAddMpc").find("select[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
+                            $("#actionAddMpc").find("textarea[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
+                        }
                     }
                 }
+                else{
+                    $('#modal-UpdateForm').modal('hide')
+                    $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">New MPC has been ADDED successfully</div>");
+                    $("#modal-Notification").modal("show");
+                }
+
+                document.getElementById("btn-actionAddMpc").innerHTML = "SAVE";
             }
             else{
-                // $('#modal-UpdateForm').modal('hide')
-                // $("#modal-NotificationUpdate").modal("show");
-                $('#modal-UpdateForm').modal('hide')
-                $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">New MPC has been ADDED successfully</div>");
-                $("#modal-Notification").modal("show");
+                for (var key of frmEditMpc.keys()) {
+                    $("#actionEditMpc").find("input[name="+key+"]").removeClass("is-invalid");
+                    $("#actionEditMpc").find("select[name="+key+"]").removeClass("is-invalid");
+                    $("#actionEditMpc").find("textarea[name="+key+"]").removeClass("is-invalid");
+
+                    $("#actionEditMpc").find("input[name="+key+"]").next().find("strong").text("");
+                    $("#actionEditMpc").find("select[name="+key+"]").next().find("strong").text("");
+                    $("#actionEditMpc").find("textarea[name="+key+"]").next().find("strong").text("");
+                }
+
+                if(hasil['errors'] != null){
+                    for (var key of frmEditMpc.keys()) {
+                        if(typeof hasil['errors'][key] === 'undefined') {
+                            
+                        }
+                        else {
+                            $("#actionEditMpc").find("input[name="+key+"]").addClass("is-invalid");
+                            $("#actionEditMpc").find("select[name="+key+"]").addClass("is-invalid");
+                            $("#actionEditMpc").find("textarea[name="+key+"]").addClass("is-invalid");
+
+                            $("#actionEditMpc").find("input[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
+                            $("#actionEditMpc").find("select[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
+                            $("#actionEditMpc").find("textarea[name="+key+"]").next().find("strong").text(hasil['errors'][key]);
+                        }
+                    }
+                }
+                else{
+                    $('#modal-EditMpc').modal('hide')
+                    $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-success\">The MPC has been CHANGED successfully</div>");
+                    $("#modal-Notification").modal("show");
+                }
+
+                document.getElementById("btn-confirmUpdateMpc").innerHTML = "SAVE";
             }
 
-            document.getElementById("btn-actionAddMpc").innerHTML = "SAVE";
+            
         }
         function errorHandlerMpc(event){
-            document.getElementById("btn-actionAddMpc").innerHTML = "SAVE";
-            // $("#txt-notification > div").html(event.target.responseText);
-            // $('#modal-UpdateForm').modal('hide')
-            // $("#modal-NotificationUpdate").modal("show");
+            if(isAddMpc){
+                document.getElementById("btn-actionAddMpc").innerHTML = "SAVE";
+            }
+            else{
+                document.getElementById("btn-confirmUpdateMpc").innerHTML = "SAVE";
+            }
             $("#modal-Notification").find("p#txt-notification").html("<div class=\"alert alert-error\">"+event.target.responseText+"</div>");
             $("#modal-Notification").modal("show");
         }
