@@ -27,7 +27,6 @@
 
     <!-- JavaScript -->
     <script src="{{ asset('js/jquery.min.js') }}"></script>
-    <script src="{{ asset('js/chart-data.js') }}"></script>
     
 </head>
 <body style="background-image:url(&quot;{{ asset('img/BG-01.png') }}&quot;);">

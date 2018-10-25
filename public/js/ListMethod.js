@@ -2,6 +2,9 @@ function capitalize(string) { //INDONESIA -> Indonesia
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
 
+var actionDelete = $("#actionDelete").prop('action');
+var actionEdit = $("#actionEdit").prop('action');
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //      METHOD - METHOD KHUSUS EDIT DATA MASTER YG BERGUNA UNTUK NGAMBIL DATA DARI TABLE SAJA
@@ -451,6 +454,17 @@ function isNumberKey(evt){
     if (charCode > 31 && (charCode != 46 &&(charCode < 48 || charCode > 57)))
         return false;
     return true;
+}
+
+function isBankAccount(evt){
+    if(event.target.value.length == 3)
+    {
+        event.target.value += ".";
+    }
+    if(event.target.value.length == 7)
+    {
+        event.target.value += ".";
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

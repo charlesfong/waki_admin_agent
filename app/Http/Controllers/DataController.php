@@ -52,7 +52,7 @@ class DataController extends Controller
 		}
 
         $branches = Branch::where([['country', $user->branch['country']],['active', true]])->get();
-        $csos = Cso::where('active', true)->get();
+        $csos = Cso::where('active', true)->orderBy('code')->get();
         $type_custs = TypeCust::where('active', true)->get();
         $banks = Bank::where('active', true)->get();
         $locations = Location::where('active', true)->get();

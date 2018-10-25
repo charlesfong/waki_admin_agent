@@ -202,7 +202,7 @@ class CsoController extends Controller
             $count = Cso::all()->count();
             $count++;
 
-            $data = $request->only('code', 'registration_date', 'unregistration_date', 'name', 'address', 'phone', 'komisi', 'no_rekening', 'province', 'district');
+            $data = $request->only('code', 'registration_date', 'unregistration_date', 'name', 'address', 'phone', 'province', 'district');
             $data['name'] = strtoupper($data['name']);
             $data['address'] = strtoupper($data['address']);
             $branch = Branch::find($request->get('branch'));
@@ -218,18 +218,16 @@ class CsoController extends Controller
             $data['code'] = $code;
             $data['branch_id'] = $request->get('branch');
 
-             $id = DB::table('csos')->insertGetId([
-                'registration_date' => $data['registration_date'],
-                'unregistration_date' => $data['unregistration_date'], 
-                'code' => $data['code'],
-                'name' => $data['name'],
-                'address' => $data['address'],
-                'phone' => $data['phone'],
-                'komisi' => $data['komisi'],
-                'no_rekening' => $data['no_rekening'],
-                'province' => $data['province'],
-                'district' => $data['district'],
-                'branch_id' => $data['branch_id']]);
+            if($request->get('komisi') != null)
+            {
+                $data['komisi'] = $request->get('komisi');
+            }
+            if($request->get('no_rekening') != null)
+            {
+                $data['no_rekening'] = $request->get('no_rekening');
+            }
+
+            Cso::create($data); //INSERT INTO DATABASE (with created_at)
 
             return response()->json(['success'=>'Berhasil !!']);
         }
@@ -258,9 +256,7 @@ class CsoController extends Controller
                 'required',
                 Rule::unique('csos')->whereNot('id', $request->get('id'))->where('active', 1),
             ],
-            'komisi' => 'required',
             'no_rekening' => [
-                'required',
                 Rule::unique('csos')->whereNot('id', $request->get('id'))->where('active', 1),
             ],
             'province' => 'required',
@@ -285,20 +281,32 @@ class CsoController extends Controller
             $data['address'] = strtoupper($data['address']);
             $data['branch_id'] = $request->get('branch');
 
-            DB::table('csos')
-                ->where('id', $request->get('id'))
-                ->update(['registration_date' => $data['registration_date'],
-                        'unregistration_date' => $data['unregistration_date'], 
-                        'name' => $data['name'],
-                        'address' => $data['address'],
-                        'phone' => $data['phone'],
-                        'komisi' => $data['komisi'],
-                        'no_rekening' => $data['no_rekening'],
-                        'province' => $data['province'],
-                        'district' => $data['district'],
-                        'branch_id' => $data['branch_id']]);
+            // DB::table('csos')
+            //     ->where('id', $request->get('id'))
+            //     ->update(['registration_date' => $data['registration_date'],
+            //             'unregistration_date' => $data['unregistration_date'], 
+            //             'name' => $data['name'],
+            //             'address' => $data['address'],
+            //             'phone' => $data['phone'],
+            //             'komisi' => $data['komisi'],
+            //             'no_rekening' => $data['no_rekening'],
+            //             'province' => $data['province'],
+            //             'district' => $data['district'],
+            //             'branch_id' => $data['branch_id']]);
 
-            return response()->json(['success'=>'Berhasil !!']);
+            $cso = Cso::find($request->get('id'));
+
+            if($request->get('komisi') == null || $request->get('komisi') == "")
+            {
+                $data['komisi'] = "0";
+            }
+            if($request->get('no_rekening') == null || $request->get('no_rekening') == "")
+            {
+                $data['no_rekening'] = "-";
+            }
+            $cso->fill($data)->save();
+
+            return response()->json(['success'=>$data]);
         }
     }
 
