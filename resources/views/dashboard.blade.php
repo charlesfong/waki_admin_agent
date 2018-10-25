@@ -48,7 +48,7 @@
                 <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
                     <div class="panel panel-teal panel-widget border-right">
                         <div class="row no-padding"><em class="fa fa-xl fa-users color-blue"></em>
-                            <div class="large">5000</div>
+                            <div class="large">{{$dataUndangans}}</div>
                             <div class="text-muted">Data Undangan</div>
                         </div>
                     </div>
@@ -56,15 +56,15 @@
                 <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
                     <div class="panel panel-blue panel-widget border-right">
                         <div class="row no-padding"><em class="fa fa-xl fa-arrow-up color-orange"></em>
-                            <div class="large">4000</div>
-                            <div class="text-muted">Data Outside</div>
+                            <div class="large">{{$dataOutsites}}</div>
+                            <div class="text-muted">Data Out-site</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
                     <div class="panel panel-orange panel-widget border-right">
                         <div class="row no-padding"><em class="fa fa-xl fa-arrow-down color-teal"></em>
-                            <div class="large">3000</div>
+                            <div class="large">{{$dataTherapies}}</div>
                             <div class="text-muted">Data Therapy</div>
                         </div>
                     </div>
@@ -72,7 +72,7 @@
                 <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
                     <div class="panel panel-red panel-widget ">
                         <div class="row no-padding"><em class="fa fa-xl fa-credit-card color-red"></em>
-                            <div class="large">2000</div>
+                            <div class="large">{{$mpcs}}</div>
                             <div class="text-muted">MPC</div>
                         </div>
                     </div>
@@ -83,7 +83,7 @@
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        Data Grafik
+                        Graphic Data (6 Months Interval)
                         
                         <span class="pull-right clickable panel-toggle panel-button-tab-left"><em class="fa fa-toggle-up"></em></span></div>
                     <div class="panel-body">
@@ -137,6 +137,81 @@
 <script>
     window.onload = function () {
         var chart1 = document.getElementById("line-chart").getContext("2d");
+
+        var lineChartData = {
+            labels : ["January","February","March","April","May","June","July"],
+            datasets : [
+                {
+                    label: "My First dataset",
+                    fillColor : "rgba(48, 164, 255, 0)",
+                    strokeColor : "rgba(48, 164, 255, 1)",
+                    pointColor : "rgba(48, 164, 255, 1)",
+                    pointStrokeColor : "#fff",
+                    pointHighlightFill : "#fff",
+                    pointHighlightStroke : "rgba(220,220,220,1)",
+                    data : [5000,4000,5000,4000,5000,4000,5000]
+                },
+                {
+                    label: "My Second dataset",
+                    fillColor : "rgba(255, 181, 62, 0)",
+                    strokeColor : "rgba(255, 181, 62, 1)",
+                    pointColor : "rgba(255, 181, 62, 1)",
+                    pointStrokeColor : "#fff",
+                    pointStrokeColor : "#fff",
+                    pointHighlightFill : "#fff",
+                    pointHighlightStroke : "rgba(48, 164, 255, 1)",
+                    data : [4000,5000,4000,5000,4000,5000,4000]
+                },
+                {
+                    label: "My Third dataset",
+                    fillColor : "rgba(30,191,174,0)",           
+                    strokeColor : "rgba(30,191,174,1)",
+                    pointColor : "rgba(30,191,174,1)",
+                    pointStrokeColor : "#fff",
+                    pointHighlightFill : "#fff",
+                    pointHighlightStroke : "rgba(48, 164, 255, 1)",
+                    data : [3000,3000,3000,3000,3000,3000,3000]
+                },
+                {
+                    label: "My Fourth dataset",
+                    fillColor : "rgba(239, 64, 64, 0)",
+                    strokeColor : "rgba(239, 64, 64, 1",
+                    pointColor : "rgba(239, 64, 64, 1)",
+                    pointStrokeColor : "#fff",
+                    pointHighlightFill : "#fff",
+                    pointHighlightStroke : "rgba(48, 164, 255, 1)",
+                    data : [2000,2000,2000,2000,2000,2000,2000]
+                }
+            ]
+        }
+
+        var pieData = [
+            {
+                value: 300,
+                color:"#30a5ff",
+                highlight: "#62b9fb",
+                label: "Blue"
+            },
+            {
+                value: 50,
+                color: "#ffb53e",
+                highlight: "#fac878",
+                label: "Orange"
+            },
+            {
+                value: 100,
+                color: "#1ebfae",
+                highlight: "#3cdfce",
+                label: "Teal"
+            },
+            {
+                value: 120,
+                color: "#f9243f",
+                highlight: "#f6495f",
+                label: "Red"
+            }
+        ];
+
         window.myLine = new Chart(chart1).Line(lineChartData, {
             responsive: true,
             scaleLineColor: "rgba(0,0,0,.2)",

@@ -149,5 +149,17 @@ class BranchesTableSeeder extends Seeder
             'name' => 'DARMO PARK',
             'country' => 'INDONESIA',
         ]);
+
+        DB::table('branches')->insert([
+            'code' => 'F73',
+            'name' => 'SEMARANG',
+            'country' => 'INDONESIA',
+        ]);
+
+        DB::table('branches')->insert([
+            'code' => 'F45',
+            'name' => 'TIM ALEX',
+            'country' => 'INDONESIA',
+        ]);
     }
 }
