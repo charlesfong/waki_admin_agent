@@ -170,3 +170,9 @@ btn-delete {
   margin: 0 auto;
   padding: 0px 20px;
 }
+
+/*Remove arrow from input type number*/
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none;
+}

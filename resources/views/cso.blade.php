@@ -34,7 +34,7 @@
 @section('content')
 <div class="container contact-clean" id="form-addMember">
     <!-- FORM UNTUK DATA BARU -->
-    <form id="actionAdd" method="POST" action="{{ route('store_user') }}">
+    <form id="actionAdd" method="POST" action="{{ route('store_cso') }}">
         {{ csrf_field() }}
 
         <h1 class="text-center">Add CSO</h1>
@@ -126,14 +126,14 @@
         </div>
         <div class="form-group frm-group-select select-right {{ $errors->has('komisi') ? ' has-error' : '' }}">
             <span>COMMISSION</span>
-            <input type="number" step="0.01" name="komisi" class="form-control {{ $errors->has('komisi') ? ' is-invalid' : '' }}" placeholder="0.00" value="{{ old('komisi') }}" onkeypress="return isNumberKey(event)" required>
+            <input type="number" step="0.01" name="komisi" class="form-control {{ $errors->has('komisi') ? ' is-invalid' : '' }}" placeholder="0.00" value="{{ old('komisi') }}" onkeypress="return isNumberKey(event)">
             <span class="invalid-feedback">
                 <strong>{{ $errors->first('komisi') }}</strong>
             </span>
         </div>
         <div class="form-group {{ $errors->has('no_rekening') ? ' has-error' : '' }}">
             <span>BANK ACCOUNT</span>
-            <input type="number" name="no_rekening" class="text-uppercase form-control {{ $errors->has('no_rekening') ? ' is-invalid' : '' }}" placeholder="Bank Account" value="{{ old('no_rekening') }}" onkeypress="return isNumberKey(event)" required>
+            <input type="number" name="no_rekening" class="text-uppercase form-control {{ $errors->has('no_rekening') ? ' is-invalid' : '' }}" value="{{ old('no_rekening') }}" placeholder="Bank Account">
             <span class="invalid-feedback">
                 <strong>{{ $errors->first('no_rekening') }}</strong>
             </span>
@@ -199,7 +199,11 @@
                     <td>{{$cso->district}}</td>
                     <td style="display: none;">{{$cso->branch['country']}}</td>
                     <td>{{$cso->branch['name']}}</td>
-                    <td>0{{$cso->phone / 23}}</td>
+                    @if($cso->phone == "")
+                        <td>-</td>
+                    @else
+                        <td>{{$cso->phone}}</td>
+                    @endif
                     <td>{{$cso->komisi}}</td>
                     <td>{{$cso->no_rekening}}</td>
                     <td style="display: none;">{{$cso->unregistration_date}}</td>
@@ -237,7 +241,13 @@
                 <h6 class="card-title" style="border-bottom:solid 0.2px black;text-align:center;">{{$cso->code}} - {{$cso->name}}<br></h6>
                 <h6 class="text-muted card-subtitle mb-2" style="font-size:12px;">{{$cso->branch['country']}} - {{$cso->branch['name']}}<br></h6>
                 <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Registration Date :</b> {{$cso->registration_date}}<br></p>
-                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Phone :</b> 0{{$cso->phone / 23}}<br></p>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Phone :</b>
+                    @if($cso->phone == "")
+                        -
+                    @else
+                        {{$cso->phone}}
+                    @endif
+                    <br></p>
                 <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Commission :</b> {{$cso->komisi}}<br></p>
                 <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:10px;"><b>Bank Account :</b> {{$cso->no_rekening}}<br></p>
                 @if(Gate::check('edit-cso'))
@@ -398,8 +408,8 @@
                     </div>
                     <div class="form-group">
                         <span>BANK ACCOUNT</span>
-                        <input class="form-control" type="number" id="txtnorekening-cso" name="no_rekening">
-                        <span class="invalid-feedback" onkeypress="return isNumberKey(event)">
+                        <input class="form-control text-uppercase" type="number" id="txtnorekening-cso" name="no_rekening" placeholder="Bank Account">
+                        <span class="invalid-feedback">
                             <strong></strong>
                         </span>
                     </div>

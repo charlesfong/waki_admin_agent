@@ -52,7 +52,7 @@ class DataController extends Controller
 		}
 
         $branches = Branch::where([['country', $user->branch['country']],['active', true]])->get();
-        $csos = Cso::where('active', true)->get();
+        $csos = Cso::where('active', true)->orderBy('code')->get();
         $type_custs = TypeCust::where('active', true)->get();
         $banks = Bank::where('active', true)->get();
         $locations = Location::where('active', true)->get();
@@ -778,7 +778,7 @@ class DataController extends Controller
             'type_cust' => 'required',
         ]);
 
-        if($request->type_cust == 8){
+        if($request->type_cust == 13){
             $validator = \Validator::make($request->all(), [
                 'name' => 'required',
                 'address' => 'required',
@@ -1003,7 +1003,7 @@ class DataController extends Controller
             $data = $request->only('code', 'registration_date', 'name', 'address', 'phone', 'province', 'district');
             $data['name'] = strtoupper($data['name']);
 
-            //pembentukan kode data outsite
+            //pembentukan kode data therapy
             $name = strtoupper(substr(str_slug($request->get('name'), ""), 0, 3));
             for($i=strlen($count); $i<4; $i++)
             {
@@ -1018,7 +1018,7 @@ class DataController extends Controller
             $data['cso_id'] = $request->get('cso');
             $data['type_cust_id'] = $request->get('type_cust');
 
-            //masukin data ke data_outsite
+            //masukin data ke data_therapy
             DataTherapy::create($data);
 
             return response()->json(['success'=>'Berhasil !!']);
@@ -1079,7 +1079,7 @@ class DataController extends Controller
             $data['cso_id'] = $request->get('cso');
             $data['user_id'] = $user->id;
 
-            //masukin data ke data_outsite
+            //masukin data ke Mpc
             Mpc::create($data);
 
             return response()->json(['success'=>'Berhasil !!']);
@@ -1090,7 +1090,7 @@ class DataController extends Controller
     /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++    BUAT EDIT/UPDATE DATA    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
-    /*Function store untuk merubah data pada table DATA UNDANGAN
+    /*Function update untuk merubah data pada table DATA UNDANGAN
     * menggunakan parameter request langsung
     * jadi gk pake request dia jenis nya apa tapi langsung di panggil di route nya
     * user_id bisa di dapet dari Auth->usernya yg lagi online sekarang atau login
@@ -1104,35 +1104,59 @@ class DataController extends Controller
         $validator = \Validator::make($request->all(), [
             'name' => 'required',
             'address' => 'required',
-            'registration_date' => 'required',
             'phone' => [
                 'required',
                 Rule::unique('data_undangans')->whereNot('id', $request->get('id'))->where('active', 1),
             ],
+            'birth_date' => 'required',
+        ]);
+
+        if ($validator->fails())
+        {
+            $arr_Errors = $validator->errors()->all();
+            $arr_Keys = $validator->errors()->keys();
+            $arr_Hasil = [];
+            for ($i=0; $i < count($arr_Keys); $i++) { 
+                $arr_Hasil[$arr_Keys[$i]] = $arr_Errors[$i];
+            }
+            return response()->json(['errors'=>$arr_Hasil]);
+        }
+        else {
+            $data = $request->only('name', 'birth_date', 'address', 'phone');
+            $data['name'] = strtoupper($data['name']);
+            $data['address'] = strtoupper($data['address']);
+
+            //update data ke data_undangan
+            $DataUndanganNya = DataUndangan::find($request->get('id'));
+            $DataUndanganNya->fill($data)->save();
+
+            return response()->json(['success'=>'Berhasil !!']);
+        }
+    }
+
+    /*Function update untuk merubah data pada table HISTORY UNDANGAN
+    * menggunakan parameter request langsung
+    */
+    public function updateHistoryUndangan(Request $request)
+    {
+        $validator = \Validator::make($request->all(), [
+            'date' => 'required',
             'province' => 'required',
             'district' => 'required',
             'branch' => 'required',
             'country' => 'required',
-            'birth_date' => 'required',
             'cso' => 'required',
             'type_cust' => 'required',
         ]);
 
-        if($request->type_cust == 8){
+        if($request->type_cust == 13){
             $validator = \Validator::make($request->all(), [
-                'name' => 'required',
-                'address' => 'required',
-                'registration_date' => 'required',
-                'phone' => [
-                    'required',
-                    Rule::unique('data_undangans')->whereNot('id', $request->get('id'))->where('active', 1),
-                ],
+                'date' => 'required',
                 'bank_name' => 'required',
                 'province' => 'required',
                 'district' => 'required',
                 'branch' => 'required',
                 'country' => 'required',
-                'birth_date' => 'required',
                 'cso' => 'required',
                 'type_cust' => 'required',
             ]);
@@ -1149,15 +1173,7 @@ class DataController extends Controller
             return response()->json(['errors'=>$arr_Hasil]);
         }
         else {
-            $DataUndanganNya = DataUndangan::find($request->get('id'));
-
-            $user = Auth::user();
-            $count = DataUndangan::all()->count();
-            $count++;
-
-            $data = $request->only('code', 'registration_date', 'name', 'birth_date', 'address', 'phone', 'province', 'district');
-            $data['name'] = strtoupper($data['name']);
-            $data['address'] = strtoupper($data['address']);
+            $data = $request->only('date', 'province', 'district');
 
             //Khusus untuk Bank Input
             if($request->bank_name != null || $request->bank_name != ""){
@@ -1173,23 +1189,21 @@ class DataController extends Controller
                 }
             }
 
-            //masukin data ke data_undangan duluan
-            $idDataUndangan = DataUndangan::create($data);
-
             //ngemasukin data ke array $data
             $data['branch_id'] = $request->get('branch');
             $data['cso_id'] = $request->get('cso');
             $data['type_cust_id'] = $request->get('type_cust');
-            $data['data_undangan_id'] = $idDataUndangan->id;
-            $data['date'] = $data['registration_date'];
+            $data['data_undangan_id'] = $request->idDataUndangan;
 
-            $DataUndanganNya->fill($data)->save();
+            //masukin data ke data_outsite
+            $HistoryUndanganNya = HistoryUndangan::find($request->get('id'));
+            $HistoryUndanganNya->fill($data)->save();
 
             return response()->json(['success'=>'Berhasil !!']);
         }
     }
 
-    /*Function store untuk merubah data pada table DATA OUTSITE
+    /*Function update untuk merubah data pada table DATA OUTSITE
     * menggunakan parameter request langsung
     * jadi gk pake request dia jenis nya apa tapi langsung di panggil di route nya
     */
@@ -1261,6 +1275,9 @@ class DataController extends Controller
                     $data['location_id'] = $locationObj->id;
                 }
             }
+            else {
+                $data['location_id'] = null;
+            }
 
             //ngemasukin data ke array $data
             $data['branch_id'] = $request->get('branch');
@@ -1268,10 +1285,165 @@ class DataController extends Controller
             $data['type_cust_id'] = $request->get('type_cust');
 
             //masukin data ke data_outsite
-            $DataOutsitenNya = DataOutsite::find($request->get('id'));
-            $DataOutsitenNya->fill($data)->save();
+            $DataOutsiteNya = DataOutsite::find($request->get('id'));
+            $DataOutsiteNya->fill($data)->save();
 
             return response()->json(['success'=>'Berhasil !!']);
+        }
+    }
+
+    /*Function update untuk merubah data pada table DATA THERAPY
+    * menggunakan parameter request langsung
+    * jadi gk pake request dia jenis nya apa tapi langsung di panggil di route nya
+    */
+    public function updateDataTherapy(Request $request)
+    {
+        if ($request->has('phone') && $request->phone != null)
+            $request->merge(['phone'=> ($request->phone * 23)]);
+
+        $validator = \Validator::make($request->all(), [
+            'name' => 'required',
+            'address' => 'required',
+            'registration_date' => 'required',
+            'phone' => [
+                'required',
+                Rule::unique('data_therapies')->whereNot('id', $request->get('id'))->where('active', 1),
+            ],
+            'province' => 'required',
+            'district' => 'required',
+            'branch' => 'required',
+            'country' => 'required',
+            'cso' => 'required',
+            'type_cust' => 'required',
+        ]);
+
+        if ($validator->fails())
+        {
+            $arr_Errors = $validator->errors()->all();
+            $arr_Keys = $validator->errors()->keys();
+            $arr_Hasil = [];
+            for ($i=0; $i < count($arr_Keys); $i++) { 
+                $arr_Hasil[$arr_Keys[$i]] = $arr_Errors[$i];
+            }
+            return response()->json(['errors'=>$arr_Hasil]);
+        }
+        else {
+            $data = $request->only('registration_date', 'name', 'address', 'phone', 'province', 'district');
+            $data['name'] = strtoupper($data['name']);
+            $data['address'] = strtoupper($data['address']);
+
+            //ngemasukin data ke array $data
+            $data['branch_id'] = $request->get('branch');
+            $data['cso_id'] = $request->get('cso');
+            $data['type_cust_id'] = $request->get('type_cust');
+
+            //masukin data ke data_therapy
+            $DataTherapyNya = DataTherapy::find($request->get('id'));
+            $DataTherapyNya->fill($data)->save();
+
+            return response()->json(['success'=>'Berhasil !!']);
+        }
+    }
+
+    /*Function update untuk merubah data pada table MPC
+    * menggunakan parameter request langsung
+    */
+    public function updateMpc(Request $request)
+    {
+        if ($request->has('phone') && $request->phone != null)
+            $request->merge(['phone'=> ($request->phone * 23)]);
+
+        $validator = \Validator::make($request->all(), [
+            'name' => 'required',
+            'ktp' => 'required',
+            'code' => [
+                'required',
+                Rule::unique('mpcs')->whereNot('id', $request->get('id'))->where('active', 1),
+            ],
+            'address' => 'required',
+            'gender' => 'required',
+            'registration_date' => 'required',
+            'birth_date' => 'required',
+            'phone' => [
+                'required',
+                Rule::unique('mpcs')->whereNot('id', $request->get('id'))->where('active', 1),
+            ],
+            'province' => 'required',
+            'district' => 'required',
+            'branch' => 'required',
+            'country' => 'required',
+            'cso' => 'required',
+        ]);
+
+        if ($validator->fails())
+        {
+            $arr_Errors = $validator->errors()->all();
+            $arr_Keys = $validator->errors()->keys();
+            $arr_Hasil = [];
+            for ($i=0; $i < count($arr_Keys); $i++) { 
+                $arr_Hasil[$arr_Keys[$i]] = $arr_Errors[$i];
+            }
+            return response()->json(['errors'=>$arr_Hasil]);
+        }
+        else {
+            $user = Auth::user();
+
+            $data = $request->only('code', 'ktp', 'birth_date', 'registration_date', 'name', 'gender', 'address', 'phone', 'province', 'district');
+            $data['name'] = strtoupper($data['name']);
+            $data['code'] = strtoupper($data['code']);
+            $data['address'] = strtoupper($data['address']);
+
+            //ngemasukin data ke array $data
+            $data['branch_id'] = $request->get('branch');
+            $data['cso_id'] = $request->get('cso');
+            $data['user_id'] = $user->id;
+
+            //masukin data ke Mpc
+            $MpcNya = Mpc::find($request->get('id'));
+            $MpcNya->fill($data)->save();
+
+            return response()->json(['success'=>'Berhasil !!']);
+        }
+    }
+
+    /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+    /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++    BUAT FIND DATA    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+    /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+    /*Function mencari data MPC
+    * menggunakan parameter request langsung
+    */
+    public function findMpc(Request $request)
+    {
+        if ($request->has('phone') && $request->phone != null)
+            $request->merge(['phone'=> ($request->phone * 23)]);
+
+        $MpcNya = Mpc::where([['phone', $request->phone],['active', true]])->first();
+        if($MpcNya != null){
+            return response()->json(['success'=>$MpcNya]);
+        }
+        else{
+            return response()->json(['errors'=>'Data Tidak di Temukan !!']);
+        }
+    }
+
+    /*Function mencari data MPC
+    * menggunakan parameter request langsung
+    */
+    public function findDataOutsite(Request $request)
+    {
+        if ($request->has('phone') && $request->phone != null)
+            $request->merge(['phone'=> ($request->phone * 23)]);
+
+        $DataOutsiteNya = DataOutsite::where([['phone', $request->phone],['active', true]])->first();
+        $DataOutsiteNya['location'] = Location::find($DataOutsiteNya['location_id']);
+        $DataOutsiteNya['type_cust'] = TypeCust::find($DataOutsiteNya['type_cust_id']);
+        $DataOutsiteNya['phone'] = $DataOutsiteNya['phone'] / 23;
+        if($DataOutsiteNya != null){
+            return response()->json(['success'=>$DataOutsiteNya]);
+        }
+        else{
+            return response()->json(['errors'=>'Data Tidak di Temukan !!']);
         }
     }
 }
