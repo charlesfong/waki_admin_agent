@@ -216,7 +216,7 @@
             responsive: true,
             scaleLineColor: "rgba(0,0,0,.2)",
             scaleGridLineColor: "rgba(0,0,0,.05)",
-            scaleFontColor: "#c5c7cc"
+            scaleFontColor: "#c5c7cc",
         });
     };
 </script>
