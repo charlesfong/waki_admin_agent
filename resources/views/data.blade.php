@@ -2,6 +2,9 @@
 @section('css')
     <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}">
 @endsection
+@section('js')
+    <script src="{{ asset('js/jquery.tabledit.js') }}"></script>
+@endsection
 @section('navmenu')
     @if(Gate::check('dashboard'))
     <li> <a href="{{route('dashboard')}}">Dashboard</a></li>
@@ -1387,6 +1390,220 @@
             <!-- FORM UNTUK UPDATE DATA -->
             <form id="actionEditDataUndangan" name="frmEditDataUndangan" method="POST" action="{{ route('update_dataundangan') }}">
                 {{ csrf_field() }}
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <span>CODE</span>
+                        <input id="edit-txtcode-dataundangan" type="text" name="code" class="text-uppercase form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <span>TIPE UNDANGAN</span>
+                        <select id="edit-txttype-cust-dataundangan" class="text-uppercase form-control" name="type_cust" value="" required>
+                            <optgroup label="TIPE OUT-SITE"> 
+                                <option value="" disabled selected>SELECT TIPE UNDANGAN</option>
+                                @foreach ($type_custs as $type_cust)
+                                    @if($type_cust->type_input == "OUT-SITE")
+                                        <option value="{{$type_cust->id}}">{{$type_cust->name}}</option>
+                                    @endif
+                                @endforeach
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <span>REGISTRATION DATE</span>
+                        <input id="edit-txtreg-date-dataundangan" type="date" name="registration_date" class="text-uppercase form-control" required>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span>NAME</span>
+                        <input id="edit-txtname-dataundangan" type="text" name="name" class="text-uppercase form-control" placeholder="NAME" required>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span>BIRTH DATE</span>
+                        <input id="edit-txtbirt-date-dataundangan" type="date" name="birth_date" class="text-uppercase form-control"required>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span>ADDRESS</span>
+                        <textarea id="edit-txtaddress-dataundangan" name="address" class="text-uppercase form-control form-control-sm" placeholder="Address" required></textarea>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div id="edit-Undangan-Location" class="form-group">
+                        
+                    </div>
+                    <div class="form-group frm-group-select">
+                        <span>COUNTRY</span>
+                        <select id="edit-txtcountry-dataundangan" class="text-uppercase form-control" name="country" required>
+                            <optgroup label="Country">
+                                @include('etc.select-country')
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group frm-group-select select-right">
+                        <span>BRANCH</span>
+                        <select id="edit-txtbranch-dataundangan" class="text-uppercase form-control" name="branch" required>
+                            <optgroup label="Branch">
+                                @can('all-branch-data-outsite')
+                                    @can('all-country-data-outsite')
+                                        <option value="" disabled selected>SELECT COUNTRY FIRST</option>
+                                    @endcan
+                                    @cannot('all-country-data-outsite')
+                                        <option value="" selected disabled>SELECT YOUR OPTION</option>
+                                        @foreach ($branches as $branch)
+                                            <option value="{{$branch->id}}" {{($branch->id == Auth::user()->branch_id ? "selected" : "")}}>{{$branch->code}} - {{$branch->name}}</option>
+                                        @endforeach
+                                    @endcan
+                                @endcan
+                                @cannot('all-branch-data-outsite')
+                                    <option value="{{Auth::user()->branch_id}}">{{Auth::user()->branch['name']}}</option>
+                                @endcan
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+
+
+                    <!-- CSO -->
+                    <div class="form-group">
+                        <span>CSO</span>
+                        <select id="edit-txtcso-dataundangan" class="text-uppercase form-control" name="cso" required>
+                            <optgroup label="Cso">
+                                @can('all-branch-data-outsite')
+                                    <option value="" disabled selected>SELECT BRANCH FIRST</option>
+                                @endcan
+                                @cannot('all-branch-data-outsite')
+                                <option value="" selected disabled>SELECT YOUR OPTION</option>
+                                    @foreach ($csos as $cso)
+                                        @if($cso->branch_id == Auth::user()->branch_id)
+                                            <option value="{{$cso->id}}">{{$cso->name}}</option>
+                                        @endif
+                                    @endforeach
+                                @endcan
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+
+                    <!-- Khusus untuk Indo untuk sementara -->
+                    <div class="form-group frm-group-select">
+                        <span>PROVINCE</span>
+                        <select id="edit-txtprovince-dataundangan" class="text-uppercase form-control" name="province" required>
+                            <optgroup label="Province">
+                                @include('etc.select-province')
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group frm-group-select select-right">
+                        <span>DISTRICT</span>
+                        <select id="edit-txtdistrict-dataundangan" class="form-control text-uppercase" name="district"required>
+                            <optgroup label="District">
+                                <option disabled selected>SELECT PROVINCE FIRST</option>
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <span>PHONE</span>
+                        <input id="edit-txtphone-dataundangan" type="number" name="phone" class="form-control" placeholder="0XXXXXXXXXXX" required>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-light" type="button" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="btn-confirmUpdateDataUndangan" value="-">SAVE</button>
+                    </div>
+                </div>
+
+            <div class="modal-header" style="margin-bottom: 20px;">
+                <h2 class="text-center" style="margin-bottom: 0;">History Undangan</h2>
+            </div>
+    <div class="table-responsive table table-striped table-indesktop">
+        <table class="table table-sm table-bordered" style="width: 95%; margin: auto;">
+            <thead>
+                <tr>
+                    <th>REG DATE</th>
+                    <th>TYPE</th>
+                    <th>BANK</th>
+                    <th>CSO</th>
+                    <th>BRANCH</th>
+                    <th>AREA</th>
+                    <th colspan="2">EDIT / DELETE</th>
+                </tr>
+            </thead>
+            <tbody name="ListDataOutsite">
+                @php
+                $i = 0
+                @endphp
+                @foreach($dataOutsites as $dataOutsite)
+                <tr>
+                    <td>{{$dataOutsite->code}}</td>
+                    <td>{{$dataOutsite->code}}</td>
+                    <td>{{$dataOutsite->name}}</td>
+                    <td>{{$dataOutsite->location['name']}} @if($dataOutsite->location == null)- @endif</td>
+                    <td>0{{$dataOutsite->phone / 23}}</td>
+                    <td>{{$dataOutsite->type_cust['name']}}</td>
+                    <td style="display: none;">{{$dataOutsite->province}}</td>
+                    <td style="display: none;">{{$dataOutsite->district}}</td>
+                    <td style="display: none;">{{$dataOutsite->branch['country']}}</td>
+                    <td style="display: none;">{{$dataOutsite->branch['id']}}</td>
+                    <td style="display: none;">{{$dataOutsite->cso['id']}}</td>
+                    <td style="display: none;">{{$dataOutsite->type_cust['id']}}</td>
+                    <td><button class="btn btn-primary btn-edithapus-card btn-editDataUndangan" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$dataUndangan->id}}">
+                    <i class="material-icons">mode_edit</i>
+                    </button></td>
+                    <td><button class="btn btn-primary btn-edithapus-card btn-deleteDataUndangan" type="button" style="padding:0px 5px;margin-right:10px;" name="{{$i}}" value="{{$dataUndangan->id}}">
+                    <i class="material-icons">delete</i>
+                    </button></td>
+
+                    <!-- @if(Gate::check('edit-data-outsite'))
+                    <td style="text-align: center;">
+                        <button class="btn btn-primary btn-editDataOutsite" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$dataOutsite->id}}">
+                            <i class="material-icons">mode_edit</i>
+                        </button>
+                    </td>
+                    @endif
+                    @if(Gate::check('delete-data-outsite'))
+                    <td style="text-align: center;">
+                        <button class="btn btn-primary btn-deleteDataOutsite" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$dataOutsite->id}}">
+                            <i class="material-icons">delete</i>
+                        </button>
+                    </td> -->
+                    @endif
+                </tr>
+                @php
+                $i++
+                @endphp
+                @endforeach
+            </tbody>
+        </table>
+        <div class="modal-footer" style="margin-right: 2%;">
+                    <button class="btn btn-light" type="button" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="btn-confirmUpdateDataUndangan" value="-">SAVE</button>
+        </div>
+    </div>
 
                 
             </form>
