@@ -138,8 +138,26 @@
     window.onload = function () {
         var chart1 = document.getElementById("line-chart").getContext("2d");
 
+        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var d = new Date();
+        var m = d.getMonth(); //0 = January, 1 = February, etc.
+        var mLabels = [];
+
+        for(i=6; i>=0; i--)
+        {
+            if(m-i < 0)
+            {
+                mLabels.push(months[11-(m+1)]);
+            }
+            else
+            {
+                mLabels.push(months[m-i]);
+            }
+
+        }
+
         var lineChartData = {
-            labels : ["January","February","March","April","May","June","July"],
+            labels : mLabels,
             datasets : [
                 {
                     label: "My First dataset",
