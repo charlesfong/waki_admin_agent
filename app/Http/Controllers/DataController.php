@@ -27,6 +27,14 @@ class DataController extends Controller
 
     public function index(Request $request)
 	{
+        //FOR ENCRYPT PHONE AT FIRST IMPORT THE DATABASE
+        // for ($i = 1; $i<=474; $i++)
+        // {
+        //     $data = DB::table('data_outsites')->where('id', $i)->first();
+        //     DB::table('data_outsites')
+        //     ->where('id', $i)
+        //     ->update(['phone' => $this->Encr($data->phone)]);
+        // }
 		$user = Auth::user();
 
 		/*percabngan bisa masuk salah satu index data
@@ -51,8 +59,8 @@ class DataController extends Controller
 			$dataTherapies = $this->IndexTherapy($request, $user);
 		}
 
-        $branches = Branch::where([['country', $user->branch['country']],['active', true]])->get();
-        $csos = Cso::where('active', true)->orderBy('code')->get();
+        $branches = Branch::where([['country', $user->branch['country']],['active', true]])->orderBy('code')->get();
+        $csos = Cso::where('active', true)->orderBy('name')->get();
         $type_custs = TypeCust::where('active', true)->get();
         $banks = Bank::where('active', true)->get();
         $locations = Location::where('active', true)->get();
@@ -105,6 +113,7 @@ class DataController extends Controller
                 ->join('branches', 'mpcs.branch_id', '=', 'branches.id')
                 ->join('csos', 'mpcs.cso_id', '=', 'csos.id')
                 ->join('users', 'mpcs.user_id', '=', 'users.id')
+                ->orderBy('mpcs.registration_date', 'desc')
                 ->select('mpcs.*')
                 ->paginate(10);
 
@@ -184,6 +193,7 @@ class DataController extends Controller
                 ->join('branches', 'mpcs.branch_id', '=', 'branches.id')
                 ->join('csos', 'mpcs.cso_id', '=', 'csos.id')
                 ->join('users', 'mpcs.user_id', '=', 'users.id')
+                ->orderBy('mpcs.registration_date', 'desc')
                 ->select('mpcs.*')
                 ->paginate(10);
 
@@ -260,6 +270,7 @@ class DataController extends Controller
             ])
             ->join('csos', 'mpcs.cso_id', '=', 'csos.id')
             ->join('users', 'mpcs.user_id', '=', 'users.id')
+            ->orderBy('mpcs.registration_date', 'desc')
             ->select('mpcs.*')
             ->paginate(10);
 
@@ -290,6 +301,7 @@ class DataController extends Controller
                         ->orWhere('birth_date', 'like', "%{$request->keywordDataUndangan}%")
                         ->where('active', true);
                 })->where('active', true)
+                ->orderBy('registration_date', 'desc')
                 ->paginate(10);
 
                 $data_undangans->appends($request->only('keywordDataUndangan'));
@@ -335,6 +347,7 @@ class DataController extends Controller
                 ->join('branches', 'history_undangans.branch_id', '=', 'branches.id')
                 ->join('csos', 'history_undangans.cso_id', '=', 'csos.id')
                 ->join('type_custs', 'history_undangans.type_cust_id', '=', 'type_custs.id')
+                ->orderBy('data_undangans.registration_date', 'desc')
                 ->select('data_undangans.*')
                 ->paginate(10);
 
@@ -384,6 +397,7 @@ class DataController extends Controller
             ->join('branches', 'history_undangans.branch_id', '=', 'branches.id')
             ->join('csos', 'history_undangans.cso_id', '=', 'csos.id')
             ->join('type_custs', 'history_undangans.type_cust_id', '=', 'type_custs.id')
+            ->orderBy('data_undangans.registration_date', 'desc')
             ->select('data_undangans.*')
             ->paginate(10);
 
@@ -403,7 +417,7 @@ class DataController extends Controller
                         ->where('data_outsites.active', true)
                         ->orWhere('data_outsites.name', 'like', "%{$request->keywordDataOutsite}%")
                         ->where('data_outsites.active', true)
-                        ->orWhere('data_outsites.phone', 'like', "%{$request->keywordDataOutsite}%")
+                        ->orWhere('data_outsites.phone', 'like', "%{$this->Encr($request->keywordDataOutsite)}%")
                         ->where('data_outsites.active', true)
                         ->orWhere('data_outsites.province', 'like', "%{$request->keywordDataOutsite}%")
                         ->where('data_outsites.active', true)
@@ -417,7 +431,7 @@ class DataController extends Controller
                         ->where('data_outsites.active', true)
                         ->orWhere('csos.name', 'like', "%{$request->keywordDataOutsite}%")
                         ->where('data_outsites.active', true)
-                        ->orWhere('location.name', 'like', "%{$request->keywordDataOutsite}%")
+                        ->orWhere('locations.name', 'like', "%{$request->keywordDataOutsite}%")
                         ->where('data_outsites.active', true)
                         ->orWhere('type_custs.name', 'like', "%{$request->keywordDataOutsite}%")
                         ->where('data_outsites.active', true);
@@ -426,6 +440,8 @@ class DataController extends Controller
                 ->join('csos', 'data_outsites.cso_id', '=', 'csos.id')
                 ->leftjoin('locations', 'data_outsites.location_id', '=', 'locations.id')
                 ->join('type_custs', 'data_outsites.type_cust_id', '=', 'type_custs.id')
+                ->orderBy('data_outsites.registration_date', 'desc')
+                ->orderBy('data_outsites.id', 'desc')
                 ->select('data_outsites.*')
                 ->paginate(10);
 
@@ -444,7 +460,7 @@ class DataController extends Controller
                             ['data_outsites.active', true],
                             ['branches.country', $user->branch['country']]
                         ])
-                        ->orWhere('data_outsites.phone', 'like', "%{$request->keywordDataOutsite}%")
+                        ->orWhere('data_outsites.phone', 'like', "%{$this->Encr($request->keywordDataOutsite)}%")
                         ->where([
                             ['data_outsites.active', true],
                             ['branches.country', $user->branch['country']]
@@ -492,6 +508,8 @@ class DataController extends Controller
                 ->join('csos', 'data_outsites.cso_id', '=', 'csos.id')
                 ->leftjoin('locations', 'data_outsites.location_id', '=', 'locations.id')
                 ->join('type_custs', 'data_outsites.type_cust_id', '=', 'type_custs.id')
+                ->orderBy('data_outsites.registration_date', 'desc')
+                ->orderBy('data_outsites.id', 'desc')
                 ->select('data_outsites.*')
                 ->paginate(10);
 
@@ -511,7 +529,7 @@ class DataController extends Controller
 		                ['data_outsites.active', true],
 		                ['data_outsites.branch_id', $user->branch_id]
 		            ])
-                    ->orWhere('data_outsites.phone', 'like', "%{$request->keywordDataOutsite}%")
+                    ->orWhere('data_outsites.phone', 'like', "%{$this->Encr($request->keywordDataOutsite)}%")
                     ->where([
 		                ['data_outsites.active', true],
 		                ['data_outsites.branch_id', $user->branch_id]
@@ -561,6 +579,8 @@ class DataController extends Controller
             ->join('branches', 'data_outsites.branch_id', '=', 'branches.id')
             ->leftjoin('locations', 'data_outsites.location_id', '=', 'locations.id')
             ->join('type_custs', 'data_outsites.type_cust_id', '=', 'type_custs.id')
+            ->orderBy('data_outsites.registration_date', 'desc')
+            ->orderBy('data_outsites.id', 'desc')
             ->select('data_outsites.*')
             ->paginate(10);
 
@@ -581,7 +601,7 @@ class DataController extends Controller
                         ->where('data_therapies.active', true)
                         ->orWhere('data_therapies.name', 'like', "%{$request->keywordDataTherapy}%")
                         ->where('data_therapies.active', true)
-                        ->orWhere('data_therapies.phone', 'like', "%{$request->keywordDataTherapy}%")
+                        ->orWhere('data_therapies.phone', 'like', "%{$this->Encr($request->keywordDataTherapy)}%")
                         ->where('data_therapies.active', true)
                         ->orWhere('data_therapies.province', 'like', "%{$request->keywordDataTherapy}%")
                         ->where('data_therapies.active', true)
@@ -604,6 +624,7 @@ class DataController extends Controller
                 ->join('branches', 'data_therapies.branch_id', '=', 'branches.id')
                 ->join('csos', 'data_therapies.cso_id', '=', 'csos.id')
                 ->join('type_custs', 'data_therapies.type_cust_id', '=', 'type_custs.id')
+                ->orderBy('data_therapies.registration_date', 'desc')
                 ->select('data_therapies.*')
                 ->paginate(10);
 
@@ -622,7 +643,7 @@ class DataController extends Controller
                             ['data_therapies.active', true],
                             ['branches.country', $user->branch['country']]
                         ])
-                        ->orWhere('data_therapies.phone', 'like', "%{$request->keywordDataTherapy}%")
+                        ->orWhere('data_therapies.phone', 'like', "%{$this->Encr($request->keywordDataTherapy)}%")
                         ->where([
                             ['data_therapies.active', true],
                             ['branches.country', $user->branch['country']]
@@ -669,6 +690,7 @@ class DataController extends Controller
                 ->join('branches', 'data_therapies.branch_id', '=', 'branches.id')
                 ->join('csos', 'data_therapies.cso_id', '=', 'csos.id')
                 ->join('type_custs', 'data_therapies.type_cust_id', '=', 'type_custs.id')
+                ->orderBy('data_therapies.registration_date', 'desc')
                 ->select('data_therapies.*')
                 ->paginate(10);
 
@@ -693,7 +715,7 @@ class DataController extends Controller
 		                ['data_therapies.active', true],
 		                ['data_therapies.branch_id', $user->branch_id]
 		            ])
-                    ->orWhere('data_therapies.phone', 'like', "%{$request->keywordDataOutsite}%")
+                    ->orWhere('data_therapies.phone', 'like', "%{$this->Encr($request->keywordDataOutsite)}%")
                     ->where([
 		                ['data_therapies.active', true],
 		                ['data_therapies.branch_id', $user->branch_id]
@@ -737,6 +759,7 @@ class DataController extends Controller
             ->join('branches', 'data_therapies.branch_id', '=', 'branches.id')
             ->join('csos', 'data_therapies.cso_id', '=', 'csos.id')
             ->join('type_custs', 'data_therapies.type_cust_id', '=', 'type_custs.id')
+            ->orderBy('data_therapies.registration_date', 'desc')
             ->select('data_therapies.*')
             ->paginate(10);
 
@@ -756,10 +779,58 @@ class DataController extends Controller
 	* user_id bisa di dapet dari Auth->usernya yg lagi online sekarang atau login
 	* pertama kali masukin di buat langsung sama masuk ke history-nya
 	*/
+
+    /*Function enkripsi & dekripsi nomor telpon*/
+    function Encr(string $x)
+    {
+        $pj = strlen($x);
+        $hasil = '';
+        for($i=0; $i<$pj; $i++)
+        {
+            $ac = ord(substr($x, $i, 1));
+            $hs = $ac*2-4;
+            if($hs > 255)
+            {
+                $hs = $hs-255;
+            }
+            $hasil .= chr($hs);
+        }
+        return $hasil;
+    }
+
+    public static function Decr(string $x)
+    {
+        $pj = mb_strlen($x);
+        //return $pj;
+        $hasil = '';
+        //return mb_chr('8223');
+        //return ord('†'); //#226
+        // return mb_ord('†'); //#8224
+        // return mb_chr(134); //
+        for($i=0; $i<$pj; $i++)
+        {
+            $ac = ord(substr($x, $i, 1))+4;
+            //return $ac. "-";
+            if($ac % 2 == 1)
+            {
+                $ac+=255;
+            }
+            $hs = $ac/2;
+            //return $hs . "-";
+            $hasil .= chr($hs);
+        }
+        return $hasil;
+    }
+
+    public static function Test(string $x)
+    {
+        return mb_detect_encoding($x);
+    }
+
 	public function storeDataUndangan(Request $request)
 	{
 		if ($request->has('phone') && $request->phone != null)
-            $request->merge(['phone'=> ($request->phone * 23)]);
+            $request->merge(['phone'=> ($this->Encr($request->phone))]);
 
         $validator = \Validator::make($request->all(), [
             'name' => 'required',
@@ -809,8 +880,6 @@ class DataController extends Controller
             return response()->json(['errors'=>$arr_Hasil]);
         }
         else {
-
-
         	$user = Auth::user();
         	$count = DataUndangan::all()->count();
             $count++;
@@ -867,7 +936,7 @@ class DataController extends Controller
     public function storeDataOutsite(Request $request)
     {
         if ($request->has('phone') && $request->phone != null)
-            $request->merge(['phone'=> ($request->phone * 23)]);
+            $request->merge(['phone'=> ($this->Encr($request->phone))]);
 
         $validator = \Validator::make($request->all(), [
             'name' => 'required',
@@ -884,7 +953,22 @@ class DataController extends Controller
             'type_cust' => 'required',
         ]);
 
-        if($request->type_cust == 2 || $request->type_cust == 4 ){
+        if($request->type_cust == 3){ //DEMO
+            $validator = \Validator::make($request->all(), [
+                'name' => 'required',
+                'registration_date' => 'required',
+                'phone' => [
+                    'required',
+                    Rule::unique('data_outsites')->where('active', 1),
+                ],
+                'branch' => 'required',
+                'country' => 'required',
+                'cso' => 'required',
+                'type_cust' => 'required',
+            ]);
+        }
+
+        if($request->type_cust == 2 || $request->type_cust == 4 ){ //MS RUMAH & CFD
             $validator = \Validator::make($request->all(), [
                 'name' => 'required',
                 'location_name' => 'required',
@@ -917,8 +1001,17 @@ class DataController extends Controller
             $count = DataOutsite::all()->count();
             $count++;
 
-            $data = $request->only('code', 'registration_date', 'name', 'location_name', 'phone', 'province', 'district');
+            $data = $request->only('code', 'registration_date', 'name', 'location_name', 'phone');
             $data['name'] = strtoupper($data['name']);
+
+            if($request->get('province') != null && $request->get('province') != "")
+            {
+                $data['province'] = $request->get('province');
+            }
+            if($request->get('district') != null && $request->get('district') != "")
+            {
+                $data['district'] = $request->get('district');
+            }
 
             //Khusus untuk Location Input
             if($request->location_name != null || $request->location_name != ""){
@@ -967,7 +1060,7 @@ class DataController extends Controller
     public function storeDataTherapy(Request $request)
     {
         if ($request->has('phone') && $request->phone != null)
-            $request->merge(['phone'=> ($request->phone * 23)]);
+            $request->merge(['phone'=> ($this->Encr($request->phone))]);
 
         $validator = \Validator::make($request->all(), [
             'name' => 'required',
@@ -1033,7 +1126,7 @@ class DataController extends Controller
     public function storeMpc(Request $request)
     {
         if ($request->has('phone') && $request->phone != null)
-            $request->merge(['phone'=> ($request->phone * 23)]);
+            $request->merge(['phone'=> ($this->Encr($request->phone))]);
 
         $validator = \Validator::make($request->all(), [
             'name' => 'required',
@@ -1099,7 +1192,7 @@ class DataController extends Controller
     public function updateDataUndangan(Request $request)
     {
         if ($request->has('phone') && $request->phone != null)
-            $request->merge(['phone'=> ($request->phone * 23)]);
+            $request->merge(['phone'=> ($this->Encr($request->phone))]);
 
         $validator = \Validator::make($request->all(), [
             'name' => 'required',
@@ -1210,7 +1303,7 @@ class DataController extends Controller
     public function updateDataOutsite(Request $request)
     {
         if ($request->has('phone') && $request->phone != null)
-            $request->merge(['phone'=> ($request->phone * 23)]);
+            $request->merge(['phone'=> ($this->Encr($request->phone))]);
 
         $validator = \Validator::make($request->all(), [
             'name' => 'required',
@@ -1299,7 +1392,7 @@ class DataController extends Controller
     public function updateDataTherapy(Request $request)
     {
         if ($request->has('phone') && $request->phone != null)
-            $request->merge(['phone'=> ($request->phone * 23)]);
+            $request->merge(['phone'=> ($this->Encr($request->phone))]);
 
         $validator = \Validator::make($request->all(), [
             'name' => 'required',
@@ -1351,7 +1444,7 @@ class DataController extends Controller
     public function updateMpc(Request $request)
     {
         if ($request->has('phone') && $request->phone != null)
-            $request->merge(['phone'=> ($request->phone * 23)]);
+            $request->merge(['phone'=> ($this->Encr($request->phone))]);
 
         $validator = \Validator::make($request->all(), [
             'name' => 'required',
@@ -1416,7 +1509,7 @@ class DataController extends Controller
     public function findMpc(Request $request)
     {
         if ($request->has('phone') && $request->phone != null)
-            $request->merge(['phone'=> ($request->phone * 23)]);
+            $request->merge(['phone'=> ($this->Encr($request->phone))]);
 
         $MpcNya = Mpc::where([['phone', $request->phone],['active', true]])->first();
         if($MpcNya != null){
@@ -1427,18 +1520,21 @@ class DataController extends Controller
         }
     }
 
-    /*Function mencari data MPC
+    /*Function mencari data DATA OUTSITE
     * menggunakan parameter request langsung
     */
     public function findDataOutsite(Request $request)
     {
         if ($request->has('phone') && $request->phone != null)
-            $request->merge(['phone'=> ($request->phone * 23)]);
+            $request->merge(['phone'=> ($this->Encr($request->phone))]);
 
         $DataOutsiteNya = DataOutsite::where([['phone', $request->phone],['active', true]])->first();
-        $DataOutsiteNya['location'] = Location::find($DataOutsiteNya['location_id']);
-        $DataOutsiteNya['type_cust'] = TypeCust::find($DataOutsiteNya['type_cust_id']);
-        $DataOutsiteNya['phone'] = $DataOutsiteNya['phone'] / 23;
+        if($DataOutsiteNya != null && $DataOutsiteNya != "")
+        {
+            $DataOutsiteNya['location'] = Location::find($DataOutsiteNya['location_id']);
+            $DataOutsiteNya['type_cust'] = TypeCust::find($DataOutsiteNya['type_cust_id']);
+            $DataOutsiteNya['phone'] = $this->Decr($DataOutsiteNya['phone']);
+        }
         if($DataOutsiteNya != null){
             return response()->json(['success'=>$DataOutsiteNya]);
         }

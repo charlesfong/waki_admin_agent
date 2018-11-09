@@ -14,7 +14,7 @@ class AjaxController extends Controller
 {
     public function selectCountry(Request $request)
     {
-    	$branches = Branch::where('country', $request->country)->get();
+    	$branches = Branch::where('country', $request->country)->orderBy('code')->get();
     	return response()->json($branches);
     }
     public function selectBranch(Request $request)
