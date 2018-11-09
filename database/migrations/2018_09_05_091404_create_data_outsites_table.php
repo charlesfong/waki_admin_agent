@@ -19,8 +19,8 @@ class CreateDataOutsitesTable extends Migration
             $table->date('registration_date');
             $table->string('name');
             $table->string('phone');
-            $table->string('province');
-            $table->string('district');
+            $table->string('province')->nullable();
+            $table->string('district')->nullable();
             $table->boolean('active')->default(true);
             $table->timestamps();
         });

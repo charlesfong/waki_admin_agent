@@ -1,3 +1,5 @@
+<?php use App\Http\Controllers\CsoController; ?>
+
 @extends('layouts.template')
 @section('css')
     <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}">
@@ -202,7 +204,7 @@
                     @if($cso->phone == "")
                         <td>-</td>
                     @else
-                        <td>{{$cso->phone}}</td>
+                        <td>{{CsoController::Decr($cso->phone)}}</td>
                     @endif
                     <td>{{$cso->komisi}}</td>
                     <td>{{$cso->no_rekening}}</td>
@@ -245,7 +247,7 @@
                     @if($cso->phone == "")
                         -
                     @else
-                        {{$cso->phone}}
+                        {{CsoController::Decr($cso->phone)}}
                     @endif
                     <br></p>
                 <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Commission :</b> {{$cso->komisi}}<br></p>

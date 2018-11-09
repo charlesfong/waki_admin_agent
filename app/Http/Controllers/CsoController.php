@@ -17,8 +17,53 @@ class CsoController extends Controller
      * @return \Illuminate\Http\Response
      * @param Request Keyword
      */
+    /*Function enkripsi & dekripsi nomor telpon*/
+    function Encr(string $x)
+    {
+        $pj = strlen($x);
+        $hasil = '';
+        for($i=0; $i<$pj; $i++)
+        {
+            $ac = ord(substr($x, $i, 1));
+            $hs = $ac*2-4;
+            if($hs > 255)
+            {
+                $hs = $hs-255;
+            }
+            $hasil .= chr($hs);
+        }
+        return $hasil;
+    }
+
+    public static function Decr(string $x)
+    {
+        $pj = strlen($x);
+        $hasil = '';
+        for($i=0; $i<$pj; $i++)
+        {
+            $ac = ord(substr($x, $i, 1))+4;
+            if($ac % 2 == 1)
+            {
+                $ac+=255;
+            }
+            $hs = $ac/2;
+            
+            $hasil .= chr($hs);
+        }
+        return $hasil;
+    }
+
     public function index(Request $request)
     {
+        //FOR ENCRYPT PHONE AT FIRST IMPORT THE DATABASE
+        // for ($i = 1; $i<=301; $i++)
+        // {
+        //     $cso = DB::table('csos')->where('id', $i)->first();
+        //     DB::table('csos')
+        //     ->where('id', $i)
+        //     ->update(['phone' => $this->Encr($cso->phone)]);
+        // }
+
         $user = Auth::user();
 
         if($user->can('all-branch-cso'))
@@ -34,7 +79,7 @@ class CsoController extends Controller
                         ->where('csos.active', true)
                         ->orWhere('csos.no_rekening', 'like', "%{$request->keyword}%")
                         ->where('csos.active', true)
-                        ->orWhere('csos.phone', 'like', "%{$request->keyword}%")
+                        ->orWhere('csos.phone', 'like', "%{$this->Encr($request->keyword)}%")
                         ->where('csos.active', true)
                         ->orWhere('csos.province', 'like', "%{$request->keyword}%")
                         ->where('csos.active', true)
@@ -71,7 +116,7 @@ class CsoController extends Controller
                             ['csos.active', true],
                             ['branches.country', $user->branch['country']]
                         ])
-                        ->orWhere('csos.phone', 'like', "%{$request->keyword}%")
+                        ->orWhere('csos.phone', 'like', "%{$this->Encr($request->keyword)}%")
                         ->where([
                             ['csos.active', true],
                             ['branches.country', $user->branch['country']]
@@ -125,7 +170,7 @@ class CsoController extends Controller
                             ['active', true],
                             ['branch_id', $user->branch_id]
                         ])
-                        ->orWhere('phone', 'like', "%{$request->keyword}%")
+                        ->orWhere('phone', 'like', "%{$this->Encr($request->keyword)}%")
                         ->where([
                             ['active', true],
                             ['branch_id', $user->branch_id]
@@ -165,7 +210,7 @@ class CsoController extends Controller
     public function store(Request $request)
     {
         if ($request->has('phone') && $request->phone != null)
-            $request->merge(['phone'=> ($request->phone * 23)]);
+            $request->merge(['phone'=> ($this->Encr($request->phone))]);
 
         $validator = \Validator::make($request->all(), [
             'name' => 'required',
@@ -242,7 +287,7 @@ class CsoController extends Controller
     public function update(Request $request)
     {
         if ($request->has('phone') && $request->phone != null)
-            $request->merge(['phone'=> ($request->phone * 23)]);
+            $request->merge(['phone'=> ($this->Encr($request->phone))]);
 
         $validator = \Validator::make($request->all(), [
             'name' => 'required',

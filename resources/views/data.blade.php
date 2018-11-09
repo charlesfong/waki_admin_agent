@@ -1,3 +1,5 @@
+<?php use App\Http\Controllers\DataController; ?>
+
 @extends('layouts.template')
 @section('css')
     <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}">
@@ -179,13 +181,13 @@
                                 <option value="" selected disabled>SELECT YOUR OPTION</option>
                                 @can('all-country-cso')
                                     @foreach ($csos as $cso)
-                                        <option value="{{$cso->id}}">{{$cso->code}} - {{$cso->name}}</option>
+                                        <option value="{{$cso->id}}">{{$cso->name}} - {{$cso->code}}</option>
                                     @endforeach
                                 @endcan
                                 @cannot('all-country-cso')
                                     @foreach ($csos as $cso)
                                         @if($cso->branch['country'] == Auth::user()->branch['country'])
-                                            <option value="{{$cso->id}}">{{$cso->code}} - {{$cso->name}}</option>
+                                            <option value="{{$cso->id}}">{{$cso->name}} - {{$cso->code}}</option>
                                         @endif
                                     @endforeach
                                 @endcan
@@ -337,13 +339,13 @@
                                 <option value="" selected disabled>SELECT YOUR OPTION</option>
                                 @can('all-country-cso')
                                     @foreach ($csos as $cso)
-                                        <option value="{{$cso->id}}">{{$cso->code}} - {{$cso->name}}</option>
+                                        <option value="{{$cso->id}}">{{$cso->name}} - {{$cso->code}}</option>
                                     @endforeach
                                 @endcan
                                 @cannot('all-country-cso')
                                     @foreach ($csos as $cso)
                                         @if($cso->branch['country'] == Auth::user()->branch['country'])
-                                            <option value="{{$cso->id}}">{{$cso->code}} - {{$cso->name}}</option>
+                                            <option value="{{$cso->id}}">{{$cso->name}} - {{$cso->code}}</option>
                                         @endif
                                     @endforeach
                                 @endcan
@@ -357,7 +359,7 @@
                     <!-- Khusus untuk Indo untuk sementara -->
                     <div class="form-group frm-group-select">
                         <span>PROVINCE</span>
-                        <select id="txtprovince-dataoutsite" class="text-uppercase form-control" name="province" required>
+                        <select id="txtprovince-dataoutsite" class="text-uppercase form-control" name="province">
                             <optgroup label="Province">
                                 @include('etc.select-province')
                             </optgroup>
@@ -368,7 +370,7 @@
                     </div>
                     <div class="form-group frm-group-select select-right">
                         <span>DISTRICT</span>
-                        <select id="txtdistrict-dataoutsite" class="form-control text-uppercase" name="district"required>
+                        <select id="txtdistrict-dataoutsite" class="form-control text-uppercase" name="district">
                             <optgroup label="District">
                                 <option disabled selected>SELECT PROVINCE FIRST</option>
                             </optgroup>
@@ -498,13 +500,13 @@
                             <option value="" selected disabled>SELECT YOUR OPTION</option>
                                 @can('all-country-cso')
                                     @foreach ($csos as $cso)
-                                        <option value="{{$cso->id}}">{{$cso->code}} - {{$cso->name}}</option>
+                                        <option value="{{$cso->id}}">{{$cso->name}} - {{$cso->code}}</option>
                                     @endforeach
                                 @endcan
                                 @cannot('all-country-cso')
                                     @foreach ($csos as $cso)
                                         @if($cso->branch['country'] == Auth::user()->branch['country'])
-                                            <option value="{{$cso->id}}">{{$cso->code}} - {{$cso->name}}</option>
+                                            <option value="{{$cso->id}}">{{$cso->name}} - {{$cso->code}}</option>
                                         @endif
                                     @endforeach
                                 @endcan
@@ -679,13 +681,13 @@
                             <option value="" selected disabled>SELECT YOUR OPTION</option>
                                 @can('all-country-cso')
                                     @foreach ($csos as $cso)
-                                        <option value="{{$cso->id}}">{{$cso->code}} - {{$cso->name}}</option>
+                                        <option value="{{$cso->id}}">{{$cso->name}} - {{$cso->code}}</option>
                                     @endforeach
                                 @endcan
                                 @cannot('all-country-cso')
                                     @foreach ($csos as $cso)
                                         @if($cso->branch['country'] == Auth::user()->branch['country'])
-                                            <option value="{{$cso->id}}">{{$cso->code}} - {{$cso->name}}</option>
+                                            <option value="{{$cso->id}}">{{$cso->name}} - {{$cso->code}}</option>
                                         @endif
                                     @endforeach
                                 @endcan
@@ -788,7 +790,11 @@
                     <td>{{$dataOutsite->code}}</td>
                     <td>{{$dataOutsite->name}}</td>
                     <td>{{$dataOutsite->location['name']}} @if($dataOutsite->location == null)- @endif</td>
-                    <td>0{{$dataOutsite->phone / 23}}</td>
+                        @if($dataOutsite->phone == "")
+                            <td>-</td>
+                        @else
+                            <td>{{DataController::Decr($dataOutsite->phone)}}</td>
+                        @endif
                     <td>{{$dataOutsite->type_cust['name']}}</td>
                     <td style="display: none;">{{$dataOutsite->province}}</td>
                     <td style="display: none;">{{$dataOutsite->district}}</td>
@@ -831,7 +837,13 @@
                 <h6 class="text-muted card-subtitle mb-2" style="font-size:12px;">{{$dataOutsite->branch['country']}} - {{$dataOutsite->branch['code']}}<br></h6>
                 <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Registration Date :</b> {{$dataOutsite->registration_date}}<br></p>
                 <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Location :</b> {{$dataOutsite->location['name']}}<br></p>
-                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Phone :</b> 0{{$dataOutsite->phone / 23}}<br></p>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Phone :</b>
+                    @if($dataOutsite->phone == "")
+                        -
+                    @else
+                        {{DataController::Decr($dataOutsite->phone)}}
+                    @endif
+                    <br></p>
                 <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:10px;"><b>CSO :</b> {{$dataOutsite->cso['name']}}<br></p>
                 @if(Gate::check('edit-data-outsite'))
                 <button class="btn btn-primary btn-edithapus-card btn-editDataOutsite" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$dataOutsite->id}}">
@@ -907,7 +919,11 @@
                     <td>{{$dataTherapy->registration_date}}</td>
                     <td>{{$dataTherapy->code}}</td>
                     <td>{{$dataTherapy->name}}</td>
-                    <td>0{{$dataTherapy->phone / 23}}</td>
+                    @if($dataTherapy->phone == "")
+                        <td>-</td>
+                    @else
+                        <td>{{DataController::Decr($dataTherapy->phone)}}</td>
+                    @endif
                     <td>{{$dataTherapy->branch['code']}}</td>
                     <td>{{$dataTherapy->type_cust['name']}}</td>
                     <td style="display: none;">{{$dataTherapy->address}}</td>
@@ -952,7 +968,13 @@
                 <h6 class="text-muted card-subtitle mb-2" style="font-size:12px;">{{$dataTherapy->branch['country']}} - {{$dataTherapy->branch['code']}}<br></h6>
                 <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Registration Date :</b> {{$dataTherapy->registration_date}}<br></p>
                 <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Address :</b> {{$dataTherapy->address}}<br></p>
-                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Phone :</b> 0{{$dataTherapy->phone / 23}}<br></p>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Phone :</b>
+                    @if($dataTherapy->phone == "")
+                        <td>-</td>
+                    @else
+                        <td>{{DataController::Decr($dataTherapy->phone)}}</td>
+                    @endif
+                    <br></p>
                 <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:10px;"><b>CSO :</b> {{$dataTherapy->cso['name']}}<br></p>
                 @if(Gate::check('edit-data-therapy'))
                 <button class="btn btn-primary btn-edithapus-card btn-editDataTherapy" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$dataTherapy->id}}">
@@ -1032,7 +1054,11 @@
                     <td>{{$mpc->registration_date}}</td>
                     <td>{{$mpc->code}}</td>
                     <td>{{$mpc->name}}</td>
-                    <td>0{{$mpc->phone / 23}}</td>
+                    @if($mpc->phone == "")
+                        <td>-</td>
+                    @else
+                        <td>{{DataController::Decr($mpc->phone)}}</td>
+                    @endif
                     <td>{{$mpc->branch['code']}}</td>
                     <td>{{$mpc->cso['name']}}</td>
                     <td style="display: none;">{{$mpc->address}}</td>
@@ -1083,7 +1109,13 @@
                 <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Birth Date :</b> {{$mpc->birth_date}}<br></p>
                 <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Gender :</b> {{$mpc->gender}}<br></p>
                 <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Address :</b> {{$mpc->address}}<br></p>
-                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Phone :</b> 0{{$mpc->phone / 23}}<br></p>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Phone :</b>
+                    @if($mpc->phone == "")
+                        <td>-</td>
+                    @else
+                        <td>{{DataController::Decr($mpc->phone)}}</td>
+                    @endif
+                    <br></p>
                 <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>CSO :</b> {{$mpc->cso['name']}}<br></p>
                 <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:10px;"><b>User Keyin :</b> {{$mpc->user['name']}}<br></p>
                 @if(Gate::check('edit-mpc'))
@@ -1154,7 +1186,11 @@
                     <td>{{$dataUndangan->registration_date}}</td>
                     <td>{{$dataUndangan->code}}</td>
                     <td>{{$dataUndangan->name}}</td>
-                    <td>0{{$dataUndangan->phone / 23}}</td>
+                    @if($dataUndangan->phone == "")
+                        <td>-</td>
+                    @else
+                        <td>{{DataController::Decr($dataUndangan->phone)}}</td>
+                    @endif
                     <td style="display: none;">{{$dataUndangan->address}}</td>
                     <td style="display: none;">{{$dataUndangan->birth_date}}</td>
                     @if(Gate::check('edit-data-undangan'))
@@ -1192,7 +1228,13 @@
                 <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Registration Date :</b> {{$dataUndangan->registration_date}}<br></p>
                 <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Birth Date :</b> {{$dataUndangan->birth_date}}<br></p>
                 <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Address :</b> {{$dataUndangan->address}}<br></p>
-                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Phone :</b> 0{{$dataUndangan->phone / 23}}<br></p>
+                <p class="card-text" style="font-weight:normal;font-size:14px;margin-bottom:3px;"><b>Phone :</b>
+                    @if($dataUndangan->phone == "")
+                        <td>-</td>
+                    @else
+                        <td>{{DataController::Decr($dataUndangan->phone)}}</td>
+                    @endif
+                    <br></p>
                 @if(Gate::check('edit-data-undangan'))
                 <button class="btn btn-primary btn-edithapus-card btn-editDataUndangan" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$dataUndangan->id}}">
                     <i class="material-icons">mode_edit</i>
@@ -1561,9 +1603,13 @@
                 <tr>
                     <td>{{$dataOutsite->code}}</td>
                     <td>{{$dataOutsite->code}}</td>
-                    <td>{{$dataOutsite->name}}</td>
+                    <td>{{DataController::Decr($dataOutsite->name)}}</td>
                     <td>{{$dataOutsite->location['name']}} @if($dataOutsite->location == null)- @endif</td>
-                    <td>0{{$dataOutsite->phone / 23}}</td>
+                    @if($dataOutsite->phone == "")
+                        <td>-</td>
+                    @else
+                        <td>{{DataController::Decr($dataOutsite->phone)}}</td>
+                    @endif
                     <td>{{$dataOutsite->type_cust['name']}}</td>
                     <td style="display: none;">{{$dataOutsite->province}}</td>
                     <td style="display: none;">{{$dataOutsite->district}}</td>
@@ -1571,10 +1617,10 @@
                     <td style="display: none;">{{$dataOutsite->branch['id']}}</td>
                     <td style="display: none;">{{$dataOutsite->cso['id']}}</td>
                     <td style="display: none;">{{$dataOutsite->type_cust['id']}}</td>
-                    <td><button class="btn btn-primary btn-edithapus-card btn-editDataUndangan" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$dataUndangan->id}}">
+                    <td><button class="btn btn-primary btn-edithapus-card btn-editDataUndangan" type="button" style="padding:0px 5px;" name="{{$i}}" value="{{$dataOutsite->id}}">
                     <i class="material-icons">mode_edit</i>
                     </button></td>
-                    <td><button class="btn btn-primary btn-edithapus-card btn-deleteDataUndangan" type="button" style="padding:0px 5px;margin-right:10px;" name="{{$i}}" value="{{$dataUndangan->id}}">
+                    <td><button class="btn btn-primary btn-edithapus-card btn-deleteDataUndangan" type="button" style="padding:0px 5px;margin-right:10px;" name="{{$i}}" value="{{$dataOutsite->id}}">
                     <i class="material-icons">delete</i>
                     </button></td>
 
@@ -1986,12 +2032,12 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Code</b> : <span class="txt-Kode">NONE</span></p>
-                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>KTP</b> : <span class="txt-Ktp">NONE</span></p>
-                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Name</b> : <span class="txt-Name">NONE</span></p>
-                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Gender</b> : <span class="txt-Gender">NONE</span></p>
-                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Phone</b> : <span class="txt-Phone">NONE</span></p>
-                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Birth Date</b> : <span class="txt-BirthDate">NONE</span></p>
+                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Code</b> : <span class="txt-Kode">-</span></p>
+                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>KTP</b> : <span class="txt-Ktp">-</span></p>
+                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Name</b> : <span class="txt-Name">-</span></p>
+                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Gender</b> : <span class="txt-Gender">-</span></p>
+                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Phone</b> : <span class="txt-Phone">-</span></p>
+                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Birth Date</b> : <span class="txt-BirthDate">-</span></p>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-light" type="button" data-dismiss="modal">Close</button>
@@ -2013,11 +2059,11 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Code</b> : <span class="txt-Kode">NONE</span></p>
-                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Name</b> : <span class="txt-Name">NONE</span></p>
-                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Phone</b> : <span class="txt-Phone">NONE</span></p>
-                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Location</b> : <span class="txt-Location">NONE</span></p>
-                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Type Customer</b> : <span class="txt-TypeCust">NONE</span></p>
+                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Code</b> : <span class="txt-Kode">-</span></p>
+                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Name</b> : <span class="txt-Name">-</span></p>
+                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Phone</b> : <span class="txt-Phone">-</span></p>
+                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Location</b> : <span class="txt-Location">-</span></p>
+                <p class="card-text" style="font-weight: normal;font-size: 18px;margin-bottom: 3px;"><b>Type Customer</b> : <span class="txt-TypeCust">-</span></p>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-light" type="button" data-dismiss="modal">Close</button>
@@ -2768,13 +2814,16 @@
                     'phone': PhoneNya
                 },
                 success: function(data){
-                    if(data['success'] != null)
+                    if(data['success'] != null && data['success'] != "")
                     {
                         console.log(data['success']);
                         $("#modal-FindDataOutsite").modal("show");
                         $("#modal-FindDataOutsite").find("span.txt-Kode").html(data['success']['code']);
                         $("#modal-FindDataOutsite").find("span.txt-Name").html(data['success']['name']);
-                        $("#modal-FindDataOutsite").find("span.txt-Location").html(data['success']['location']['name']);
+                        if(data['success']['location'] != null && data['success']['location'] != "")
+                        {
+                            $("#modal-FindDataOutsite").find("span.txt-Location").html(data['success']['location']['name']);
+                        }
                         $("#modal-FindDataOutsite").find("span.txt-Phone").html(data['success']['phone']);
                         $("#modal-FindDataOutsite").find("span.txt-TypeCust").html(data['success']['type_cust']['name']);
                         $("#modal-FindDataOutsite").find("h4#txt-FindDataOutsite").html("DATA IS FOUND");
@@ -2782,6 +2831,12 @@
                     else
                     {
                         $("#modal-FindDataOutsite").modal("show");
+                        $("#modal-FindDataOutsite").find("span.txt-Kode").html("-");
+                        $("#modal-FindDataOutsite").find("span.txt-Name").html("-");
+                        $("#modal-FindDataOutsite").find("span.txt-Location").html("-");
+                        $("#modal-FindDataOutsite").find("span.txt-Phone").html("-");
+                        $("#modal-FindDataOutsite").find("span.txt-TypeCust").html("-");
+
                         $("#modal-FindDataOutsite").find("h4#txt-FindDataOutsite").html("DATA ISN'T FOUND");
                     }
                 },
