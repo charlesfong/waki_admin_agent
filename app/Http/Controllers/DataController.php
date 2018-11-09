@@ -302,6 +302,7 @@ class DataController extends Controller
                         ->where('active', true);
                 })->where('active', true)
                 ->orderBy('registration_date', 'desc')
+                ->orderBy('id', 'desc')
                 ->paginate(10);
 
                 $data_undangans->appends($request->only('keywordDataUndangan'));
@@ -348,6 +349,7 @@ class DataController extends Controller
                 ->join('csos', 'history_undangans.cso_id', '=', 'csos.id')
                 ->join('type_custs', 'history_undangans.type_cust_id', '=', 'type_custs.id')
                 ->orderBy('data_undangans.registration_date', 'desc')
+                ->orderBy('data_undangans.id', 'desc')
                 ->select('data_undangans.*')
                 ->paginate(10);
 
@@ -398,6 +400,7 @@ class DataController extends Controller
             ->join('csos', 'history_undangans.cso_id', '=', 'csos.id')
             ->join('type_custs', 'history_undangans.type_cust_id', '=', 'type_custs.id')
             ->orderBy('data_undangans.registration_date', 'desc')
+            ->orderBy('data_undangans.id', 'desc')
             ->select('data_undangans.*')
             ->paginate(10);
 
