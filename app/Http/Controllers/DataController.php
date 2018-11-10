@@ -294,7 +294,7 @@ class DataController extends Controller
                         ->where('active', true)
                         ->orWhere('address', 'like', "%{$request->keywordDataUndangan}%")
                         ->where('active', true)
-                        ->orWhere('phone', 'like', "%{$request->keywordDataUndangan}%")
+                        ->orWhere('phone', 'like', "%{$this->Encr($request->keywordDataUndangan)}%")
                         ->where('active', true)
                         ->orWhere('registration_date', 'like', "%{$request->keywordDataUndangan}%")
                         ->where('active', true)
@@ -325,7 +325,7 @@ class DataController extends Controller
                             ['data_undangans.active', true],
                             ['branches.country', $user->branch['country']]
                         ])
-                        ->orWhere('data_undangans.phone', 'like', "%{$request->keywordDataUndangan}%")
+                        ->orWhere('data_undangans.phone', 'like', "%{$this->Encr($request->keywordDataUndangan)}%")
                         ->where([
                             ['data_undangans.active', true],
                             ['branches.country', $user->branch['country']]
@@ -374,7 +374,7 @@ class DataController extends Controller
 		                ['data_undangans.active', true],
 		                ['history_undangans.branch_id', $user->branch_id]
 		            ])
-                    ->orWhere('data_undangans.phone', 'like', "%{$request->keywordDataUndangan}%")
+                    ->orWhere('data_undangans.phone', 'like', "%{$this->Encr($request->keywordDataUndangan)}%")
                     ->where([
 		                ['data_undangans.active', true],
 		                ['history_undangans.branch_id', $user->branch_id]
