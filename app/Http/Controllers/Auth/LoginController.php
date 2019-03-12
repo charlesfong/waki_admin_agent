@@ -39,7 +39,7 @@ class LoginController extends Controller
         }
         else
         {
-            return redirect('/data');
+            return redirect('/dashboard');
         }
     }
 

@@ -12,7 +12,7 @@ use App\HistoryUndangan;
 use App\Location;
 use App\TypeCust;
 use App\Mpc;
-use App\Branch;
+// use App\Branch;
 use App\Cso;
 use App\Bank;
 use App\User;

@@ -12,11 +12,11 @@
     <li> <a href="{{route('dashboard')}}">Dashboard</a></li>
     @endif
 
-    @if(Gate::check('master-data'))
-    <li class="list-selected">Master Data</li>
-    @endif
+    <li class="list-selected">Show member</li>
 
-    @if(Gate::check('master-data-type'))
+    <li class="list-selected">Add member</li>
+
+    <!-- @if(Gate::check('master-data-type'))
     <li> <a href="{{route('type_cust')}}">Master Data Type</a></li>
     @endif
 
@@ -34,13 +34,13 @@
 
     @if(Gate::check('report'))
     <li> <a href="">Report</a></li>
-    @endif
+    @endif -->
 @endsection
 @section('content')
 <div class="container contact-clean" id="form-addMember">
     <div class="tab-content">
         <ul class="nav nav-tabs">
-            @if(Gate::check('find-data-undangan') || Gate::check('browse-data-undangan') || Gate::check('add-data-undangan'))
+            <!-- @if(Gate::check('find-data-undangan') || Gate::check('browse-data-undangan') || Gate::check('add-data-undangan'))
             <li class="nav-item">
                 <a class="nav-link active" role="tab" data-toggle="tab" href="#tab-1" aria-selected="true" onclick="ShowList('1')">Data Undangan</a>
             </li>
@@ -59,10 +59,16 @@
             <li class="nav-item">
                 <a class="nav-link" role="tab" data-toggle="tab" href="#tab-4" aria-selected="true"onclick="ShowList('4')">MPC</a>
             </li>
-            @endif
+            @endif -->
+            <li class="nav-item">
+                <a class="nav-link" role="tab" data-toggle="tab" href="#tab-5" aria-selected="true"onclick="ShowList('5')">WAKI-MART</a>
+            </li>
         </ul>
-        <div class="tab-pane active" role="tabpanel" id="tab-1">
-            @if(Gate::check('find-data-undangan'))
+
+        
+
+        <div class="tab-pane active" role="tabpanel" id="tab-5">
+            <!-- @if(Gate::check('find-data-undangan')) -->
             <form action="{{ url()->current() }}" style="display: block;float: inherit;">
                 <h1 style="text-align: center;color: rgb(80, 94, 108);">Find Data Undangan</h1>
                 <br>
@@ -81,10 +87,12 @@
                     </span>
                 </div>
             </form>
-            @endif
+            <!-- @endif -->
+
+            
 
             <!-- FORM untuk add/store data undangan -->
-            @if(Gate::check('add-data-undangan'))
+            <!-- @if(Gate::check('add-data-undangan')) -->
             <form id="actionAddDataUndangan" name="frmAddDataUndangan" method="POST" action="{{ route('store_dataundangan') }}">
                 {{ csrf_field() }}
 
@@ -234,13 +242,13 @@
                     </div>
                 </div>
             </form>
-            @endif
+            <!-- @endif -->
 
         </div>
         <div class="tab-pane" role="tabpanel" id="tab-2">
-            @if(Gate::check('find-data-outsite'))
+            <!-- @if(Gate::check('find-data-outsite')) -->
             <form id="actionFindDataOutsite" name="FindDataOutsite" action="{{ route('find_dataoutsite') }}" style="display: block;float: inherit;">
-                <h1 style="text-align: center;color: rgb(80, 94, 108);">Find Data Out-Site</h1>
+                <h1 style="text-align: center;color: rgb(80, 94, 108);">Find Data Out-Sitedf</h1>
                 <br>
                 <div class="input-group">
                     <div class="input-group-prepend">
@@ -254,7 +262,7 @@
                     </div>
                 </div>
             </form>
-            @endif
+            <!-- @endif -->
 
             <!-- FORM untuk add/store data Outsite -->
             @if(Gate::check('add-data-outsite'))
@@ -731,6 +739,182 @@
                 </div>
                 <div class="form-group">
                     <button id="btn-actionAddMpc" class="btn btn-primary" type="submit" name="submit">SAVE</button>
+                </div>
+            </form>
+            @endif
+
+        </div>
+        <div class="tab-pane active" role="tabpanel" id="tab-5">
+            @if(Gate::check('find-wakimart'))
+            <form action="{{ url()->current() }}" style="display: block;float: inherit;">
+                <h1 style="text-align: center;color: rgb(80, 94, 108);">Find Data Waki-Mart</h1>
+                <br>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="fa fa-search"></i>
+                        </span>
+                    </div>
+                    <input class="form-control" type="text" name="find" placeholder="Search by Phone Number..." style="height: 46.8px;" id="txt-keywordDataWakiMart">
+                    <div class="input-group-append">
+                        <button class="btn btn-light border" type="submit" id="btnFind-data-undangan">Search</button>
+                    </div>
+                    <span class="invalid-feedback">
+                        <strong style="margin-left: 40px; font-size: 12pt;"></strong>
+                    </span>
+                </div>
+            </form>
+            @endif
+
+        <!-- FORM untuk add/store data undangan -->
+            @if(Gate::check('add-data-wakimart'))
+            <form id="actionAddDataUndangan" name="frmAddDataUndangan" method="POST" action="{{ route('store_dataundangan') }}">
+                {{ csrf_field() }}
+
+                <h1 class="text-center" style="margin-bottom: .5rem;">Add Data Undangan</h1>
+                <br>
+                <div class="form-group">
+                    <span>TIPE UNDANGAN</span>
+                    <select id="txttype-cust-dataundangan" class="text-uppercase form-control" name="type_cust" value="" required>
+                        <optgroup label="TIPE UNDANGAN"> 
+                            <option value="" disabled selected>SELECT TIPE UNDANGAN</option>
+                            @foreach ($type_custs as $type_cust)
+                                @if($type_cust->type_input == "UNDANGAN")
+                                    <option value="{{$type_cust->id}}">{{$type_cust->name}}</option>
+                                @endif
+                            @endforeach
+                        </optgroup>
+                    </select>
+                </div>
+                <div id="input-DataUndangan" class="d-none">
+                    <div class="form-group">
+                        <span>REGISTRATION DATE</span>
+                        <input type="date" name="registration_date" class="text-uppercase form-control" required>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span>NAME</span>
+                        <input type="text" name="name" class="text-uppercase form-control" placeholder="NAME" required>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                     <div class="form-group">
+                        <span>BIRTH DATE</span>
+                        <input type="date" name="birth_date" class="text-uppercase form-control"required>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <span>ADDRESS</span>
+                        <textarea name="address" class="text-uppercase form-control form-control-sm" placeholder="Address" required></textarea>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div id="Undangan-Bank" class="form-group">
+                        
+                    </div>
+                    <div class="form-group frm-group-select">
+                        <span>COUNTRY</span>
+                        <select id="txtcountry-dataundangan" class="text-uppercase form-control" name="country" required>
+                            <optgroup label="Country">
+                                @include('etc.select-country')
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group frm-group-select select-right">
+                        <span>BRANCH</span>
+                        <select id="txtbranch-dataundangan" class="text-uppercase form-control" name="branch" required>
+                            <optgroup label="Branch">
+                                @can('all-branch-data-wakimart')
+                                    @can('all-country-data-wakimart')
+                                        <option value="" disabled selected>SELECT COUNTRY FIRST</option>
+                                    @endcan
+                                    @cannot('all-country-data-wakimart')
+                                        <option value="" selected disabled>SELECT YOUR OPTION</option>
+                                        @foreach ($branches as $branch)
+                                            <option value="{{$branch->id}}" {{($branch->id == Auth::user()->branch_id ? "selected" : "")}}>{{$branch->code}} - {{$branch->name}}</option>
+                                        @endforeach
+                                    @endcan
+                                @endcan
+                                @cannot('all-branch-data-wakimart')
+                                    <option value="{{Auth::user()->branch_id}}">{{Auth::user()->branch['name']}}</option>
+                                @endcan
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+
+
+                    <!-- CSO -->
+                    <div class="form-group">
+                        <span>CSO</span>
+                        <select id="txtcso-dataundangan" class="text-uppercase form-control" name="cso" required>
+                            <optgroup label="Cso">
+                                <option value="" selected disabled>SELECT YOUR OPTION</option>
+                                @can('all-country-cso')
+                                    @foreach ($csos as $cso)
+                                        <option value="{{$cso->id}}">{{$cso->name}} - {{$cso->code}}</option>
+                                    @endforeach
+                                @endcan
+                                @cannot('all-country-cso')
+                                    @foreach ($csos as $cso)
+                                        @if($cso->branch['country'] == Auth::user()->branch['country'])
+                                            <option value="{{$cso->id}}">{{$cso->name}} - {{$cso->code}}</option>
+                                        @endif
+                                    @endforeach
+                                @endcan
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+
+                    <!-- Khusus untuk Indo untuk sementara -->
+                    <div class="form-group frm-group-select">
+                        <span>PROVINCE</span>
+                        <select id="txtprovince-dataundangan" class="text-uppercase form-control" name="province" required>
+                            <optgroup label="Province">
+                                @include('etc.select-province')
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group frm-group-select select-right">
+                        <span>DISTRICT</span>
+                        <select id="txtdistrict-dataundangan" class="form-control text-uppercase" name="district"required>
+                            <optgroup label="District">
+                                <option disabled selected>SELECT PROVINCE FIRST</option>
+                            </optgroup>
+                        </select>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <span>PHONE</span>
+                        <input type="number" name="phone" class="form-control" placeholder="0XXXXXXXXXXX" required>
+                        <span class="invalid-feedback">
+                            <strong></strong>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <button id="btn-actionAddDataUndangan" class="btn btn-primary" type="submit" name="submit">SAVE</button>
+                    </div>
                 </div>
             </form>
             @endif
@@ -1259,6 +1443,7 @@
     </div>
 </div>
 @endif
+
 
 <!--===========================================================-->
 
@@ -2298,6 +2483,7 @@
         $("#ListTab-2").addClass("d-none");
         $("#ListTab-3").addClass("d-none");
         $("#ListTab-4").addClass("d-none");
+        $("#ListTab-5").addClass("d-none");
         $("#ListTab-"+id).removeClass("d-none");
     }
     ///////////////////////////////////////////////////
@@ -2331,7 +2517,14 @@
             $("#tab-4").addClass("active");
             ShowList(4);
         }
-
+        else if(url.includes("keywordMpc"))
+        {
+            $("a[href='#tab-1']").removeClass("active");
+            $("a[href='#tab-4']").addClass("active");
+            $("#tab-1").removeClass("active");
+            $("#tab-4").addClass("active");
+            ShowList(4);
+        }
         //$('#modal-DataUndangan').modal('show');
         /*METHOD - METHOD UMUM ATAU KESELURUHAN
         * Khusus method" PENOPANG PADA HALAMAN INI

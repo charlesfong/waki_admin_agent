@@ -40,10 +40,10 @@
                     <li style="margin-left:-28px;text-align:center;height:160px;"> <img id="img-member" src="{{ asset('img/default-avatar.jpg') }}"></li>
 
                     <!-- buat nampilin nama dan tipe aksesnya -->
-                    <li id="Nama-TipeAkses" class="DataLogin">{{ Auth::user()->name }} - {{Auth::user()->roles->first()->name}}</li>
+                    <!-- <li id="Nama-TipeAkses" class="DataLogin"> Auth::user()->name  - Auth::user()->roles->first()->name</li> -->
 
                     <!-- buat nampulin negara dan branch nya -->
-                    <li id="Negara-Branch" class="DataLogin">{{ Auth::user()->branch['country'] }} - {{ Auth::user()->branch['name'] }}</li>
+                    <!-- <li id="Negara-Branch" class="DataLogin"> Auth::user()->branch['country']  -  Auth::user()->branch['name'] </li> -->
 
                     <!-- buat ganti password modal -->
                     <li id="Change-Password" class="DataLogin" style="margin-bottom:35px;">
@@ -229,7 +229,25 @@
                 CheckChangePassword();
             });
         } );
-
+        function onKeyValidate(e,charVal){
+                    var keynum;
+                    var keyChars = /[\x00\x08]/;
+                    var validChars = new RegExp(charVal);
+                    if(window.event)
+                    {
+                        keynum = e.keyCode;
+                    }
+                    else if(e.which)
+                    {
+                        keynum = e.which;
+                    }
+                    var keychar = String.fromCharCode(keynum);
+                    if (!validChars.test(keychar) && !keyChars.test(keychar))   {
+                        return false
+                    } else{
+                        return keychar;
+                    }
+                }
         function CheckChangePassword()
         {
             var currentPass = $("#current-password").val();

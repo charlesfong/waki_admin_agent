@@ -4,33 +4,9 @@
     <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.css') }}">
 @endsection
 @section('navmenu')
-    @if(Gate::check('dashboard'))
-    <li class="list-selected">Dashboard</li>
-    @endif
-
-    @if(Gate::check('master-data'))
-    <li> <a href="{{route('data')}}">Master Data</a></li>
-    @endif
-
-    @if(Gate::check('master-data-type'))
-    <li> <a href="{{route('type_cust')}}">Master Data Type</a></li>
-    @endif
-
-    @if(Gate::check('master-branch'))
-    <li> <a href="{{route('branch')}}">Master Branch</a></li>
-    @endif
-
-    @if(Gate::check('master-cso'))
-    <li> <a href="{{route('cso')}}">Master CSO</a></li>
-    @endif
-
-    @if(Gate::check('master-user'))
-    <li> <a href="{{route('user')}}">Master User</a></li>
-    @endif
-
-    @if(Gate::check('report'))
-    <li> <a href="">Report</a></li>
-    @endif
+    <li class="list-selected">Dashboard</a></li>
+    <li> <a href="{{route('waki')}}">Show Member</li>
+    <li> <a href="{{route('add')}}">Add Member</a></li>
 @endsection
 @section('content')
 <div class="container">
@@ -48,7 +24,7 @@
                 <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
                     <div class="panel panel-teal panel-widget border-right">
                         <div class="row no-padding"><em class="fa fa-xl fa-users color-blue"></em>
-                            <div class="large">{{$dataUndangans}}</div>
+                            <div class="large"></div>
                             <div class="text-muted">Data Undangan</div>
                         </div>
                     </div>
@@ -56,7 +32,7 @@
                 <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
                     <div class="panel panel-blue panel-widget border-right">
                         <div class="row no-padding"><em class="fa fa-xl fa-arrow-up color-orange"></em>
-                            <div class="large">{{$dataOutsites}}</div>
+                            <div class="large"></div>
                             <div class="text-muted">Data Out-site</div>
                         </div>
                     </div>
@@ -64,7 +40,7 @@
                 <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
                     <div class="panel panel-orange panel-widget border-right">
                         <div class="row no-padding"><em class="fa fa-xl fa-arrow-down color-teal"></em>
-                            <div class="large">{{$dataTherapies}}</div>
+                            <div class="large"></div>
                             <div class="text-muted">Data Therapy</div>
                         </div>
                     </div>
@@ -72,7 +48,7 @@
                 <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
                     <div class="panel panel-red panel-widget ">
                         <div class="row no-padding"><em class="fa fa-xl fa-credit-card color-red"></em>
-                            <div class="large">{{$mpcs}}</div>
+                            <div class="large"></div>
                             <div class="text-muted">MPC</div>
                         </div>
                     </div>

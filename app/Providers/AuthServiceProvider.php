@@ -31,9 +31,9 @@ class AuthServiceProvider extends ServiceProvider
     public function registerPostPolicies()
     {
         //-- DASHBOARD --//
-        Gate::define('dashboard', function ($user) {
-            return $user->inRole('admin');
-        });
+        // Gate::define('dashboard', function ($user) {
+        //     return $user->inRole('admin');
+        // });
 
         //-- MASTER DATA --// Gabungan
         Gate::define('master-data', function ($user) {
