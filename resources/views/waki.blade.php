@@ -11,11 +11,11 @@
     <li> <a href="{{route('add')}}">Add Member</a></li>
 @endsection
 @section('content')
-<div class="container" style="overflow-x:auto;">
+<div class="container" style="overflow-x:auto; background-color: white;">
     <div class="col-md-12" style="margin-top: 5px;">
-        <h1 class="text-center" style="margin-top: 20px;">Members Details</h1>
+        <h1 class="text-center" style="margin: 1em 0;">Members Details</h1>
         <!--Filter-->
-        <div class="col-md-12 col-sm-12 col-xs-12" style="background-color: transparent; -webkit-box-shadow: none;-moz-box-shadow: none;box-shadow: none;">
+        <div class="col-md-12 col-sm-12 col-xs-12" style="-webkit-box-shadow: none;-moz-box-shadow: none;box-shadow: none;">
             <!-- <div class="card-body"> -->
                 <!-- <form id="form-search" class="search-form" style="float: left;">
                     <div class="input-group custom-search-form" style="width: 100%;">
@@ -27,8 +27,10 @@
                         </span>
                     </div>
                 </form> -->
-                <input id="input-keyword" class="form-control col-md-4" type="text" name="keyword" placeholder="Search...">
-	            <button id="form-search" type="button" class="btn btn-success">Cari</button>
+                <div class="sorting col-xs-12 col-sm-12 col-md-6" style="margin: 1em 0 1em 0;">
+                <input id="input-keyword" class="form-control col-md-12" type="text" name="keyword" placeholder="Search..." style="margin-bottom: 1em;">
+	            <button id="form-search" type="button" class="btn btn-success" style="margin-bottom: 1em;">Cari</button>
+                </div>
                 <div class="col-xs-12 col-sm-12 col-md-12" style="box-shadow:none; margin-bottom: 0; z-index: 1;">
                     
 
@@ -353,130 +355,6 @@
 @endsection
 
 @section('script')
-<script type="text/javascript" src="{{ asset('js/admin/tags-input.js') }}"></script>
-<script src="{{ asset('js/admin/jquery.tablesorter.js') }}"></script>
-<script src="{{ asset('js/admin/jquery.tablesorter.widgets.js') }}"></script>
-
-<!-- Tablesorter -->
-<script>
-    var alpha = "[ A-Za-z]";
-    var numeric = "[0-9]"; 
-    var alphanumeric = "[ A-Za-z0-9]"; 
-
-    function onKeyValidate(e,charVal){
-        var keynum;
-        var keyChars = /[\x00\x08]/;
-        var validChars = new RegExp(charVal);
-        if(window.event)
-        {
-            keynum = e.keyCode;
-        }
-        else if(e.which)
-        {
-            keynum = e.which;
-        }
-        var keychar = String.fromCharCode(keynum);
-        if (!validChars.test(keychar) && !keyChars.test(keychar))   {
-            return false
-        } else{
-            return keychar;
-        }
-    }
-</script>
-<script>
-$('#birth_month, #birth_year').on("change paste keyup", function() {
-    if ($('#birth_month').val()==2) {
-        if($('#birth_year').val()%4==0){
-            $("#29").show();
-            if($('#birth_day').val() > 29){
-                $('#birth_day').val(29);
-            }
-        }
-        else{
-            $("#29").hide();
-            if($('#birth_day').val() > 28){
-                $('#birth_day').val(28);
-            }
-        }
-        $("#30").hide();
-        $("#31").hide();
-    }
-    else if ($('#birth_month').val()==1||$('#birth_month').val()==3||$('#birth_month').val()==5||$('#birth_month').val()==7||
-        $('#birth_month').val()==8||$('#birth_month').val()==10||$('#birth_month').val()==12){
-        $("#30").show();
-        $("#31").show();
-    }
-    else
-    {
-        $("#30").show();
-        $("#31").hide();
-        if($('#birth_day').val() > 30){
-            $('#birth_day').val(30);
-        }
-    }
-    console.log($('#birth_year').val().length);
-    if(parseInt($('#birth_year').val()) > parseInt($('#birth_year').attr('max')) && $('#birth_year').val().length > 3){
-        $('#birth_year').val($('#birth_year').attr('max'));
-    }
-    if(parseInt($('#birth_year').val()) < parseInt($('#birth_year').attr('min')) && $('#birth_year').val().length > 3){
-        $('#birth_year').val($('#birth_year').attr('min'));
-    }  
-});
-$('#province').change(function (e) {
-    $("#district").html("");
-    var provinceVal = $('#province').val();
-    $.get("etc/select-" + unescape(provinceVal) + ".php", function (data) {
-        $("#district").empty();
-        $("#district").append(data);
-    });
-
-});    
-$(function() {
-    $('table').tablesorter({
-    // third click on table header will reset column to default - unsorted
-    sortReset   : true,
-    widthFixed: true,
-    duplicateSpan : true,
-    headers: {
-        2:{sorter:false},
-        3:{sorter:false},
-        7:{sorter:false}
-    },
-        widgets: ["saveSort"],
-        widgetOptions: {
-          // enable/disable saveSort dynamically
-          saveSort: true
-        }
-    });
-});
-var isFirst = true;
-checkAgent($('#agentcode').val());
-
-$("#agentcode").on("change paste keyup", function() {
-    checkAgent($('#agentcode').val());
-});
-
-function checkAgent(code){
-   $.get( '{{route("get_agent_by_code")}}', { agentcode: code })
-    .done(function( data ) {
-        console.log(data);
-        if(data && data['agent_type_id']<=3){
-            $('#agentname').html('<div style="color:green">Code Agent Benar</div>');
-            isAgentFilled=true;
-        }else{
-            isAgentFilled=false
-            if(!isFirst && code!=""){
-                $('#agentname').html('<div style="color:red">Code Agent Salah</div>');
-            }else{
-                $('#agentname').html('');
-            }
-        }
-        isFirst=false;
-    });
-}
-</script>
-<!-- //Tablesorter -->
-
 <script type="text/javascript">
 //$('#modal-DataUndangan').modal('show');
 /*METHOD - METHOD UMUM ATAU KESELURUHAN

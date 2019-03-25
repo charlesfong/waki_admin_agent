@@ -16,39 +16,21 @@
     float: none !important
 }
 </style>
-<?php
-// Utils::$country='id';
-// if (Utils::$country=='id'){
-//     $currency = "Rp ";
-//     $crCode = "IDR";
-// }else if (Utils::$country=='phl'){
-//     $currency = "₱";
-//     $crCode = "PHP";
-// }else if(Utils::$country=='th'){
-//     $currency = "฿";
-//     $crCode = "THB";
-// }else if(Utils::$country=='my'){
-//     $currency = "RM";
-//     $crCode = "MYR";
-// }else{
-//     $currency = "$";
-//     $crCode = "USD";
-// }    
-?>
+
 <!-- /banner_bottom_agile_info -->
 
 <div class="banner_bottom_agile_info">
-    <div class="container" style="padding: 0;">
+    <div class="container" style="padding: 0; background-color: #fff;">
         <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-12 contact-form2">
+            <div class="col-xs-12 col-sm-12 col-md-12 contact-form2" >
                 <div class="col-md-7 center-block">
-                    <h4 style="text-align: center;">
+                    <h1 style="text-align: center; margin: 1em 0px;">
                     Form Pendaftaran Member
-                    </h4>
+                    </h1>
                     <form id="form-register" action="{{ route('member_register') }}" method="post">
                         @csrf
                         <div class="styled-input agile-styled-input-top">
-                            <input type="number" onkeydown="return event.keyCode !== 69" name="nik" required="true" value="{{old('nik')}}" onkeypress="return onKeyValidate(event, numeric);"> 
+                            <input type="text" onkeydown="return event.keyCode !== 69" name="nik" required="true" value="{{old('nik')}}" onkeypress="return onKeyValidate(event, numeric);"> 
                             <label>N I K</label>
                             <span></span>
                             @if ($errors->has('nik'))
@@ -97,8 +79,8 @@
                             <label class="col-xs-12">Jenis Kelamin</label>
                             <br>
                             <br>
-                            <div class="row col-xs-12">
-                                <div class="col-xs-6"><input id="male1" type="radio" name="gender" value="male" required {{ old('gender') == 'male' ? 'checked' : '' }}>
+                            <div class="row col-xs-12" style="margin: 0;">
+                                <div class="col-xs-6" style="margin-right: 2em;"><input id="male1" type="radio" name="gender" value="male" required {{ old('gender') == 'male' ? 'checked' : '' }}>
                                     <label style="transition: none;" for="male1">Laki-laki</label></div> &nbsp&nbsp&nbsp
                                 <div class="col-xs-6"><input id="female1" type="radio"  name="gender" value="female" {{ old('gender') == 'female' ? 'checked' : '' }}>
                                     <label style="transition: none;" for="female1">Perempuan</label></div>

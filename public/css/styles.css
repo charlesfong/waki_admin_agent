@@ -10,6 +10,101 @@
   text-align:center;
 }
 
+
+/*ADD MEMBER STYLE*/
+.center-block {
+    float: none !important;
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+}
+.contact-form2 {
+    padding: 1em;
+    padding-right: 5em;
+}
+.styled-input.agile-styled-input-top , .normal-input.agile-styled-input-top{
+    margin-top: 0;
+} 
+.styled-input , .styled-input2{
+  width:100%;
+  margin: 2em 0 1em;
+  position: relative;
+}
+.normal-input {
+    width:100%;
+    margin: 2em 0 3em;
+    position: relative;
+}
+.styled-input input:focus ~ label, .styled-input input:valid ~ label,.styled-input textarea:focus ~ label ,.styled-input textarea:valid ~ label {
+    font-size: .9em;
+    color: #048b32;
+    top: -1.4em;
+    -webkit-transition: all 0.125s;
+    -moz-transition: all 0.125s; 
+    -o-transition: all 0.125s;
+    -ms-transition: all 0.125s;
+    transition: all 0.125s;
+}
+.styled-input label, .styled-input2 label {
+  color: #555;
+    padding: 0.5em 0em;
+    position: absolute;
+    top: 0;
+    left: 0;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+    pointer-events: none;
+    font-weight: 400;
+    font-size: 14px;
+  letter-spacing:1px;
+    display: block;
+    line-height: 1em;
+}
+.styled-input input ~ span, .styled-input textarea ~ span, .styled-input2 input ~ span, .styled-input2 textarea ~ span {
+    display: block;
+    width: 0;
+    height: 2px;
+    background: rgb(39, 39, 39);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    -webkit-transition: all 0.125s;
+    -moz-transition: all 0.125s;
+    transition: all 0.125s;
+}
+.styled-input textarea ~ span, .styled-input2 textarea ~ span { 
+    bottom: 5px; 
+}
+.styled-input input:focus.styled-input textarea:focus, .styled-input2 input:focus.styled-input2 textarea:focus { 
+  outline: 0; 
+} 
+.styled-input input:focus ~ span,.styled-input textarea:focus ~ span, .normal-input input:focus ~ span,.normal-input textarea:focus ~ span, 
+.styled-input2 input:focus ~ span,.styled-input2 textarea:focus ~ span {
+  width: 100%;
+  -webkit-transition: all 0.075s;
+  -moz-transition: all 0.075s;  
+  transition: all 0.075s; 
+} 
+.contact-form2 input[type="text"], .contact-form2 input[type="email"], .contact-form2 input[type="password"], .contact-form2 textarea, .contact-form2 input[type="date"] {
+    font-size: 15px;
+    letter-spacing: 1px;
+    color: #000;
+    padding: 0.5em 1em;
+    border: 0;
+    width: 100%;
+    border-bottom: 1px solid #dcdcdc;
+    background: none;
+    -webkit-appearance: none;
+    outline: none;
+}
+.contact-form2 textarea {
+     min-height: 80px;
+}
+.contact-form2 h4 {
+    margin-bottom: 2em;
+}
+
 @media (min-width: 768px) {
   #logout:hover {
     color:rgb(255,255,255);
