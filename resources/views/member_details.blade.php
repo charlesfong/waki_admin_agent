@@ -17,7 +17,7 @@
 </a>
 </div>
 
-<div class="container" style="overflow-x:auto;">
+<div class="container" style="overflow-x:auto; font-size: 1em;">
     <div class="col-md-12">
         <div class="card">
             <h1 class="text-center" style="margin-bottom: .5rem;">Details</h1>
